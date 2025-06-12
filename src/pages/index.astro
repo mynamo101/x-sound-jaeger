@@ -3,6 +3,14 @@ import Layout from '../layouts/Layout.astro';
 // import ImageCarousel from '../components/ImageCarousel.astro'; // 移除轮播
 import HeroPost from '../components/HeroPost.astro'; // 导入新的 HeroPost 组件
 
+// 生成 URL 友好的 slug
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
 // 首页静态假数据，后续可用 Markdown 动态生成
 interface Post {
   title: string;
@@ -19,7 +27,7 @@ const featuredPosts: Post[] = [
     date: '2025-03-27',
     tag: 'Business',
     summary: 'Tincidunt sit id maecenas vitae felis. Volutpat porta lectus malesuada ornare suspendisse eu vestibulum massa. Id etiam in molestie cras bibendum.',
-    link: '#',
+    link: `/blog/${generateSlug('Maximizing Work Productivity')}`,
     image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&h=800&fit=crop' // 添加特色图片
   },
   {
@@ -27,7 +35,7 @@ const featuredPosts: Post[] = [
     date: '2025-03-26',
     tag: 'Lifestyle',
     summary: 'Phasellus sollicitudin ut pellentesque vitae eleifend diam rutrum elementum libero. Mauris nulla sollicitudin massa donec ac interdum sagittis egestas.',
-    link: '#',
+    link: `/blog/${generateSlug('The Ultimate Adventure Guide')}`,
     image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop'
   },
   {
@@ -35,7 +43,7 @@ const featuredPosts: Post[] = [
     date: '2025-03-24',
     tag: 'Business',
     summary: 'Lectus suspendisse eleifend nunc vulputate aliquam sit. Venenatis ac mattis vel ultricies platea mauris. Dignissim malesuada pharetra ut quis ornare sollicitudin feugiat amet vitae.',
-    link: '#',
+    link: `/blog/${generateSlug('Power of Artificial Intelligence')}`,
     image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop'
   },
   {
@@ -43,7 +51,7 @@ const featuredPosts: Post[] = [
     date: '2025-03-10',
     tag: 'Travel',
     summary: 'Pretium urna viverra ipsum diam lacus nunc a lobortis. Quis lectus nisi tristique mi sit purus sed nunc. Quam ridiculus aliquet in vulputate euismod fusce nisl vel.',
-    link: '#',
+    link: `/blog/${generateSlug('Traveling on a Budget')}`,
     image: 'https://images.unsplash.com/photo-1486312338219-ce68e2c6b7a4?w=400&h=250&fit=crop'
   }
 ];
@@ -54,7 +62,7 @@ const latestPosts: Post[] = [
     date: '2025-03-31',
     tag: 'Creative',
     summary: 'Nec sed pharetra scelerisque blandit. Vitae commodo integer nibh etiam. Iaculis nunc dui interdum donec sodales. Curabitur eget tincidunt amet et nunc. Amet id faucibus ipsum vitae.',
-    link: '#',
+    link: `/blog/${generateSlug('Unleash Your Creative Potential')}`,
     image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=250&fit=crop'
   },
   {
@@ -62,7 +70,7 @@ const latestPosts: Post[] = [
     date: '2025-03-30',
     tag: 'Travel',
     summary: 'Tristique hendrerit massa adipiscing tincidunt sed. Ultrices vitae vel maecenas tincidunt semper neque auctor porttitor quis. Turpis et malesuada metus malesuada eu integer eleifend.',
-    link: '#',
+    link: `/blog/${generateSlug('Uncovering Hidden & Special Places')}`,
     image: 'https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=400&h=250&fit=crop'
   },
   {
@@ -70,7 +78,7 @@ const latestPosts: Post[] = [
     date: '2025-03-29',
     tag: 'Creative',
     summary: 'Lectus suspendisse eleifend nunc vulputate aliquam sit. Venenatis ac mattis vel ultricies platea mauris. Dignissim malesuada pharetra ut quis ornare sollicitudin feugiat amet vitae.',
-    link: '#',
+    link: `/blog/${generateSlug('Exploring the Creative Boundaries')}`,
     image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=400&h=250&fit=crop'
   },
   {
@@ -78,7 +86,7 @@ const latestPosts: Post[] = [
     date: '2025-03-28',
     tag: 'Design',
     summary: 'Mi eu mauris vitae euismod ligula sed. Amet sed pellentesque vulputate sed. Velit donec libero eget libero malesuada lacus vel venenatis.',
-    link: '#',
+    link: `/blog/${generateSlug('Unlocking Creativity of Design')}`,
     image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=250&fit=crop'
   }
 ];
@@ -99,10 +107,10 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
         <h1 class="logo">Elysian</h1>
       </a>
       <div class="nav-links">
-        <a href="#">Archive</a>
-        <a href="#">Tags</a>
-        <a href="#">Authors</a>
-        <a href="#">About</a>
+        <a href="/archive">Archive</a>
+        <a href="/tags">Tags</a>
+        <a href="/authors">Authors</a>
+        <a href="/about">About</a>
       </div>
     </div>
   </nav>
@@ -129,15 +137,12 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
               </div>
               <div class="post-content">
                 <div class="post-meta">
-                  <span class="post-tag">{post.tag}</span>
+                  <span class="post-category-tag">{post.tag.toUpperCase()}</span>
                   <span class="post-date">| {post.date}</span>
                 </div>
-                <h3 class="post-title">
-                  <a href={post.link} class="post-link">{post.title.toUpperCase()}</a>
-                </h3>
-                <h4 class="post-subtitle">
+                <h3 class="post-main-title">
                   <a href={post.link}>{post.title}</a>
-                </h4>
+                </h3>
                 <p class="post-summary">{post.summary.substring(0,100)}...</p>
               </div>
             </article>
@@ -163,15 +168,12 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
               </div>
             <div class="post-content">
               <div class="post-meta">
-                <span class="post-tag">{post.tag}</span>
+                <span class="post-category-tag">{post.tag.toUpperCase()}</span>
                 <span class="post-date">| {post.date}</span>
               </div>
-              <h3 class="post-title">
-                <a href={post.link} class="post-link">{post.title.toUpperCase()}</a>
-              </h3>
-              <h4 class="post-subtitle">
+              <h3 class="post-main-title">
                 <a href={post.link}>{post.title}</a>
-              </h4>
+              </h3>
               <p class="post-summary">{post.summary.substring(0,100)}...</p>
             </div>
           </article>
@@ -329,9 +331,9 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
 
 /* 文章项目 */
 .post-item {
-  background-color: #121212; /* Darker post item background */
-  border-radius: 12px; /* Rounded corners */
-  overflow: hidden; /* To contain image within rounded corners */
+  background-color: #121212;
+  border-radius: 12px;
+  overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -344,9 +346,9 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
 
 .post-thumbnail {
   width: 100%;
-  aspect-ratio: 16 / 10; /* Maintain aspect ratio for images */
+  aspect-ratio: 16 / 10;
   overflow: hidden;
-  background-color: #1a1a1a; /* Placeholder background for image area */
+  background-color: #1a1a1a;
 }
 
 .post-thumbnail img {
@@ -361,73 +363,57 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
 }
 
 .post-content {
-  padding: 1.5rem;
+  padding: 1.25rem; /* Adjusted padding */
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* Allow content to fill space */
+  flex-grow: 1;
 }
 
 .post-meta {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.85rem;
+  margin-bottom: 0.75rem; /* Adjusted margin */
 }
 
-.post-tag {
-  color: #a0a0a0; /* Lighter tag color */
-  font-weight: 600;
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 0.2rem 0.6rem;
-  border-radius: 10px;
-  font-size: 0.75rem;
+.post-category-tag {
+  color: #888; /* Light gray for tag */
+  font-size: 0.75rem; /* Smaller font size */
+  font-weight: 500; /* Medium weight */
+  text-transform: uppercase;
+  letter-spacing: 0.05em; /* Added letter spacing */
+  /* Removed background, padding, border-radius from original .post-tag */
 }
 
 .post-date {
-  color: #777;
+  color: #888; /* Consistent color with tag */
+  font-size: 0.75rem; /* Consistent font size with tag */
 }
 
-.post-title {
-  margin: 0.5rem 0 0.2rem 0;
-  font-size: 0.8rem; /* Smaller all-caps title */
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+/* Removed .post-title and .post-title .post-link styles */
+
+.post-main-title { /* Renamed from .post-subtitle */
+  margin: 0 0 0.75rem 0; /* Adjusted margin */
+  font-size: 1.25rem; /* Adjusted font size */
+  font-weight: 600; /* Adjusted font weight */
+  line-height: 1.3;
+  flex-grow: 1;
 }
 
-.post-title .post-link {
-  color: #999; /* Subdued color for all-caps title */
+.post-main-title a {
+  color: #e0e0e0;
   text-decoration: none;
   transition: color 0.2s;
 }
 
-.post-title .post-link:hover {
-  color: #ccc;
-}
-
-.post-subtitle {
-  margin: 0 0 1rem 0;
-  font-size: 1.3rem; /* Slightly smaller subtitle */
-  font-weight: 600; /* Bolder subtitle */
-  line-height: 1.35;
-  flex-grow: 1; /* Allow subtitle to take available space */
-}
-
-.post-subtitle a {
-  color: #e0e0e0; /* Lighter subtitle text */
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.post-subtitle a:hover {
+.post-main-title a:hover {
   color: #fff;
 }
 
 .post-summary {
   color: #aaa;
-  font-size: 0.95rem; /* Slightly smaller summary */
-  line-height: 1.6;
+  font-size: 0.9rem; /* Adjusted font size */
+  line-height: 1.5; /* Adjusted line height */
   margin: 0;
 }
 

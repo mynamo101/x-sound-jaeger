@@ -1,0 +1,758 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// 生成 URL 友好的 slug
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+// 作者接口
+interface Author {
+  id: string;
+  name: string;
+  title: string;
+  bio: string;
+  avatar: string;
+  social: {
+    twitter?: string;
+    linkedin?: string;
+    website?: string;
+  };
+  articleCount: number;
+  joinDate: string;
+}
+
+// 文章接口
+interface Post {
+  title: string;
+  date: string;
+  tag: string;
+  summary: string;
+  link: string;
+  image?: string;
+  author: string;
+}
+
+// 作者数据
+const authors: Author[] = [
+  {
+    id: 'alex-chen',
+    name: 'Alex Chen',
+    title: 'Founder & Editor-in-Chief',
+    bio: 'A passionate writer and technologist with over 8 years of experience in digital content creation and community building. Alex specializes in business strategy and productivity.',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
+    social: {
+      twitter: 'https://twitter.com/alexchen',
+      linkedin: 'https://linkedin.com/in/alexchen',
+      website: 'https://alexchen.dev'
+    },
+    articleCount: 4,
+    joinDate: '2024-01-15'
+  },
+  {
+    id: 'sarah-johnson',
+    name: 'Sarah Johnson',
+    title: 'Creative Director',
+    bio: 'A design enthusiast who brings visual stories to life, ensuring every piece of content is as beautiful as it is meaningful. Sarah focuses on design and creative content.',
+    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=300&h=300&fit=crop&crop=face',
+    social: {
+      twitter: 'https://twitter.com/sarahdesigns',
+      linkedin: 'https://linkedin.com/in/sarahjohnson'
+    },
+    articleCount: 2,
+    joinDate: '2024-02-01'
+  },
+  {
+    id: 'david-park',
+    name: 'David Park',
+    title: 'Tech Writer',
+    bio: 'A technology expert who translates complex concepts into accessible insights for readers of all backgrounds. David covers lifestyle and travel topics.',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
+    social: {
+      linkedin: 'https://linkedin.com/in/davidpark',
+      website: 'https://davidpark.tech'
+    },
+    articleCount: 2,
+    joinDate: '2024-03-01'
+  }
+];
+
+// 文章数据（添加作者信息）
+const allPosts: Post[] = [
+  {
+    title: 'Maximizing Work Productivity',
+    date: '2025-03-27',
+    tag: 'Business',
+    summary: 'Tincidunt sit id maecenas vitae felis. Volutpat porta lectus malesuada ornare suspendisse eu vestibulum massa.',
+    link: `/blog/${generateSlug('Maximizing Work Productivity')}`,
+    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&h=250&fit=crop',
+    author: 'alex-chen'
+  },
+  {
+    title: 'Power of Artificial Intelligence',
+    date: '2025-03-24',
+    tag: 'Business',
+    summary: 'Lectus suspendisse eleifend nunc vulputate aliquam sit. Venenatis ac mattis vel ultricies platea mauris.',
+    link: `/blog/${generateSlug('Power of Artificial Intelligence')}`,
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop',
+    author: 'alex-chen'
+  },
+  {
+    title: 'Unleash Your Creative Potential',
+    date: '2025-03-31',
+    tag: 'Creative',
+    summary: 'Nec sed pharetra scelerisque blandit. Vitae commodo integer nibh etiam. Iaculis nunc dui interdum donec sodales.',
+    link: `/blog/${generateSlug('Unleash Your Creative Potential')}`,
+    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=250&fit=crop',
+    author: 'sarah-johnson'
+  },
+  {
+    title: 'Unlocking Creativity of Design',
+    date: '2025-03-28',
+    tag: 'Design',
+    summary: 'Mi eu mauris vitae euismod ligula sed. Amet sed pellentesque vulputate sed.',
+    link: `/blog/${generateSlug('Unlocking Creativity of Design')}`,
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=250&fit=crop',
+    author: 'sarah-johnson'
+  },
+  {
+    title: 'The Ultimate Adventure Guide',
+    date: '2025-03-26',
+    tag: 'Lifestyle',
+    summary: 'Phasellus sollicitudin ut pellentesque vitae eleifend diam rutrum elementum libero.',
+    link: `/blog/${generateSlug('The Ultimate Adventure Guide')}`,
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop',
+    author: 'david-park'
+  },
+  {
+    title: 'Traveling on a Budget',
+    date: '2025-03-10',
+    tag: 'Travel',
+    summary: 'Pretium urna viverra ipsum diam lacus nunc a lobortis. Quis lectus nisi tristique mi sit purus sed nunc.',
+    link: `/blog/${generateSlug('Traveling on a Budget')}`,
+    image: 'https://images.unsplash.com/photo-1486312338219-ce68e2c6b7a4?w=400&h=250&fit=crop',
+    author: 'david-park'
+  }
+];
+
+// 按文章数量排序作者
+const sortedAuthors = authors.sort((a, b) => b.articleCount - a.articleCount);
+
+// 为每个作者获取其文章
+function getAuthorPosts(authorId: string): Post[] {
+  return allPosts.filter(post => post.author === authorId);
+}
+---
+
+<Layout>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo-link">
+        <h1 class="logo">Elysian</h1>
+      </a>
+      <div class="nav-links">
+        <a href="/archive">Archive</a>
+        <a href="/tags">Tags</a>
+        <a href="/authors" class="active">Authors</a>
+        <a href="/about">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content authors-page">
+    <!-- Page Header -->
+    <section class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">Authors</h1>
+        <p class="page-subtitle">Meet the talented writers behind Elysian's thoughtful content</p>
+        <div class="authors-stats">
+          <span class="stat-item">{authors.length} Writers</span>
+          <span class="stat-divider">•</span>
+          <span class="stat-item">{allPosts.length} Total Articles</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Authors Grid -->
+    <section class="authors-section">
+      <div class="authors-container">
+        <div class="authors-grid">
+          {sortedAuthors.map(author => {
+            const authorPosts = getAuthorPosts(author.id);
+            return (
+              <div class="author-card" id={author.id}>
+                <div class="author-header">
+                  <div class="author-avatar">
+                    <img src={author.avatar} alt={author.name} />
+                  </div>
+                  <div class="author-info">
+                    <h2 class="author-name">{author.name}</h2>
+                    <p class="author-title">{author.title}</p>
+                    <div class="author-stats">
+                      <span class="author-article-count">{author.articleCount} Articles</span>
+                      <span class="author-join-date">Since {new Date(author.joinDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="author-bio">
+                  <p>{author.bio}</p>
+                </div>
+                
+                <div class="author-social">
+                  {author.social.twitter && (
+                    <a href={author.social.twitter} class="social-link" target="_blank" rel="noopener noreferrer">
+                      Twitter
+                    </a>
+                  )}
+                  {author.social.linkedin && (
+                    <a href={author.social.linkedin} class="social-link" target="_blank" rel="noopener noreferrer">
+                      LinkedIn
+                    </a>
+                  )}
+                  {author.social.website && (
+                    <a href={author.social.website} class="social-link" target="_blank" rel="noopener noreferrer">
+                      Website
+                    </a>
+                  )}
+                </div>
+
+                <!-- Author's Recent Articles -->
+                {authorPosts.length > 0 && (
+                  <div class="author-articles">
+                    <h3 class="articles-title">Recent Articles</h3>
+                    <div class="articles-list">
+                      {authorPosts.slice(0, 3).map(post => (
+                        <article class="author-article-item">
+                          <div class="article-thumbnail">
+                            <a href={post.link}>
+                              <img src={post.image || 'https://via.placeholder.com/100x60/1a1a1a/333333?text=Fallback'} alt={post.title} loading="lazy" />
+                            </a>
+                          </div>
+                          <div class="article-details">
+                            <div class="article-meta">
+                              <span class="article-tag">{post.tag}</span>
+                              <span class="article-date">{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                            </div>
+                            <h4 class="article-title">
+                              <a href={post.link}>{post.title}</a>
+                            </h4>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                    {authorPosts.length > 3 && (
+                      <a href="/archive" class="view-all-link">View all articles by {author.name} →</a>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- Join Team CTA -->
+    <section class="join-team-section">
+      <div class="join-team-container">
+        <div class="join-team-content">
+          <h2>Want to Join Our Team?</h2>
+          <p>We're always looking for passionate writers who share our vision of creating meaningful content. If you're interested in contributing to Elysian, we'd love to hear from you.</p>
+          <a href="/about" class="join-team-button">Learn More About Us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>Elysian</h3>
+          <p>Exploring the intersection of technology, creativity, and human experience.</p>
+        </div>
+        <div class="footer-links">
+          <div class="link-group">
+            <h4>Content</h4>
+            <a href="/archive">Archive</a>
+            <a href="/tags">Tags</a>
+            <a href="/authors">Authors</a>
+          </div>
+          <div class="link-group">
+            <h4>Company</h4>
+            <a href="/about">About</a>
+            <a href="#" class="footer-link">Privacy</a>
+            <a href="#" class="footer-link">Terms</a>
+          </div>
+          <div class="link-group">
+            <h4>Connect</h4>
+            <a href="#" class="footer-link">Twitter</a>
+            <a href="#" class="footer-link">LinkedIn</a>
+            <a href="#" class="footer-link">RSS</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Elysian. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  /* Navigation Styles */
+  .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #333;
+    z-index: 1000;
+    padding: 1rem 0;
+  }
+
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+  }
+
+  .logo-link {
+    text-decoration: none;
+  }
+
+  .logo {
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .nav-links a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: #3b82f6;
+  }
+
+  .nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #3b82f6;
+  }
+
+  /* Main Content */
+  .main-content {
+    margin-top: 80px;
+    color: #e0e0e0;
+  }
+
+  /* Page Header */
+  .page-header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+    border-bottom: 1px solid #333;
+  }
+
+  .header-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-subtitle {
+    font-size: 1.25rem;
+    color: #b0b0b0;
+    margin-bottom: 2rem;
+  }
+
+  .authors-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    color: #888;
+  }
+
+  .stat-item {
+    font-weight: 500;
+  }
+
+  .stat-divider {
+    opacity: 0.5;
+  }
+
+  /* Authors Section */
+  .authors-section {
+    background-color: #0d0d0d;
+    padding: 3rem 2rem;
+  }
+
+  .authors-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .authors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+
+  .author-card {
+    background-color: #1a1a1a;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid #333;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .author-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .author-header {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .author-avatar {
+    flex-shrink: 0;
+  }
+
+  .author-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #3b82f6;
+  }
+
+  .author-info {
+    flex-grow: 1;
+  }
+
+  .author-name {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .author-title {
+    color: #3b82f6;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .author-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #888;
+  }
+
+  .author-article-count {
+    font-weight: 500;
+  }
+
+  .author-bio {
+    margin-bottom: 1.5rem;
+  }
+
+  .author-bio p {
+    color: #b0b0b0;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .author-social {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .social-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border: 1px solid #3b82f6;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+  }
+
+  .social-link:hover {
+    background-color: #3b82f6;
+    color: white;
+  }
+
+  /* Author Articles */
+  .author-articles {
+    border-top: 1px solid #333;
+    padding-top: 1.5rem;
+  }
+
+  .articles-title {
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .author-article-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .article-thumbnail {
+    flex-shrink: 0;
+    width: 60px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .article-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .article-details {
+    flex-grow: 1;
+  }
+
+  .article-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .article-tag {
+    color: #3b82f6;
+    font-weight: 600;
+  }
+
+  .article-date {
+    color: #888;
+  }
+
+  .article-title {
+    margin: 0;
+  }
+
+  .article-title a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+  }
+
+  .article-title a:hover {
+    color: #3b82f6;
+  }
+
+  .view-all-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+  }
+
+  .view-all-link:hover {
+    color: #2563eb;
+  }
+
+  /* Join Team Section */
+  .join-team-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 4rem 2rem;
+    text-align: center;
+    border-top: 1px solid #333;
+  }
+
+  .join-team-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .join-team-content h2 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .join-team-content p {
+    color: #b0b0b0;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .join-team-button {
+    display: inline-block;
+    background-color: #3b82f6;
+    color: white;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+
+  .join-team-button:hover {
+    background-color: #2563eb;
+  }
+
+  /* Footer */
+  .footer {
+    background-color: #0d0d0d;
+    border-top: 1px solid #333;
+    padding: 3rem 2rem 1rem;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .footer-brand h3 {
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+
+  .footer-brand p {
+    color: #b0b0b0;
+    line-height: 1.6;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .link-group h4 {
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+
+  .link-group a {
+    display: block;
+    color: #b0b0b0;
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+  }
+
+  .link-group a:hover {
+    color: #3b82f6;
+  }
+
+  .footer-bottom {
+    border-top: 1px solid #333;
+    padding-top: 2rem;
+    text-align: center;
+  }
+
+  .footer-bottom p {
+    color: #666;
+    margin: 0;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 2.5rem;
+    }
+
+    .authors-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .author-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+
+    .author-social {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .footer-links {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .nav-links {
+      gap: 1rem;
+    }
+
+    .nav-container {
+      padding: 0 1rem;
+    }
+  }
+</style>
