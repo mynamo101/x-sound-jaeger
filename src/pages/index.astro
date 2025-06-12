@@ -1,244 +1,328 @@
 ---
 import Layout from '../layouts/Layout.astro';
-// import ImageCarousel from '../components/ImageCarousel.astro'; // 移除轮播
-import HeroPost from '../components/HeroPost.astro'; // 导入新的 HeroPost 组件
+import ProjectCarousel from '../components/ProjectCarousel.astro';
 
-// 生成 URL 友好的 slug
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
-
-// 首页静态假数据，后续可用 Markdown 动态生成
-interface Post {
+// 工作室專案數據
+interface Project {
+  id: number;
   title: string;
-  date: string;
-  tag: string;
-  summary: string;
-  link: string;
-  image?: string; // 为 HeroPost 添加图片属性
+  category: string;
+  description: string;
+  image: string;
+  technologies: string[];
+  link?: string;
+  year: string;
 }
 
-const featuredPosts: Post[] = [
+// 精選專案展示
+const featuredProjects: Project[] = [
   {
-    title: 'Maximizing Work Productivity',
-    date: '2025-03-27',
-    tag: 'Business',
-    summary: 'Tincidunt sit id maecenas vitae felis. Volutpat porta lectus malesuada ornare suspendisse eu vestibulum massa. Id etiam in molestie cras bibendum.',
-    link: `/blog/${generateSlug('Maximizing Work Productivity')}`,
-    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&h=800&fit=crop' // 添加特色图片
+    id: 1,
+    title: "Cinema Soundscapes",
+    category: "视频音效展示",
+    description: "专业电影级音效设计作品集，包含环境音、动作音效、情感配乐等多种类型。为影视制作提供沉浸式听觉体验。",
+    image: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1600&h=900&fit=crop&crop=center",
+    technologies: ["Pro Tools", "Logic Pro", "Kontakt", "Waves", "FabFilter"],
+    link: "/projects/cinema-soundscapes",
+    year: "2024"
   },
   {
-    title: 'The Ultimate Adventure Guide',
-    date: '2025-03-26',
-    tag: 'Lifestyle',
-    summary: 'Phasellus sollicitudin ut pellentesque vitae eleifend diam rutrum elementum libero. Mauris nulla sollicitudin massa donec ac interdum sagittis egestas.',
-    link: `/blog/${generateSlug('The Ultimate Adventure Guide')}`,
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop'
+    id: 2,
+    title: "Urban Rain ASMR",
+    category: "ASMR类型",
+    description: "高品质ASMR音频作品，包含雨声、自然白噪音、放松冥想音效等。采用双耳录音技术，带来极致的沉浸感受。",
+    image: "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=1600&h=900&fit=crop&crop=center",
+    technologies: ["Binaural Mics", "Adobe Audition", "RX Audio", "Zoom H6", "Soundfield SPS200"],
+    link: "/projects/urban-rain-asmr",
+    year: "2024"
   },
   {
-    title: 'Power of Artificial Intelligence',
-    date: '2025-03-24',
-    tag: 'Business',
-    summary: 'Lectus suspendisse eleifend nunc vulputate aliquam sit. Venenatis ac mattis vel ultricies platea mauris. Dignissim malesuada pharetra ut quis ornare sollicitudin feugiat amet vitae.',
-    link: `/blog/${generateSlug('Power of Artificial Intelligence')}`,
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop'
+    id: 3,
+    title: "Electronic Beats Pack",
+    category: "音效包展示下载",
+    description: "精心制作的电子音乐音效包，包含鼓点、合成器、低音、氛围音效等。支持WAV和AIFF格式，可商用授权。",
+    image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600&h=900&fit=crop&crop=center",
+    technologies: ["Ableton Live", "Serum", "Massive X", "Native Instruments", "iZotope Ozone"],
+    link: "/projects/electronic-beats",
+    year: "2024"
   },
   {
-    title: 'Traveling on a Budget',
-    date: '2025-03-10',
-    tag: 'Travel',
-    summary: 'Pretium urna viverra ipsum diam lacus nunc a lobortis. Quis lectus nisi tristique mi sit purus sed nunc. Quam ridiculus aliquet in vulputate euismod fusce nisl vel.',
-    link: `/blog/${generateSlug('Traveling on a Budget')}`,
-    image: 'https://images.unsplash.com/photo-1486312338219-ce68e2c6b7a4?w=400&h=250&fit=crop'
+    id: 4,
+    title: "Forest Whispers Collection",
+    category: "ASMR类型",
+    description: "纯净自然森林环境ASMR录音合集，包含鸟鸣、风声、水流声等。使用专业野外录音设备，呈现最真实的自然之声。",
+    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&h=900&fit=crop&crop=center",
+    technologies: ["Field Recording", "Zoom F8n", "Sennheiser MKH416", "Audio-Technica BP4025", "iZotope RX"],
+    link: "/projects/forest-whispers",
+    year: "2024"
+  },
+  {
+    id: 5,
+    title: "Game Audio Arsenal",
+    category: "音效包展示下载",
+    description: "游戏音效资源包，涵盖战斗、UI、环境、角色动作等各类游戏音效。高质量WAV格式，适用于各种游戏引擎。",
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1600&h=900&fit=crop&crop=center",
+    technologies: ["Wwise", "FMOD", "Unity Audio", "Unreal Engine", "Reaper"],
+    link: "/projects/game-audio-arsenal",
+    year: "2024"
+  },
+  {
+    id: 6,
+    title: "Sci-Fi Atmosphere Demo",
+    category: "视频音效展示",
+    description: "科幻主题音效展示作品，包含太空环境音、机械声效、未来科技音效等。为科幻影视和游戏项目提供专业音频解决方案。",
+    image: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=1600&h=900&fit=crop&crop=center",
+    technologies: ["Kyma", "Max/MSP", "Reaktor", "Omnisphere", "Sound Particles"],
+    link: "/projects/scifi-atmosphere",
+    year: "2024"
   }
 ];
 
-const latestPosts: Post[] = [
+// 服務項目
+const services = [
   {
-    title: 'Unleash Your Creative Potential',
-    date: '2025-03-31',
-    tag: 'Creative',
-    summary: 'Nec sed pharetra scelerisque blandit. Vitae commodo integer nibh etiam. Iaculis nunc dui interdum donec sodales. Curabitur eget tincidunt amet et nunc. Amet id faucibus ipsum vitae.',
-    link: `/blog/${generateSlug('Unleash Your Creative Potential')}`,
-    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=250&fit=crop'
+    title: "视频音效设计",
+    description: "专业电影、广告、短视频音效设计与制作服务",
+    icon: "🎬"
   },
   {
-    title: 'Uncovering Hidden & Special Places',
-    date: '2025-03-30',
-    tag: 'Travel',
-    summary: 'Tristique hendrerit massa adipiscing tincidunt sed. Ultrices vitae vel maecenas tincidunt semper neque auctor porttitor quis. Turpis et malesuada metus malesuada eu integer eleifend.',
-    link: `/blog/${generateSlug('Uncovering Hidden & Special Places')}`,
-    image: 'https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=400&h=250&fit=crop'
+    title: "ASMR音频制作", 
+    description: "高品质ASMR内容录制、编辑与后期处理",
+    icon: "🎧"
   },
   {
-    title: 'Exploring the Creative Boundaries',
-    date: '2025-03-29',
-    tag: 'Creative',
-    summary: 'Lectus suspendisse eleifend nunc vulputate aliquam sit. Venenatis ac mattis vel ultricies platea mauris. Dignissim malesuada pharetra ut quis ornare sollicitudin feugiat amet vitae.',
-    link: `/blog/${generateSlug('Exploring the Creative Boundaries')}`,
-    image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=400&h=250&fit=crop'
+    title: "音效包定制",
+    description: "游戏、应用、多媒体项目专用音效包制作",
+    icon: "🔊"
   },
   {
-    title: 'Unlocking Creativity of Design',
-    date: '2025-03-28',
-    tag: 'Design',
-    summary: 'Mi eu mauris vitae euismod ligula sed. Amet sed pellentesque vulputate sed. Velit donec libero eget libero malesuada lacus vel venenatis.',
-    link: `/blog/${generateSlug('Unlocking Creativity of Design')}`,
-    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=250&fit=crop'
+    title: "环境音录制",
+    description: "自然环境、城市场景等专业野外录音服务",
+    icon: "🌿"
   }
 ];
-
-const tags: string[] = [
-  'Business', 'Creative', 'Design', 'Fashion', 'Fitness', 'Health', 'Lifestyle', 'Travel'
-];
-
-const heroPostData = featuredPosts[0]; // 取第一篇精选文章作为英雄文章
-const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
 ---
 
 <Layout>
-  <!-- 导航栏 -->
+  <!-- 工作室導航欄 -->
   <nav class="navbar">
     <div class="nav-container">
       <a href="/" class="logo-link">
-        <h1 class="logo">Elysian</h1>
+        <h1 class="logo">X-Sound Studio</h1>
       </a>
       <div class="nav-links">
-        <a href="/archive">Archive</a>
-        <a href="/tags">Tags</a>
-        <a href="/authors">Authors</a>
-        <a href="/about">About</a>
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
       </div>
     </div>
   </nav>
 
   <main class="main-content">
-    <!-- Hero Post Section -->
-    <HeroPost post={heroPostData} />
-
-    <!-- 精选文章区域 (排除已在 Hero 中显示的文章) -->
-    {otherFeaturedPosts.length > 0 && (
-      <section class="section featured-posts-section">
-        <div class="section-header">
-          <h2>Discover Our Featured Posts</h2>
-          <span class="post-count">{otherFeaturedPosts.length} Posts</span>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          We craft immersive<br>
+          <span class="highlight">sonic experiences</span>
+        </h1>
+        <p class="hero-description">
+          专业音效设计工作室，专注于视频音效、ASMR制作和音效包开发。
+          用声音讲述故事，为您的项目注入生命力。
+        </p>
+        <div class="hero-actions">
+          <a href="#work" class="cta-button primary">探索作品</a>
+          <a href="#contact" class="cta-button secondary">开始合作</a>
         </div>
-        
-        <div class="posts-grid featured-posts-grid">
-          {otherFeaturedPosts.map((post) => (
-            <article class="post-item">
-              <div class="post-thumbnail">
-                <a href={post.link}>
-                  <img src={post.image ? post.image : 'https://via.placeholder.com/400x250/1a1a1a/333333?text=Fallback'} alt={post.title} loading="lazy" />
-                </a>
-              </div>
-              <div class="post-content">
-                <div class="post-meta">
-                  <span class="post-category-tag">{post.tag.toUpperCase()}</span>
-                  <span class="post-date">| {post.date}</span>
-                </div>
-                <h3 class="post-main-title">
-                  <a href={post.link}>{post.title}</a>
-                </h3>
-                <p class="post-summary">{post.summary.substring(0,100)}...</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-    )}
-
-    <!-- 最新文章区域 -->
-    <section class="section latest-posts-section">
-      <div class="section-header">
-        <h2>Read Our Latest Posts</h2>
-        <span class="post-count">{latestPosts.length} Posts</span>
       </div>
-      
-      <div class="posts-grid latest-posts-grid">
-        {latestPosts.map((post) => (
-          <article class="post-item">
-             <div class="post-thumbnail">
-                <a href={post.link}>
-                  <img src={post.image ? post.image : 'https://via.placeholder.com/400x250/1a1a1a/333333?text=Fallback'} alt={post.title} loading="lazy" />
-                </a>
-              </div>
-            <div class="post-content">
-              <div class="post-meta">
-                <span class="post-category-tag">{post.tag.toUpperCase()}</span>
-                <span class="post-date">| {post.date}</span>
-              </div>
-              <h3 class="post-main-title">
-                <a href={post.link}>{post.title}</a>
-              </h3>
-              <p class="post-summary">{post.summary.substring(0,100)}...</p>
-            </div>
-          </article>
-        ))}
+      <div class="hero-visual">
+        <div class="floating-elements">
+          <div class="element element-1"></div>
+          <div class="element element-2"></div>
+          <div class="element element-3"></div>
+        </div>
       </div>
     </section>
 
-    <!-- 标签浏览区域 -->
-    <section class="section tags-section">
-      <div class="section-header">
-        <h2>Browse by Tags</h2>
-        <span class="post-count">{tags.length} Tags</span>
+    <!-- Featured Projects Gallery -->
+    <section id="work" class="projects-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">作品集</div>
+          <h2 class="section-title">精选音效作品</h2>
+          <p class="section-subtitle">展示我们最新的音效设计项目和创新音频解决方案</p>
+        </div>
+        
+        <!-- 分类过滤器 -->
+        <div class="gallery-filters">
+          <button class="filter-btn active" data-filter="all">全部作品</button>
+          <button class="filter-btn" data-filter="视频音效展示">视频音效</button>
+          <button class="filter-btn" data-filter="ASMR类型">ASMR音频</button>
+          <button class="filter-btn" data-filter="音效包展示下载">音效包</button>
+        </div>
+        
+        <!-- 瀑布流作品画廊 -->
+        <div class="work-gallery">
+          {featuredProjects.map((project, index) => (
+            <div class="gallery-item" data-category={project.category}>
+              <a href={project.link} class="gallery-link">
+                <div class="gallery-image">
+                  <img src={project.image} alt={project.title} loading="lazy" />
+                  <div class="gallery-overlay">
+                    <div class="overlay-content">
+                      <span class="project-category">{project.category}</span>
+                      <h3 class="project-title">{project.title}</h3>
+                      <p class="project-desc">{project.description}</p>
+                      <div class="project-tech">
+                        {project.technologies.slice(0, 3).map(tech => (
+                          <span class="tech-badge">{tech}</span>
+                        ))}
+                      </div>
+                      <span class="view-more">查看详情 →</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
       </div>
-      
-      <div class="tags-grid">
-        {tags.map((tag) => (
-          <div class="tag-item">
-            <a href="#" class="tag-link">{tag}</a>
-            <span class="tag-upper">{tag.toUpperCase()}</span>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">服务内容</div>
+          <h2 class="section-title">我们的专业服务</h2>
+          <p class="section-subtitle">为现代媒体项目提供全方位的音频解决方案</p>
+        </div>
+        <div class="services-grid">
+          {services.map(service => (
+            <div class="service-card">
+              <div class="service-icon">{service.icon}</div>
+              <h3 class="service-title">{service.title}</h3>
+              <p class="service-description">{service.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+      <div class="container">
+        <div class="about-content">
+          <div class="about-text">
+            <div class="section-badge">关于我们</div>
+            <h2 class="section-title">X-Sound Studio</h2>
+            <p class="about-description">
+              成立于2022年，X-Sound Studio是一家专业的音效设计工作室，专注于为影视、游戏、
+              ASMR内容和多媒体项目提供高品质的音频解决方案。我们的团队由经验丰富的音效设计师、
+              录音师和后期制作专家组成，致力于通过声音创造沉浸式的听觉体验。
+            </p>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-number">200+</div>
+                <div class="stat-label">音效作品</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">80+</div>
+                <div class="stat-label">满意客户</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">2</div>
+                <div class="stat-label">年经验</div>
+              </div>
+            </div>
           </div>
-        ))}
+          <div class="about-image">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop" alt="Our Team" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact CTA Section -->
+    <section id="contact" class="contact-cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">准备好为您的项目添加专业音效了吗？</h2>
+          <p class="cta-description">
+            让我们携手合作，为您的作品打造震撼的听觉体验。
+            联系我们，让我们讨论如何为您的创意项目提供完美的音频解决方案。
+          </p>
+          <div class="cta-actions">
+            <a href="mailto:hello@xsoundstudio.com" class="cta-button primary large">立即联系</a>
+            <div class="contact-info">
+              <span>或致电我们: <a href="tel:+1234567890">+86 138-0013-8000</a></span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
-  <!-- 页脚 -->
+  <!-- Footer -->
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-logo-section">
-        <h3 class="footer-logo-text">Elysian</h3>
-        <p class="footer-description">Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.</p>
+        <h3 class="footer-logo-text">X-Sound Studio</h3>
+        <p class="footer-description">
+          专业音效设计工作室，专注于视频音效、ASMR制作和音效包开发。
+          用声音讲述故事，为您的项目注入生命力。
+        </p>
       </div>
       
       <div class="footer-social-links">
-        <a href="#" aria-label="Facebook" class="social-icon">FB</a>
-        <a href="#" aria-label="Twitter" class="social-icon">TW</a>
+        <a href="#" aria-label="Dribbble" class="social-icon">DR</a>
+        <a href="#" aria-label="Behance" class="social-icon">BE</a>
         <a href="#" aria-label="Instagram" class="social-icon">IG</a>
         <a href="#" aria-label="LinkedIn" class="social-icon">LI</a>
-        <a href="#" aria-label="Pinterest" class="social-icon">PI</a>
+        <a href="#" aria-label="GitHub" class="social-icon">GH</a>
       </div>
       
       <div class="footer-bottom-text">
-        <p>© 2025 ELYSIAN. ALL RIGHTS RESERVED.</p>
-        <a href="#top" class="back-to-top-link">Back to top &uarr;</a>
+        <p>© 2025 X-SOUND STUDIO. ALL RIGHTS RESERVED.</p>
+        <a href="#top" class="back-to-top-link">Back to top ↑</a>
       </div>
     </div>
   </footer>
 </Layout>
 
 <style>
-/* 导航栏样式 */
+/* Global Variables */
+:root {
+  --primary-color: #6366f1;
+  --secondary-color: #8b5cf6;
+  --background-dark: #0a0a0a;
+  --background-light: #121212;
+  --surface-color: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-muted: #777777;
+  --border-color: #2a2a2a;
+  --success-color: #10b981;
+  --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+/* Navigation Styles */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(10, 10, 10, 0.85); /* Slightly more transparent */
-  backdrop-filter: blur(12px); /* Increased blur */
-  border-bottom: 1px solid #1f1f1f; /* Darker border */
-  z-index: 1000; /* Ensure navbar is on top */
-  padding: 0.75rem 0; /* Reduced padding */
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1000;
+  padding: 1rem 0;
+  transition: background 0.3s ease;
 }
 
 .nav-container {
-  max-width: 1300px; /* Wider container */
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
@@ -251,226 +335,638 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
 }
 
 .logo {
-  font-size: 1.8rem; /* Slightly larger logo */
-  font-weight: 700; /* Bolder logo */
-  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
   margin: 0;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.02em;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .nav-links {
   display: flex;
-  gap: 2.5rem; /* Increased gap */
+  gap: 2rem;
 }
 
 .nav-links a {
-  color: #b0b0b0; /* Lighter gray for links */
+  color: var(--text-secondary);
   text-decoration: none;
-  font-weight: 500; /* Medium weight */
+  font-weight: 500;
   font-size: 0.95rem;
-  transition: color 0.2s ease-in-out;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient);
+  transition: width 0.3s ease;
 }
 
 .nav-links a:hover {
-  color: #fff;
+  color: var(--text-primary);
 }
 
-/* 主要内容样式 */
-.main-content {
-  max-width: 1200px; /* Wider main content for a more spacious feel */
-  margin: 0 auto;
-  padding: 8rem 2rem 4rem; /* Adjusted top padding for fixed navbar */
-  min-height: 100vh;
-}
-
-/* 区块样式 */
-.section {
-  margin-bottom: 5rem; /* Increased spacing between sections */
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between; /* Align title left, count right */
-  align-items: center;
-  margin-bottom: 2.5rem; /* Increased margin */
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #2a2a2a; /* Slightly lighter border */
-}
-
-.section-header h2 {
-  font-size: 1.8rem; /* Larger section titles */
-  font-weight: 600;
-  color: #e0e0e0; /* Lighter title color */
-  margin: 0;
-}
-
-.post-count {
-  background: #1c1c1c; /* Darker background for count */
-  color: #999;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-/* 文章网格 (通用) */
-.posts-grid {
-  display: grid;
-  gap: 2.5rem; /* Gap between post items */
-}
-
-/* 精选文章网格 - 2列 */
-.featured-posts-grid {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-/* 最新文章网格 - 3列 */
-.latest-posts-grid {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-/* 文章项目 */
-.post-item {
-  background-color: #121212;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.post-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
-
-.post-thumbnail {
+.nav-links a:hover::after {
   width: 100%;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  background-color: #1a1a1a;
 }
 
-.post-thumbnail img {
+/* Main Content */
+.main-content {
+  padding-top: 5rem;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Hero Section */
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+}
+
+.hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.highlight {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  max-width: 500px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.cta-button {
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid transparent;
+}
+
+.cta-button.primary {
+  background: var(--gradient);
+  color: white;
+}
+
+.cta-button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+.cta-button.secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.cta-button.secondary:hover {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.cta-button.large {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.1rem;
+}
+
+/* Hero Visual */
+.hero-visual {
+  position: relative;
+  height: 500px;
+}
+
+.floating-elements {
+  position: relative;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
 }
 
-.post-item:hover .post-thumbnail img {
+.element {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--gradient);
+  opacity: 0.6;
+  animation: float 6s ease-in-out infinite;
+}
+
+.element-1 {
+  width: 100px;
+  height: 100px;
+  top: 20%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.element-2 {
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  right: 10%;
+  animation-delay: 2s;
+}
+
+.element-3 {
+  width: 80px;
+  height: 80px;
+  bottom: 30%;
+  left: 60%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* Section Styles */
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: var(--gradient);
+  border-radius: 1px;
+}
+
+.section-badge {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: var(--primary-color);
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+/* Projects Section */
+.projects-section {
+  position: relative;
+  padding: 6rem 0;
+  background: var(--background-dark);
+  overflow: hidden;
+}
+
+.projects-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(99, 102, 241, 0.5) 50%,
+    transparent 100%
+  );
+}
+
+.projects-section .section-header {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 3rem;
+}
+
+/* Gallery Filters */
+.gallery-filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  border-color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+/* Work Gallery - Masonry Layout */
+.work-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.gallery-item {
+  break-inside: avoid;
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+}
+
+.gallery-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.gallery-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.gallery-image {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.gallery-image img {
+  width: 100%;
+  height: auto;
+  min-height: 250px;
+  max-height: 400px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-image img {
   transform: scale(1.05);
 }
 
-.post-content {
-  padding: 1.25rem; /* Adjusted padding */
+.gallery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.3) 40%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+  opacity: 0;
+  transition: all 0.3s ease;
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+  align-items: flex-end;
+  padding: 2rem;
 }
 
-.post-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem; /* Adjusted margin */
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
 }
 
-.post-category-tag {
-  color: #888; /* Light gray for tag */
-  font-size: 0.75rem; /* Smaller font size */
-  font-weight: 500; /* Medium weight */
+.overlay-content {
+  width: 100%;
+  color: white;
+}
+
+.overlay-content .project-category {
+  background: rgba(99, 102, 241, 0.8);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em; /* Added letter spacing */
-  /* Removed background, padding, border-radius from original .post-tag */
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  display: inline-block;
 }
 
-.post-date {
-  color: #888; /* Consistent color with tag */
-  font-size: 0.75rem; /* Consistent font size with tag */
+.overlay-content .project-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
-/* Removed .post-title and .post-title .post-link styles */
-
-.post-main-title { /* Renamed from .post-subtitle */
-  margin: 0 0 0.75rem 0; /* Adjusted margin */
-  font-size: 1.25rem; /* Adjusted font size */
-  font-weight: 600; /* Adjusted font weight */
-  line-height: 1.3;
-  flex-grow: 1;
+.overlay-content .project-desc {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.post-main-title a {
-  color: #e0e0e0;
-  text-decoration: none;
-  transition: color 0.2s;
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-.post-main-title a:hover {
-  color: #fff;
+.tech-badge {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
 }
 
-.post-summary {
-  color: #aaa;
-  font-size: 0.9rem; /* Adjusted font size */
-  line-height: 1.5; /* Adjusted line height */
+.view-more {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  transition: color 0.3s ease;
+}
+
+.gallery-item:hover .view-more {
+  color: white;
+}
+
+/* Services Section */
+.services-section {
+  padding: 8rem 0;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.service-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover::before {
+  transform: scaleX(1);
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.service-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.service-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.service-description {
+  color: var(--text-secondary);
+  line-height: 1.6;
   margin: 0;
 }
 
-/* 标签网格 */
-.tags-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjust minmax for tag size */
-  gap: 1.5rem;
+/* About Section */
+.about-section {
+  padding: 8rem 0;
+  background: var(--background-light);
 }
 
-.tag-item {
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-text .section-badge {
+  margin-bottom: 1.5rem;
+}
+
+.about-text .section-title {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.about-description {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.about-image {
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.about-image img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.about-image:hover img {
+  transform: scale(1.05);
+}
+
+/* Contact CTA Section */
+.contact-cta-section {
+  padding: 8rem 0;
+  background: var(--surface-color);
+  text-align: center;
+}
+
+.cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.cta-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+}
+
+.cta-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Center content vertically */
-  text-align: center;
-  padding: 2rem 1rem; /* Increased padding */
-  background: #151515; /* Slightly darker tag item */
-  border: 1px solid #252525;
-  border-radius: 10px;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s;
-  min-height: 120px; /* Ensure consistent height */
+  gap: 1.5rem;
 }
 
-.tag-item:hover {
-  background: #1c1c1c;
-  border-color: #333;
-  transform: translateY(-3px);
+.contact-info {
+  color: var(--text-secondary);
 }
 
-.tag-link {
-  color: #d0d0d0; /* Lighter tag link */
-  font-size: 1.2rem; /* Larger tag link */
-  font-weight: 600;
+.contact-info a {
+  color: var(--primary-color);
   text-decoration: none;
-  margin-bottom: 0.5rem;
-  transition: color 0.2s;
+  transition: color 0.3s ease;
 }
 
-.tag-link:hover {
-  color: #fff;
+.contact-info a:hover {
+  color: var(--text-primary);
 }
 
-.tag-upper {
-  color: #777; /* Darker uppercase tag */
-  font-size: 0.75rem; /* Smaller uppercase tag */
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-/* 页脚样式 */
+/* Footer */
 .footer {
-  background: #080808; /* Even darker footer */
-  border-top: 1px solid #1f1f1f;
-  padding: 4rem 0 2rem; /* Increased top padding */
-  margin-top: 6rem; /* Increased margin from content */
+  background: var(--background-dark);
+  border-top: 1px solid var(--border-color);
+  padding: 4rem 0 2rem;
 }
 
 .footer-container {
@@ -481,111 +977,127 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
 }
 
 .footer-logo-section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
 }
 
 .footer-logo-text {
-  font-size: 2rem; /* Larger footer logo */
+  font-size: 2rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0 0 1rem 0;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .footer-description {
-  color: #999;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  max-width: 550px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 500px;
   margin: 0 auto;
 }
 
 .footer-social-links {
   display: flex;
   justify-content: center;
-  gap: 1rem; /* Reduced gap for a tighter look */
-  margin-bottom: 2.5rem;
+  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
 .social-icon {
-  display: inline-flex; /* Use flex for centering */
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px; /* Slightly larger icons */
-  height: 44px;
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
+  width: 48px;
+  height: 48px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
   border-radius: 50%;
-  color: #b0b0b0;
-  font-size: 0.9rem; /* Adjust if using text instead of SVGs */
-  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
   text-decoration: none;
-  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+  transition: all 0.3s ease;
 }
 
 .social-icon:hover {
-  background: #222;
-  border-color: #444;
-  color: #fff;
-  transform: scale(1.1);
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
 }
 
 .footer-bottom-text {
   padding-top: 2rem;
-  border-top: 1px solid #2a2a2a;
+  border-top: 1px solid var(--border-color);
   font-size: 0.9rem;
-  color: #777;
+  color: var(--text-muted);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .back-to-top-link {
-  color: #999;
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: color 0.3s ease;
 }
 
 .back-to-top-link:hover {
-  color: #fff;
+  color: var(--text-primary);
 }
 
-/* 响应式设计 */
-@media (max-width: 1024px) { /* Tablet and below */
-  .latest-posts-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns for latest posts */
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 3rem;
+  }
+  
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (max-width: 768px) { /* Mobile */
+@media (max-width: 768px) {
   .nav-container {
     padding: 0 1.5rem;
   }
+  
   .nav-links {
     gap: 1.5rem;
   }
-  .nav-links a {
-    font-size: 0.9rem;
+  
+  .container {
+    padding: 0 1.5rem;
   }
-  .main-content {
-    padding: 7rem 1.5rem 3rem;
+  
+  .hero-title {
+    font-size: 2.5rem;
   }
-  .section-header h2 {
-    font-size: 1.6rem;
+  
+  .hero-actions {
+    justify-content: center;
   }
-  .featured-posts-grid,
-  .latest-posts-grid {
-    grid-template-columns: 1fr; /* Single column for all posts */
+  
+  .services-grid {
+    grid-template-columns: 1fr;
   }
-  .tags-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
-  .tag-item {
-    padding: 1.5rem 0.75rem;
-  }
-  .footer-logo-text {
-    font-size: 1.8rem;
-  }
+  
   .footer-bottom-text {
     flex-direction: column;
     gap: 1rem;
@@ -593,29 +1105,119 @@ const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
 }
 
 @media (max-width: 480px) {
-  .logo {
-    font-size: 1.6rem;
-  }
   .nav-links {
-    display: none; /* Hide nav links on very small screens, consider a burger menu */
+    display: none;
   }
-  .main-content {
-    padding: 6rem 1rem 2rem;
+  
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
   }
-   .section-header h2 {
-    font-size: 1.4rem;
+  
+  .cta-button {
+    width: 100%;
+    justify-content: center;
   }
-  .post-subtitle {
-    font-size: 1.15rem;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
+
+/* Gallery Responsive Design */
+@media (max-width: 1024px) {
+  .work-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
   }
-  .post-summary {
-    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .work-gallery {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
-  .tags-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  
+  .gallery-filters {
+    gap: 0.5rem;
   }
-  .tag-link {
-    font-size: 1rem;
+  
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .gallery-overlay {
+    padding: 1.5rem;
+  }
+  
+  .overlay-content .project-title {
+    font-size: 1.25rem;
   }
 }
 </style>
+
+<script>
+  // Gallery Filter Functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const filter = this.getAttribute('data-filter');
+        
+        // Update active button
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Filter gallery items
+        galleryItems.forEach(item => {
+          const category = item.getAttribute('data-category');
+          
+          if (filter === 'all' || category === filter) {
+            item.style.display = 'block';
+            item.style.animation = 'fadeInUp 0.5s ease forwards';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    // Add fade in animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  });
+</script>

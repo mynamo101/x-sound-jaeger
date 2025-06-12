@@ -1,0 +1,796 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Cinema Soundscapes - X-Sound Studio">
+  <!-- Audio Player Hero Section -->
+  <section class="audio-hero">
+    <div class="container">
+      <div class="audio-player-section">
+        <div class="project-info">
+          <div class="project-meta">
+            <span class="category">视频音效展示</span>
+            <span class="year">2024</span>
+          </div>
+          <h1 class="project-title">Cinema Soundscapes</h1>
+          <p class="project-description">
+            专业电影级音效设计作品集，包含环境音、动作音效、情感配乐等多种类型。为影视制作提供沉浸式听觉体验。
+          </p>
+        </div>
+        
+        <!-- Audio Player -->
+        <div class="audio-player">
+          <div class="player-container">
+            <div class="album-art">
+              <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=600&fit=crop&crop=center" alt="Cinema Soundscapes Cover" />
+              <div class="play-button">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                  <path d="M8 5v14l11-7z" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+            
+            <div class="player-controls">
+              <div class="track-info">
+                <h3 class="track-title">电影配乐集锦</h3>
+                <p class="track-artist">X-Sound Studio</p>
+              </div>
+              
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+                <div class="progress-thumb"></div>
+              </div>
+              
+              <div class="time-display">
+                <span class="current-time">0:00</span>
+                <span class="total-time">3:45</span>
+              </div>
+              
+              <div class="control-buttons">
+                <button class="control-btn prev">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M19 20L9 12L19 4V20Z" fill="currentColor"/>
+                    <path d="M5 19V5" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+                <button class="control-btn play-pause">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M8 5v14l11-7z" fill="currentColor"/>
+                  </svg>
+                </button>
+                <button class="control-btn next">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 4L15 12L5 20V4Z" fill="currentColor"/>
+                    <path d="M19 5V19" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Specifications -->
+  <section class="specifications">
+    <div class="container">
+      <h2 class="spec-title">技术规格</h2>
+      <div class="spec-grid">
+        <div class="spec-group">
+          <h3>音频格式</h3>
+          <div class="spec-items">
+            <div class="spec-item">
+              <span class="spec-label">文件格式</span>
+              <span class="spec-value">WAV, AIFF, MP3</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">采样率</span>
+              <span class="spec-value">44.1kHz - 96kHz</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">位深度</span>
+              <span class="spec-value">16-bit / 24-bit</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">声道</span>
+              <span class="spec-value">单声道 / 立体声 / 5.1环绕</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="spec-group">
+          <h3>制作工具</h3>
+          <div class="spec-items">
+            <div class="spec-item">
+              <span class="spec-label">主要软件</span>
+              <span class="spec-value">Pro Tools, Logic Pro</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">音源库</span>
+              <span class="spec-value">Kontakt, Omnisphere</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">效果器</span>
+              <span class="spec-value">Waves, FabFilter</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">录音设备</span>
+              <span class="spec-value">Neumann U87, Zoom H6</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="spec-group">
+          <h3>项目详情</h3>
+          <div class="spec-items">
+            <div class="spec-item">
+              <span class="spec-label">总时长</span>
+              <span class="spec-value">15分钟</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">音效数量</span>
+              <span class="spec-value">85个独立音效</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">使用许可</span>
+              <span class="spec-value">商业使用授权</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">交付时间</span>
+              <span class="spec-value">2-3个工作日</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Track List -->
+  <section class="tracklist">
+    <div class="container">
+      <h2 class="tracklist-title">音效清单</h2>
+      <div class="tracks">
+        <div class="track-item">
+          <div class="track-number">01</div>
+          <div class="track-details">
+            <h4 class="track-name">悬疑氛围音效</h4>
+            <p class="track-description">低频震颤配合细微环境音，营造紧张悬疑氛围</p>
+          </div>
+          <div class="track-duration">2:15</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="track-item">
+          <div class="track-number">02</div>
+          <div class="track-details">
+            <h4 class="track-name">动作场面音效</h4>
+            <p class="track-description">爆炸、枪声、打斗音效组合，适用于动作场景</p>
+          </div>
+          <div class="track-duration">1:45</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="track-item">
+          <div class="track-number">03</div>
+          <div class="track-details">
+            <h4 class="track-name">情感配乐</h4>
+            <p class="track-description">温柔钢琴配合弦乐，表达深层情感</p>
+          </div>
+          <div class="track-duration">3:20</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="track-item">
+          <div class="track-number">04</div>
+          <div class="track-details">
+            <h4 class="track-name">科幻环境音</h4>
+            <p class="track-description">未来科技感环境音，适用于科幻题材</p>
+          </div>
+          <div class="track-duration">2:45</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download/Contact Section -->
+  <section class="download-section">
+    <div class="container">
+      <div class="download-card">
+        <h2>获取完整音效包</h2>
+        <p>包含所有高质量音效文件，支持商业使用授权</p>
+        <div class="download-actions">
+          <button class="download-btn primary">立即下载 - ¥299</button>
+          <button class="contact-btn secondary">定制服务咨询</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation -->
+  <section class="project-navigation">
+    <div class="container">
+      <div class="nav-links">
+        <a href="/projects/game-audio-arsenal" class="nav-link prev">
+          <span class="nav-label">上一个项目</span>
+          <span class="nav-title">Game Audio Arsenal</span>
+        </a>
+        <a href="/" class="nav-link home">
+          <span class="nav-icon">⌂</span>
+          <span class="nav-title">返回首页</span>
+        </a>
+        <a href="/projects/urban-rain-asmr" class="nav-link next">
+          <span class="nav-label">下一个项目</span>
+          <span class="nav-title">Urban Rain ASMR</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Audio Hero Section */
+  .audio-hero {
+    background: #0a0a0a;
+    color: white;
+    padding: 8rem 0 4rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .audio-player-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .project-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .category {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .year {
+    color: #888;
+  }
+
+  .project-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+
+  .project-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #b0b0b0;
+    max-width: 500px;
+  }
+
+  /* Audio Player */
+  .audio-player {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+  }
+
+  .player-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .album-art {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 1rem;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .album-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    opacity: 0.9;
+  }
+
+  .play-button:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .track-info {
+    text-align: center;
+  }
+
+  .track-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .track-artist {
+    color: #888;
+    font-size: 0.95rem;
+  }
+
+  .progress-bar {
+    position: relative;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 3px;
+    width: 35%;
+    position: relative;
+  }
+
+  .progress-thumb {
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .time-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #888;
+  }
+
+  .control-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .control-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .control-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .control-btn.play-pause {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Specifications */
+  .specifications {
+    background: #111111;
+    color: white;
+    padding: 6rem 0;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .spec-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .spec-group {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .spec-group h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #3b82f6;
+  }
+
+  .spec-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .spec-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .spec-item:last-child {
+    border-bottom: none;
+  }
+
+  .spec-label {
+    font-weight: 500;
+    color: #b0b0b0;
+  }
+
+  .spec-value {
+    font-weight: 600;
+    color: white;
+  }
+
+  /* Track List */
+  .tracklist {
+    background: #0a0a0a;
+    color: white;
+    padding: 6rem 0;
+  }
+
+  .tracklist-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .tracks {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .track-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .track-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .track-number {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #3b82f6;
+    min-width: 40px;
+  }
+
+  .track-details {
+    flex: 1;
+  }
+
+  .track-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .track-description {
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  .track-duration {
+    color: #888;
+    font-size: 0.95rem;
+    min-width: 50px;
+  }
+
+  .track-play {
+    background: none;
+    border: 2px solid #3b82f6;
+    color: #3b82f6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .track-play:hover {
+    background: #3b82f6;
+    color: white;
+  }
+
+  /* Download Section */
+  .download-section {
+    background: #111111;
+    color: white;
+    padding: 6rem 0;
+  }
+
+  .download-card {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .download-card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .download-card p {
+    color: #b0b0b0;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+
+  .download-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .download-btn,
+  .contact-btn {
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .download-btn.primary {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border: none;
+  }
+
+  .download-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+  }
+
+  .contact-btn.secondary {
+    background: transparent;
+    color: #3b82f6;
+    border-color: #3b82f6;
+  }
+
+  .contact-btn.secondary:hover {
+    background: #3b82f6;
+    color: white;
+  }
+
+  /* Navigation */
+  .project-navigation {
+    padding: 4rem 0;
+    background: #0a0a0a;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-links {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-link:hover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .nav-link.home {
+    align-items: center;
+    text-align: center;
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  .nav-link.next {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .nav-label {
+    font-size: 0.875rem;
+    opacity: 0.6;
+  }
+
+  .nav-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
+
+  .nav-icon {
+    font-size: 1.5rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .audio-player-section {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .project-title {
+      font-size: 2rem;
+    }
+
+    .spec-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-links {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .nav-link.next {
+      text-align: left;
+      align-items: flex-start;
+    }
+
+    .download-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .track-item {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .track-details {
+      min-width: 200px;
+    }
+  }
+</style>
+
+<script>
+  // Simple audio player functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const playButtons = document.querySelectorAll('.play-button, .control-btn.play-pause, .track-play');
+    let isPlaying = false;
+    
+    playButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        
+        // Update play button icons
+        const playIcons = document.querySelectorAll('.play-button svg, .control-btn.play-pause svg');
+        playIcons.forEach(icon => {
+          if (isPlaying) {
+            icon.innerHTML = '<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" fill="currentColor"/>';
+          } else {
+            icon.innerHTML = '<path d="M8 5v14l11-7z" fill="currentColor"/>';
+          }
+        });
+        
+        // Simulate progress
+        if (isPlaying) {
+          const progressFill = document.querySelector('.progress-fill');
+          let progress = 35;
+          const interval = setInterval(() => {
+            if (!isPlaying || progress >= 100) {
+              clearInterval(interval);
+              if (progress >= 100) {
+                progress = 0;
+                isPlaying = false;
+                playIcons.forEach(icon => {
+                  icon.innerHTML = '<path d="M8 5v14l11-7z" fill="currentColor"/>';
+                });
+              }
+            } else {
+              progress += 0.5;
+              progressFill.style.width = progress + '%';
+            }
+          }, 100);
+        }
+      });
+    });
+  });
+</script>

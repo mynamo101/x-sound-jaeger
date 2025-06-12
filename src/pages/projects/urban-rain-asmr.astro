@@ -1,0 +1,908 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Urban Rain ASMR - X-Sound Studio">
+  <!-- Audio Player Hero Section -->
+  <section class="audio-hero">
+    <div class="container">
+      <div class="audio-player-section">
+        <div class="project-info">
+          <div class="project-meta">
+            <span class="category">ASMR类型</span>
+            <span class="year">2024</span>
+          </div>
+          <h1 class="project-title">Urban Rain ASMR</h1>
+          <p class="project-description">
+            高品质ASMR音频作品，包含雨声、自然白噪音、放松冥想音效等。采用双耳录音技术，带来极致的沉浸感受。
+          </p>
+        </div>
+        
+        <!-- Audio Player -->
+        <div class="audio-player">
+          <div class="player-container">
+            <div class="album-art">
+              <img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=600&h=600&fit=crop&crop=center" alt="Urban Rain ASMR Cover" />
+              <div class="play-button">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                  <path d="M8 5v14l11-7z" fill="currentColor"/>
+                </svg>
+              </div>
+            </div>
+            
+            <div class="player-controls">
+              <div class="track-info">
+                <h3 class="track-title">城市雨声冥想</h3>
+                <p class="track-artist">X-Sound Studio</p>
+              </div>
+              
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+                <div class="progress-thumb"></div>
+              </div>
+              
+              <div class="time-display">
+                <span class="current-time">0:00</span>
+                <span class="total-time">45:00</span>
+              </div>
+              
+              <div class="control-buttons">
+                <button class="control-btn prev">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M19 20L9 12L19 4V20Z" fill="currentColor"/>
+                    <path d="M5 19V5" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+                <button class="control-btn play-pause">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M8 5v14l11-7z" fill="currentColor"/>
+                  </svg>
+                </button>
+                <button class="control-btn next">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 4L15 12L5 20V4Z" fill="currentColor"/>
+                    <path d="M19 5V19" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Specifications -->
+  <section class="specifications">
+    <div class="container">
+      <h2 class="spec-title">技术规格</h2>
+      <div class="spec-grid">
+        <div class="spec-group">
+          <h3>音频格式</h3>
+          <div class="spec-items">
+            <div class="spec-item">
+              <span class="spec-label">文件格式</span>
+              <span class="spec-value">FLAC, WAV, MP3 320kbps</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">采样率</span>
+              <span class="spec-value">48kHz</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">位深度</span>
+              <span class="spec-value">24-bit</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">录音技术</span>
+              <span class="spec-value">双耳立体声 (Binaural)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="spec-group">
+          <h3>录制设备</h3>
+          <div class="spec-items">
+            <div class="spec-item">
+              <span class="spec-label">麦克风</span>
+              <span class="spec-value">Neumann KU100 仿真头</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">录音机</span>
+              <span class="spec-value">Zoom H6 便携录音机</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">监听设备</span>
+              <span class="spec-value">Sennheiser HD800S</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">降噪处理</span>
+              <span class="spec-value">iZotope RX Audio Suite</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="spec-group">
+          <h3>内容详情</h3>
+          <div class="spec-items">
+            <div class="spec-item">
+              <span class="spec-label">总时长</span>
+              <span class="spec-value">45分钟</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">场景数量</span>
+              <span class="spec-value">6个不同雨声场景</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">循环播放</span>
+              <span class="spec-value">完美无缝循环</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">适用平台</span>
+              <span class="spec-value">YouTube, Spotify, 播客</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Track List -->
+  <section class="tracklist">
+    <div class="container">
+      <h2 class="tracklist-title">音效场景</h2>
+      <div class="tracks">
+        <div class="track-item">
+          <div class="track-number">01</div>
+          <div class="track-details">
+            <h4 class="track-name">窗边雨滴声</h4>
+            <p class="track-description">温柔的雨滴敲击窗户玻璃，配合远处雷声</p>
+          </div>
+          <div class="track-duration">8:30</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="track-item">
+          <div class="track-number">02</div>
+          <div class="track-details">
+            <h4 class="track-name">屋檐水滴</h4>
+            <p class="track-description">规律的屋檐滴水声，营造安静祥和氛围</p>
+          </div>
+          <div class="track-duration">7:15</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="track-item">
+          <div class="track-number">03</div>
+          <div class="track-details">
+            <h4 class="track-name">城市街道雨声</h4>
+            <p class="track-description">雨水冲刷马路的声音，偶有汽车经过</p>
+          </div>
+          <div class="track-duration">9:45</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="track-item">
+          <div class="track-number">04</div>
+          <div class="track-details">
+            <h4 class="track-name">雨后滴答声</h4>
+            <p class="track-description">雨停后的余韵，水滴从树叶落下</p>
+          </div>
+          <div class="track-duration">6:20</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="track-item">
+          <div class="track-number">05</div>
+          <div class="track-details">
+            <h4 class="track-name">雷雨交响</h4>
+            <p class="track-description">激烈雷雨声渐渐平息，适合深度放松</p>
+          </div>
+          <div class="track-duration">8:45</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="track-item">
+          <div class="track-number">06</div>
+          <div class="track-details">
+            <h4 class="track-name">冥想雨声</h4>
+            <p class="track-description">专为冥想设计的纯净雨声，无杂音</p>
+          </div>
+          <div class="track-duration">4:25</div>
+          <button class="track-play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 5v14l11-7z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASMR Benefits -->
+  <section class="benefits-section">
+    <div class="container">
+      <h2 class="benefits-title">ASMR的益处</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">😴</div>
+          <h3>改善睡眠</h3>
+          <p>舒缓的雨声有助于放松身心，提高睡眠质量</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🧠</div>
+          <h3>减轻压力</h3>
+          <p>自然音效能有效降低压力荷尔蒙水平</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🎯</div>
+          <h3>提升专注</h3>
+          <p>白噪音效果帮助屏蔽干扰，提高专注力</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🧘</div>
+          <h3>冥想辅助</h3>
+          <p>为冥想和正念练习提供完美的背景声音</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download Section -->
+  <section class="download-section">
+    <div class="container">
+      <div class="download-card">
+        <h2>获取完整ASMR音频集</h2>
+        <p>高品质双耳立体声录音，支持所有主流音频格式</p>
+        <div class="download-actions">
+          <button class="download-btn primary">立即下载 - ¥199</button>
+          <button class="contact-btn secondary">订阅更多ASMR内容</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation -->
+  <section class="project-navigation">
+    <div class="container">
+      <div class="nav-links">
+        <a href="/projects/cinema-soundscapes" class="nav-link prev">
+          <span class="nav-label">上一个项目</span>
+          <span class="nav-title">Cinema Soundscapes</span>
+        </a>
+        <a href="/" class="nav-link home">
+          <span class="nav-icon">⌂</span>
+          <span class="nav-title">返回首页</span>
+        </a>
+        <a href="/projects/electronic-beats" class="nav-link next">
+          <span class="nav-label">下一个项目</span>
+          <span class="nav-title">Electronic Beats Pack</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Audio Hero Section */
+  .audio-hero {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+    color: white;
+    padding: 8rem 0 4rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .audio-player-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .project-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .category {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .year {
+    color: #888;
+  }
+
+  .project-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+
+  .project-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #b0b0b0;
+    max-width: 500px;
+  }
+
+  /* Audio Player */
+  .audio-player {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+  }
+
+  .player-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .album-art {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 1rem;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .album-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: all 0.3s ease;
+    opacity: 0.9;
+  }
+
+  .play-button:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .track-info {
+    text-align: center;
+  }
+
+  .track-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .track-artist {
+    color: #888;
+    font-size: 0.95rem;
+  }
+
+  .progress-bar {
+    position: relative;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8b5cf6, #a855f7);
+    border-radius: 3px;
+    width: 15%;
+    position: relative;
+  }
+
+  .progress-thumb {
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .time-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #888;
+  }
+
+  .control-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .control-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .control-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .control-btn.play-pause {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Specifications */
+  .specifications {
+    background: #111111;
+    color: white;
+    padding: 6rem 0;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .spec-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .spec-group {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .spec-group h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #8b5cf6;
+  }
+
+  .spec-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .spec-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .spec-item:last-child {
+    border-bottom: none;
+  }
+
+  .spec-label {
+    font-weight: 500;
+    color: #b0b0b0;
+  }
+
+  .spec-value {
+    font-weight: 600;
+    color: white;
+  }
+
+  /* Track List */
+  .tracklist {
+    background: #0a0a0a;
+    color: white;
+    padding: 6rem 0;
+  }
+
+  .tracklist-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .tracks {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .track-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .track-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .track-number {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #8b5cf6;
+    min-width: 40px;
+  }
+
+  .track-details {
+    flex: 1;
+  }
+
+  .track-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .track-description {
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  .track-duration {
+    color: #888;
+    font-size: 0.95rem;
+    min-width: 50px;
+  }
+
+  .track-play {
+    background: none;
+    border: 2px solid #8b5cf6;
+    color: #8b5cf6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .track-play:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  /* Benefits Section */
+  .benefits-section {
+    background: #111111;
+    color: white;
+    padding: 6rem 0;
+  }
+
+  .benefits-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .benefit-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+  }
+
+  .benefit-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .benefit-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .benefit-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #8b5cf6;
+  }
+
+  .benefit-card p {
+    color: #b0b0b0;
+    line-height: 1.6;
+  }
+
+  /* Download Section */
+  .download-section {
+    background: #0a0a0a;
+    color: white;
+    padding: 6rem 0;
+  }
+
+  .download-card {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .download-card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .download-card p {
+    color: #b0b0b0;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+
+  .download-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .download-btn,
+  .contact-btn {
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .download-btn.primary {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    color: white;
+    border: none;
+  }
+
+  .download-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+  }
+
+  .contact-btn.secondary {
+    background: transparent;
+    color: #8b5cf6;
+    border-color: #8b5cf6;
+  }
+
+  .contact-btn.secondary:hover {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  /* Navigation */
+  .project-navigation {
+    padding: 4rem 0;
+    background: #111111;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-links {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .nav-link:hover {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .nav-link.home {
+    align-items: center;
+    text-align: center;
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  .nav-link.next {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .nav-label {
+    font-size: 0.875rem;
+    opacity: 0.6;
+  }
+
+  .nav-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+  }
+
+  .nav-icon {
+    font-size: 1.5rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .audio-player-section {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .project-title {
+      font-size: 2rem;
+    }
+
+    .spec-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .benefits-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-links {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .nav-link.next {
+      text-align: left;
+      align-items: flex-start;
+    }
+
+    .download-actions {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .track-item {
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .track-details {
+      min-width: 200px;
+    }
+  }
+</style>
+
+<script>
+  // Simple audio player functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const playButtons = document.querySelectorAll('.play-button, .control-btn.play-pause, .track-play');
+    let isPlaying = false;
+    
+    playButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        
+        // Update play button icons
+        const playIcons = document.querySelectorAll('.play-button svg, .control-btn.play-pause svg');
+        playIcons.forEach(icon => {
+          if (isPlaying) {
+            icon.innerHTML = '<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" fill="currentColor"/>';
+          } else {
+            icon.innerHTML = '<path d="M8 5v14l11-7z" fill="currentColor"/>';
+          }
+        });
+        
+        // Simulate progress
+        if (isPlaying) {
+          const progressFill = document.querySelector('.progress-fill');
+          let progress = 15;
+          const interval = setInterval(() => {
+            if (!isPlaying || progress >= 100) {
+              clearInterval(interval);
+              if (progress >= 100) {
+                progress = 0;
+                isPlaying = false;
+                playIcons.forEach(icon => {
+                  icon.innerHTML = '<path d="M8 5v14l11-7z" fill="currentColor"/>';
+                });
+              }
+            } else {
+              progress += 0.2;
+              progressFill.style.width = progress + '%';
+            }
+          }, 200);
+        }
+      });
+    });
+  });
+</script>
