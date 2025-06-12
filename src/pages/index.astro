@@ -1,0 +1,635 @@
+---
+import Layout from '../layouts/Layout.astro';
+// import ImageCarousel from '../components/ImageCarousel.astro'; // 移除轮播
+import HeroPost from '../components/HeroPost.astro'; // 导入新的 HeroPost 组件
+
+// 首页静态假数据，后续可用 Markdown 动态生成
+interface Post {
+  title: string;
+  date: string;
+  tag: string;
+  summary: string;
+  link: string;
+  image?: string; // 为 HeroPost 添加图片属性
+}
+
+const featuredPosts: Post[] = [
+  {
+    title: 'Maximizing Work Productivity',
+    date: '2025-03-27',
+    tag: 'Business',
+    summary: 'Tincidunt sit id maecenas vitae felis. Volutpat porta lectus malesuada ornare suspendisse eu vestibulum massa. Id etiam in molestie cras bibendum.',
+    link: '#',
+    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&h=800&fit=crop' // 添加特色图片
+  },
+  {
+    title: 'The Ultimate Adventure Guide',
+    date: '2025-03-26',
+    tag: 'Lifestyle',
+    summary: 'Phasellus sollicitudin ut pellentesque vitae eleifend diam rutrum elementum libero. Mauris nulla sollicitudin massa donec ac interdum sagittis egestas.',
+    link: '#',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop'
+  },
+  {
+    title: 'Power of Artificial Intelligence',
+    date: '2025-03-24',
+    tag: 'Business',
+    summary: 'Lectus suspendisse eleifend nunc vulputate aliquam sit. Venenatis ac mattis vel ultricies platea mauris. Dignissim malesuada pharetra ut quis ornare sollicitudin feugiat amet vitae.',
+    link: '#',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop'
+  },
+  {
+    title: 'Traveling on a Budget',
+    date: '2025-03-10',
+    tag: 'Travel',
+    summary: 'Pretium urna viverra ipsum diam lacus nunc a lobortis. Quis lectus nisi tristique mi sit purus sed nunc. Quam ridiculus aliquet in vulputate euismod fusce nisl vel.',
+    link: '#',
+    image: 'https://images.unsplash.com/photo-1486312338219-ce68e2c6b7a4?w=400&h=250&fit=crop'
+  }
+];
+
+const latestPosts: Post[] = [
+  {
+    title: 'Unleash Your Creative Potential',
+    date: '2025-03-31',
+    tag: 'Creative',
+    summary: 'Nec sed pharetra scelerisque blandit. Vitae commodo integer nibh etiam. Iaculis nunc dui interdum donec sodales. Curabitur eget tincidunt amet et nunc. Amet id faucibus ipsum vitae.',
+    link: '#',
+    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=250&fit=crop'
+  },
+  {
+    title: 'Uncovering Hidden & Special Places',
+    date: '2025-03-30',
+    tag: 'Travel',
+    summary: 'Tristique hendrerit massa adipiscing tincidunt sed. Ultrices vitae vel maecenas tincidunt semper neque auctor porttitor quis. Turpis et malesuada metus malesuada eu integer eleifend.',
+    link: '#',
+    image: 'https://images.unsplash.com/photo-1522199755839-a2bacb67c546?w=400&h=250&fit=crop'
+  },
+  {
+    title: 'Exploring the Creative Boundaries',
+    date: '2025-03-29',
+    tag: 'Creative',
+    summary: 'Lectus suspendisse eleifend nunc vulputate aliquam sit. Venenatis ac mattis vel ultricies platea mauris. Dignissim malesuada pharetra ut quis ornare sollicitudin feugiat amet vitae.',
+    link: '#',
+    image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=400&h=250&fit=crop'
+  },
+  {
+    title: 'Unlocking Creativity of Design',
+    date: '2025-03-28',
+    tag: 'Design',
+    summary: 'Mi eu mauris vitae euismod ligula sed. Amet sed pellentesque vulputate sed. Velit donec libero eget libero malesuada lacus vel venenatis.',
+    link: '#',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=250&fit=crop'
+  }
+];
+
+const tags: string[] = [
+  'Business', 'Creative', 'Design', 'Fashion', 'Fitness', 'Health', 'Lifestyle', 'Travel'
+];
+
+const heroPostData = featuredPosts[0]; // 取第一篇精选文章作为英雄文章
+const otherFeaturedPosts = featuredPosts.slice(1); // 其他精选文章
+---
+
+<Layout>
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="logo-link">
+        <h1 class="logo">Elysian</h1>
+      </a>
+      <div class="nav-links">
+        <a href="#">Archive</a>
+        <a href="#">Tags</a>
+        <a href="#">Authors</a>
+        <a href="#">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <!-- Hero Post Section -->
+    <HeroPost post={heroPostData} />
+
+    <!-- 精选文章区域 (排除已在 Hero 中显示的文章) -->
+    {otherFeaturedPosts.length > 0 && (
+      <section class="section featured-posts-section">
+        <div class="section-header">
+          <h2>Discover Our Featured Posts</h2>
+          <span class="post-count">{otherFeaturedPosts.length} Posts</span>
+        </div>
+        
+        <div class="posts-grid featured-posts-grid">
+          {otherFeaturedPosts.map((post) => (
+            <article class="post-item">
+              <div class="post-thumbnail">
+                <a href={post.link}>
+                  <img src={post.image ? post.image : 'https://via.placeholder.com/400x250/1a1a1a/333333?text=Fallback'} alt={post.title} loading="lazy" />
+                </a>
+              </div>
+              <div class="post-content">
+                <div class="post-meta">
+                  <span class="post-tag">{post.tag}</span>
+                  <span class="post-date">| {post.date}</span>
+                </div>
+                <h3 class="post-title">
+                  <a href={post.link} class="post-link">{post.title.toUpperCase()}</a>
+                </h3>
+                <h4 class="post-subtitle">
+                  <a href={post.link}>{post.title}</a>
+                </h4>
+                <p class="post-summary">{post.summary.substring(0,100)}...</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 最新文章区域 -->
+    <section class="section latest-posts-section">
+      <div class="section-header">
+        <h2>Read Our Latest Posts</h2>
+        <span class="post-count">{latestPosts.length} Posts</span>
+      </div>
+      
+      <div class="posts-grid latest-posts-grid">
+        {latestPosts.map((post) => (
+          <article class="post-item">
+             <div class="post-thumbnail">
+                <a href={post.link}>
+                  <img src={post.image ? post.image : 'https://via.placeholder.com/400x250/1a1a1a/333333?text=Fallback'} alt={post.title} loading="lazy" />
+                </a>
+              </div>
+            <div class="post-content">
+              <div class="post-meta">
+                <span class="post-tag">{post.tag}</span>
+                <span class="post-date">| {post.date}</span>
+              </div>
+              <h3 class="post-title">
+                <a href={post.link} class="post-link">{post.title.toUpperCase()}</a>
+              </h3>
+              <h4 class="post-subtitle">
+                <a href={post.link}>{post.title}</a>
+              </h4>
+              <p class="post-summary">{post.summary.substring(0,100)}...</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- 标签浏览区域 -->
+    <section class="section tags-section">
+      <div class="section-header">
+        <h2>Browse by Tags</h2>
+        <span class="post-count">{tags.length} Tags</span>
+      </div>
+      
+      <div class="tags-grid">
+        {tags.map((tag) => (
+          <div class="tag-item">
+            <a href="#" class="tag-link">{tag}</a>
+            <span class="tag-upper">{tag.toUpperCase()}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-logo-section">
+        <h3 class="footer-logo-text">Elysian</h3>
+        <p class="footer-description">Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.</p>
+      </div>
+      
+      <div class="footer-social-links">
+        <a href="#" aria-label="Facebook" class="social-icon">FB</a>
+        <a href="#" aria-label="Twitter" class="social-icon">TW</a>
+        <a href="#" aria-label="Instagram" class="social-icon">IG</a>
+        <a href="#" aria-label="LinkedIn" class="social-icon">LI</a>
+        <a href="#" aria-label="Pinterest" class="social-icon">PI</a>
+      </div>
+      
+      <div class="footer-bottom-text">
+        <p>© 2025 ELYSIAN. ALL RIGHTS RESERVED.</p>
+        <a href="#top" class="back-to-top-link">Back to top &uarr;</a>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+/* 导航栏样式 */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 10, 10, 0.85); /* Slightly more transparent */
+  backdrop-filter: blur(12px); /* Increased blur */
+  border-bottom: 1px solid #1f1f1f; /* Darker border */
+  z-index: 1000; /* Ensure navbar is on top */
+  padding: 0.75rem 0; /* Reduced padding */
+}
+
+.nav-container {
+  max-width: 1300px; /* Wider container */
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-link {
+  text-decoration: none;
+}
+
+.logo {
+  font-size: 1.8rem; /* Slightly larger logo */
+  font-weight: 700; /* Bolder logo */
+  color: #fff;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem; /* Increased gap */
+}
+
+.nav-links a {
+  color: #b0b0b0; /* Lighter gray for links */
+  text-decoration: none;
+  font-weight: 500; /* Medium weight */
+  font-size: 0.95rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+/* 主要内容样式 */
+.main-content {
+  max-width: 1200px; /* Wider main content for a more spacious feel */
+  margin: 0 auto;
+  padding: 8rem 2rem 4rem; /* Adjusted top padding for fixed navbar */
+  min-height: 100vh;
+}
+
+/* 区块样式 */
+.section {
+  margin-bottom: 5rem; /* Increased spacing between sections */
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between; /* Align title left, count right */
+  align-items: center;
+  margin-bottom: 2.5rem; /* Increased margin */
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #2a2a2a; /* Slightly lighter border */
+}
+
+.section-header h2 {
+  font-size: 1.8rem; /* Larger section titles */
+  font-weight: 600;
+  color: #e0e0e0; /* Lighter title color */
+  margin: 0;
+}
+
+.post-count {
+  background: #1c1c1c; /* Darker background for count */
+  color: #999;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* 文章网格 (通用) */
+.posts-grid {
+  display: grid;
+  gap: 2.5rem; /* Gap between post items */
+}
+
+/* 精选文章网格 - 2列 */
+.featured-posts-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 最新文章网格 - 3列 */
+.latest-posts-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* 文章项目 */
+.post-item {
+  background-color: #121212; /* Darker post item background */
+  border-radius: 12px; /* Rounded corners */
+  overflow: hidden; /* To contain image within rounded corners */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.post-thumbnail {
+  width: 100%;
+  aspect-ratio: 16 / 10; /* Maintain aspect ratio for images */
+  overflow: hidden;
+  background-color: #1a1a1a; /* Placeholder background for image area */
+}
+
+.post-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.post-item:hover .post-thumbnail img {
+  transform: scale(1.05);
+}
+
+.post-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allow content to fill space */
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.post-tag {
+  color: #a0a0a0; /* Lighter tag color */
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  font-size: 0.75rem;
+}
+
+.post-date {
+  color: #777;
+}
+
+.post-title {
+  margin: 0.5rem 0 0.2rem 0;
+  font-size: 0.8rem; /* Smaller all-caps title */
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.post-title .post-link {
+  color: #999; /* Subdued color for all-caps title */
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.post-title .post-link:hover {
+  color: #ccc;
+}
+
+.post-subtitle {
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem; /* Slightly smaller subtitle */
+  font-weight: 600; /* Bolder subtitle */
+  line-height: 1.35;
+  flex-grow: 1; /* Allow subtitle to take available space */
+}
+
+.post-subtitle a {
+  color: #e0e0e0; /* Lighter subtitle text */
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.post-subtitle a:hover {
+  color: #fff;
+}
+
+.post-summary {
+  color: #aaa;
+  font-size: 0.95rem; /* Slightly smaller summary */
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 标签网格 */
+.tags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Adjust minmax for tag size */
+  gap: 1.5rem;
+}
+
+.tag-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  text-align: center;
+  padding: 2rem 1rem; /* Increased padding */
+  background: #151515; /* Slightly darker tag item */
+  border: 1px solid #252525;
+  border-radius: 10px;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  min-height: 120px; /* Ensure consistent height */
+}
+
+.tag-item:hover {
+  background: #1c1c1c;
+  border-color: #333;
+  transform: translateY(-3px);
+}
+
+.tag-link {
+  color: #d0d0d0; /* Lighter tag link */
+  font-size: 1.2rem; /* Larger tag link */
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s;
+}
+
+.tag-link:hover {
+  color: #fff;
+}
+
+.tag-upper {
+  color: #777; /* Darker uppercase tag */
+  font-size: 0.75rem; /* Smaller uppercase tag */
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* 页脚样式 */
+.footer {
+  background: #080808; /* Even darker footer */
+  border-top: 1px solid #1f1f1f;
+  padding: 4rem 0 2rem; /* Increased top padding */
+  margin-top: 6rem; /* Increased margin from content */
+}
+
+.footer-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+.footer-logo-section {
+  margin-bottom: 2.5rem;
+}
+
+.footer-logo-text {
+  font-size: 2rem; /* Larger footer logo */
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 1rem 0;
+}
+
+.footer-description {
+  color: #999;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.footer-social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem; /* Reduced gap for a tighter look */
+  margin-bottom: 2.5rem;
+}
+
+.social-icon {
+  display: inline-flex; /* Use flex for centering */
+  align-items: center;
+  justify-content: center;
+  width: 44px; /* Slightly larger icons */
+  height: 44px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 50%;
+  color: #b0b0b0;
+  font-size: 0.9rem; /* Adjust if using text instead of SVGs */
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.social-icon:hover {
+  background: #222;
+  border-color: #444;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.footer-bottom-text {
+  padding-top: 2rem;
+  border-top: 1px solid #2a2a2a;
+  font-size: 0.9rem;
+  color: #777;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-to-top-link {
+  color: #999;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-to-top-link:hover {
+  color: #fff;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) { /* Tablet and below */
+  .latest-posts-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for latest posts */
+  }
+}
+
+@media (max-width: 768px) { /* Mobile */
+  .nav-container {
+    padding: 0 1.5rem;
+  }
+  .nav-links {
+    gap: 1.5rem;
+  }
+  .nav-links a {
+    font-size: 0.9rem;
+  }
+  .main-content {
+    padding: 7rem 1.5rem 3rem;
+  }
+  .section-header h2 {
+    font-size: 1.6rem;
+  }
+  .featured-posts-grid,
+  .latest-posts-grid {
+    grid-template-columns: 1fr; /* Single column for all posts */
+  }
+  .tags-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  .tag-item {
+    padding: 1.5rem 0.75rem;
+  }
+  .footer-logo-text {
+    font-size: 1.8rem;
+  }
+  .footer-bottom-text {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.6rem;
+  }
+  .nav-links {
+    display: none; /* Hide nav links on very small screens, consider a burger menu */
+  }
+  .main-content {
+    padding: 6rem 1rem 2rem;
+  }
+   .section-header h2 {
+    font-size: 1.4rem;
+  }
+  .post-subtitle {
+    font-size: 1.15rem;
+  }
+  .post-summary {
+    font-size: 0.9rem;
+  }
+  .tags-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+  .tag-link {
+    font-size: 1rem;
+  }
+}
+</style>
