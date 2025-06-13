@@ -1,7 +1,6 @@
 ---
 import NavbarLink from "@components/NavbarLink.astro";
 import NavbarDropdown from "@components/NavbarDropdown.astro";
-import LanguageDropdown from "@components/LanguageDropdown.astro";
 import Logo from "@components/Logo.astro";
 import AccountIcon from "@assets/icons/AccountIcon.astro";
 
@@ -32,8 +31,6 @@ const { globalSettings, t } = Astro.props;
                         navbarSettings.map((navbarLink) =>
                             "dropdown" in navbarLink ? (
                                 <NavbarDropdown navbarLink={navbarLink} />
-                            ) : navbarLink.text === "Documentation" ? (
-                                <LanguageDropdown globalSettings={globalSettings} />
                             ) : (
                                 <NavbarLink navbarLink={navbarLink} class={"hover-underline"}/>
                             )

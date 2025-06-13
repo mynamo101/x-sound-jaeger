@@ -1,4 +1,3 @@
-
 import type { Navbar } from "@src-types/types.ts";
 
 /**
@@ -16,28 +15,26 @@ const navbarSettings: Navbar[] = [
 	// 	text: "Style Guide",
 	// 	link: "/style-guide/",
 	// },
-	{
-		text: "Documentation",
-		link: "https://www.kusa-projects.com/astro-documentation",
-		new_tab: true
-	},
 	// {
-	// 	text: "Post Type",
-	// 	dropdown: [
-	// 		{
-	// 			text: "Wide",
-	// 			link: "/blog/uncovering-hidden-special-places/",
-	// 		},
-	// 		{
-	// 			text: "Narrow",
-	// 			link: "/blog/traveling-principles-demystified/",
-	// 		},
-	// 		{
-	// 			text: "Vertical",
-	// 			link: "/blog/traveling-on-a-budget/",
-	// 		},
-	// 	],
+	// 	text: "Documentation",
+	// 	link: "https://www.kusa-projects.com/astro-documentation",
+	// 	new_tab: true
 	// },
+	{
+		text: "Language",
+		dropdown: [
+			{
+				text: "English",
+				link: "#",
+				lang: "en"
+			},
+			{
+				text: "中文",
+				link: "#",
+				lang: "zh"
+			}
+		]
+	},
 	{
 		text: "Features",
 		dropdown: [

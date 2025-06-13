@@ -365,48 +365,58 @@ class UnifiedTranslationManager {
         try {
             // 加载翻译文件
             await this.loadTranslationFiles();
-            
             // 设置当前语言
             this.currentLanguage = this.getCurrentLanguage();
-            
+
             // 等待DOM加载完成
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {
                     this.updatePageContent();
-                    this.updatePageTitle();
+                    this.addLanguageSwitcherEvents();
                 });
             } else {
                 this.updatePageContent();
-                this.updatePageTitle();
+                this.addLanguageSwitcherEvents();
             }
-            
+
             // 监听语言变化事件
             window.addEventListener('languageChanged', () => {
-                this.currentLanguage = this.getCurrentLanguage();
                 this.updatePageContent();
-                this.updatePageTitle();
             });
-            
+
             // 监听存储变化事件（多标签页同步）
             window.addEventListener('storage', (e) => {
                 if (e.key === 'lang') {
                     this.currentLanguage = this.getCurrentLanguage();
                     this.updatePageContent();
-                    this.updatePageTitle();
                 }
             });
-            
+
             // 将实例添加到全局作用域
             window.translationManager = this;
             window.currentTranslations = this.translations[this.currentLanguage];
             window.currentLanguage = this.currentLanguage;
-            
+
             this.initialized = true;
-            
+
             console.log('Unified Translation Manager initialized');
         } catch (error) {
             console.error('Failed to initialize translation manager:', error);
         }
+    }
+
+    // 新增：自動為所有語言切換連結添加事件
+    addLanguageSwitcherEvents() {
+        document.querySelectorAll('a[data-lang]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const lang = link.getAttribute('data-lang');
+                if (lang) {
+                    this.setLanguage(lang);
+                    location.reload();
+                }
+            });
+        });
     }
 }
 
