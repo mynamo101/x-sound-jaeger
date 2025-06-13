@@ -1,12 +1,19 @@
 import type { GlobalSettingsProps } from "@src-types/types.ts";
 
+// 获取当前语言设置的函数
+function getCurrentLanguage() {
+    // 在服务端渲染时，我们无法访问 localStorage
+    // 默认返回中文，客户端脚本会处理语言切换
+    return "zh";
+}
+
 const globalSettings: GlobalSettingsProps = {
-    site_name: "Elysian",
-    site_meta_title: "Elysian",
-    site_meta_description: "Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.",
+    site_name: "X-Sound Jaeger",
+    site_meta_title: "X-Sound Jaeger - A Lewd Audio Lab",
+    site_meta_description: "X-Sound Jaeger is a lewd audio lab where you can find a variety of erotic audio content, including ASMR, roleplay, and more.",
     site_meta_image_source: "/images/kusa-projects-logo.jpg",
-    twitter_username: "@Your_Username",
-    language: "en", // Default language and static texts file (en.json)
+    twitter_username: "@x_soundjaeger",
+    language: getCurrentLanguage(), // 使用函数获取语言
     background_color: "rgb(0, 0, 0)", // Background color in rgb format
     text_color: "rgb(255, 255, 255)", // Text color in rgb format
     primary_font: "Roboto", // Google Fonts name (use the exact name as listed on Google Fonts embed link). Example: "Roboto Mono" should be "Roboto+Mono"

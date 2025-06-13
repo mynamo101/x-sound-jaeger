@@ -1,0 +1,63 @@
+---
+import DropdownArrow from "@assets/icons/DropdownArrow.astro";
+
+const { globalSettings } = Astro.props;
+---
+
+<li class="links-dropdown">  
+    <div class="links-label">
+        <span id="current-language">{globalSettings.language === 'zh' ? '中文' : 'English'}</span>
+        <DropdownArrow />
+    </div>
+    <div class="secondary-links">
+        <ul class="secondary-links-inner">
+            <li>
+                <a class="nav-link" href="#" data-lang="zh">中文</a>
+            </li>
+            <li>
+                <a class="nav-link" href="#" data-lang="en">English</a>
+            </li>
+        </ul>
+    </div>
+</li>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 设置语言函数
+    function setLanguage(lang) {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('lang', lang);
+        }
+    }
+
+    // 更新当前语言显示
+    function updateCurrentLanguageDisplay() {
+        const currentLang = localStorage.getItem('lang') || 'zh';
+        const currentLanguageElement = document.getElementById('current-language');
+        if (currentLanguageElement) {
+            currentLanguageElement.textContent = currentLang === 'zh' ? '中文' : 'English';
+        }
+    }
+
+    // 初始化显示
+    updateCurrentLanguageDisplay();
+
+    // 为语言切换链接添加事件监听器
+    const languageLinks = document.querySelectorAll('a[data-lang]');
+    languageLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selectedLang = this.getAttribute('data-lang');
+            setLanguage(selectedLang);
+            
+            // 触发自定义事件，通知页面语言已更改
+            window.dispatchEvent(new CustomEvent('languageChanged', { 
+                detail: { language: selectedLang } 
+            }));
+            
+            // 重新加载页面以应用新语言
+            location.reload();
+        });
+    });
+});
+</script>

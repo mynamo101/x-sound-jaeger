@@ -23,6 +23,8 @@ if(post_header == "Narrow"){
   desktopSizes = "(max-width: 1438px) calc((100vw - 144px) / 3), 30vw"
 }
 
+console.log("語言設定：", globalSettings.language)
+
 ---
 
 <BaseLayout globalSettings={globalSettings} t={t} type="image" title={title} description={excerpt} image={feature_image ? feature_image : globalSettings.site_meta_image_source}>
