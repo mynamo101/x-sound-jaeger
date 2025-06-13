@@ -109,6 +109,16 @@ class UnifiedTranslationManager {
             tagsSliderTitle.textContent = t.global.tags_slider.title;
         }
 
+        // 更新所有 tag 名稱（TagCard）
+        document.querySelectorAll('.tag-name[data-tag-slug]').forEach(el => {
+            const slug = el.getAttribute('data-tag-slug');
+            if (t.tags && t.tags[slug]) {
+                el.textContent = t.tags[slug];
+            } else {
+                el.textContent = slug;
+            }
+        });
+
         // 更新语言选择器显示
         this.updateLanguageSelector(currentLang);
 

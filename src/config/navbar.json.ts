@@ -12,32 +12,32 @@ const navbarSettings: Navbar[] = [
 		text: "Home",
 		link: "/",
 	},
-    {
-		text: "Style Guide",
-		link: "/style-guide/",
-	},
+    // {
+	// 	text: "Style Guide",
+	// 	link: "/style-guide/",
+	// },
 	{
 		text: "Documentation",
 		link: "https://www.kusa-projects.com/astro-documentation",
 		new_tab: true
 	},
-	{
-		text: "Post Type",
-		dropdown: [
-			{
-				text: "Wide",
-				link: "/blog/uncovering-hidden-special-places/",
-			},
-			{
-				text: "Narrow",
-				link: "/blog/traveling-principles-demystified/",
-			},
-			{
-				text: "Vertical",
-				link: "/blog/traveling-on-a-budget/",
-			},
-		],
-	},
+	// {
+	// 	text: "Post Type",
+	// 	dropdown: [
+	// 		{
+	// 			text: "Wide",
+	// 			link: "/blog/uncovering-hidden-special-places/",
+	// 		},
+	// 		{
+	// 			text: "Narrow",
+	// 			link: "/blog/traveling-principles-demystified/",
+	// 		},
+	// 		{
+	// 			text: "Vertical",
+	// 			link: "/blog/traveling-on-a-budget/",
+	// 		},
+	// 	],
+	// },
 	{
 		text: "Features",
 		dropdown: [
@@ -77,14 +77,14 @@ const navbarSettings: Navbar[] = [
 				text: "FAQ",
 				link: "/faq/",
 			},
-			{
-				text: "404",
-				link: "/404/",
-			},
-			{
-				text: "RSS Feed",
-				link: "/rss.xml/",
-			},
+			// {
+			// 	text: "404",
+			// 	link: "/404/",
+			// },
+			// {
+			// 	text: "RSS Feed",
+			// 	link: "/rss.xml/",
+			// },
 			{
 				text: "Get Theme",
 				link: "https://kusa-projects.lemonsqueezy.com/buy/fcfbe185-536a-46c6-a0dd-7f4621a64314",

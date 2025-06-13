@@ -38,8 +38,8 @@ const feature_image = getImage({glob: images, folder_name: "tag", image_name: ur
 
      <div class="tag-card-info">
         <div class="medium-text">
-            <a href={`/tags/${url}/`}>
-                {name}
+            <a href={`/tags/${url}/`} class="tag-name" data-tag-slug={url.toLowerCase()}>
+                {t.tags?.[url.toLowerCase()] ?? name}
             </a>
         </div>
         {post_count &&

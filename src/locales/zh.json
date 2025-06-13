@@ -35,7 +35,8 @@
     },
     "post": {
         "clipboard": "連結已複製！",
-        "older_post": "較舊文章",        "newer_post": "較新文章"
+        "older_post": "較舊文章",        
+        "newer_post": "較新文章"
     },
     "blog_page": {
         "title_hero": "所有文章",
@@ -112,5 +113,15 @@
         "title_hero": "404",
         "description_hero": "您要尋找的頁面不存在或已被移動。",
         "button_label": "回到首頁"
+    },
+    "tags": {
+        "business": "商業",
+        "creative": "創意",
+        "design": "設計",
+        "fashion": "時尚",
+        "fitness": "健身",
+        "health": "健康",
+        "lifestyle": "生活方式",
+        "travel": "旅遊"
     }
 }

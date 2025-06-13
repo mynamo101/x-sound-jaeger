@@ -24,10 +24,10 @@ const globalSettings: GlobalSettingsProps = {
     use_page_load_animations: true,
     scrolling_type: "Moderate", // None, Subtle, Intense | Using Lenis library: https://lenis.darkroom.engineering/
     use_custom_scrollbar: true, // Doesn't apply to Safari browsers
-    cursor_type: "Custom and Normal", // Normal, Custom, Custom and Normal
-    navigation_bar_type: "Animated", // Animated, Sticky, Normal
-    post_header_type: "Wide", // Wide, Narrow, Vertical
-    use_reading_progress_bar: false, // Use reading progress bar on post page
+    cursor_type: "Custom", // Normal, Custom, Custom and Normal
+    navigation_bar_type: "Sticky", // Animated, Sticky, Normal
+    post_header_type: "Narrow", // Wide, Narrow, Vertical
+    use_reading_progress_bar: true, // Use reading progress bar on post page
     use_image_zoom: true // Use image zoom on post page
 }
 
