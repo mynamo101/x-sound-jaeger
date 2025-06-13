@@ -1,0 +1,55 @@
+---
+import NavbarLink from "@components/NavbarLink.astro";
+import NavbarDropdown from "@components/NavbarDropdown.astro";
+import Logo from "@components/Logo.astro";
+import AccountIcon from "@assets/icons/AccountIcon.astro";
+
+import navbarSettings from "@config/navbar.json.ts";
+
+import "@styles/navbar.css";
+
+const { globalSettings, t } = Astro.props;
+---
+
+<custom-header class="header" data-navigation-bar-type={globalSettings.navigation_bar_type}>
+    <div class:list={['wide-container navbar-inner', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="200">
+        <div class="logo-wrapper">
+            <Logo globalSettings={globalSettings}/>
+        </div>
+
+        <div class="mobile-navbar-icons">
+            <button class="menu-button unstyled-button" aria-label="Menu button">
+                <div class="menu-line first-line"></div>
+                <div class="menu-line mobile-line"></div>
+                <div class="menu-line second-line"></div>
+            </button>
+        </div>
+
+        <div class="navbar-links-outer">
+            <div class="navbar-links-inner">
+                <ul class="nav">
+                    {
+                        navbarSettings.map((navbarLink) =>
+                            "dropdown" in navbarLink ? (
+                                <NavbarDropdown navbarLink={navbarLink} />
+                            ) : (
+                                <NavbarLink navbarLink={navbarLink} class={"hover-underline"}/>
+                            )
+                        )
+                    }
+                </ul>
+
+                <div class="signin-wrapper acc-button-wrapper">
+                    <a href="/signin/" class="acc-button">
+                        <div class="account-icon">
+                            <AccountIcon/>
+                        </div>
+                        <span>
+                            {t.global.navbar.sign_in}
+                        </span>                              
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</custom-header>

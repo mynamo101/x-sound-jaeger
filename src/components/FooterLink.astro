@@ -1,0 +1,7 @@
+---
+const footerLink = Astro.props.footerLink;
+---
+
+<li>  
+    <a class="footer-nav-link hover-underline"  href={footerLink.link} target={footerLink.new_tab ? "_blank" : ""} rel={footerLink.new_tab ? "noopener noreferrer" : ""}>{footerLink.text}</a>
+</li>

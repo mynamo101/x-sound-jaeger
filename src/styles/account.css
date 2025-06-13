@@ -1,0 +1,114 @@
+.account-page-hero .hero-wrapper {
+    align-items: flex-end;
+}
+
+.account-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 6px;
+}
+
+.account-button {
+    white-space: nowrap;
+    font-size: 18px;
+    padding: 6px 13px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.author-info {
+    border-bottom: 1px solid var(--text-color-40);
+}
+
+.no-avatar-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.card-image {
+    position: relative;
+}
+
+.avatar-icon-wrapper {
+    border: 1px solid var(--text-color-40);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.avatar-icon-wrapper-inner {
+    width: calc(10.4vw * var(--scale));
+    min-width: calc(10.4vw * var(--scale));
+    height: calc(10.4vw * var(--scale));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+}
+
+.author-figure {
+    position: relative;
+    pointer-events: none;
+}
+
+/* Styles for large desktop */
+@media (min-width: 1439px) {  
+    .account-buttons {
+        gap: calc(1.05vw * var(--scale));
+        margin-bottom: calc(0.42vw * var(--scale));
+    }
+    
+    .account-button {
+        font-size: calc(1.25vw * var(--scale));
+        padding: calc(0.42vw * var(--scale)) calc(0.9vw * var(--scale));
+    }
+}
+
+/* Styles for tablet */
+@media (max-width: 991px) { 
+    .account-page-hero .hero-wrapper {
+        align-items: flex-start;
+    }
+    
+    .account-buttons {
+        margin-bottom: 0px;
+    }
+    
+    .avatar-icon-wrapper-inner {
+        width: calc(29vw * var(--scale));
+        min-width: calc(29vw * var(--scale));
+        height: calc(29vw * var(--scale));
+    }
+
+    .author-text-content-wrapper {
+        width: 100%;
+    }
+
+    .author-info-row:last-of-type {
+        border-bottom: 1px solid var(--text-color-40);
+    }
+}
+
+
+/* Styles for mobile */
+@media (max-width: 479px) {   
+    .account-buttons {
+        gap: 10px;
+    }
+    
+    .account-button {
+        font-size: 16px;
+        padding: 6px 13px;
+    }
+}

@@ -1,0 +1,29 @@
+---
+import { getTags, getUniqueTagsWithCount } from "@utils/utils.ts";
+
+const tags = await getTags();
+const unique_tags = getUniqueTagsWithCount(tags)
+
+const { globalSettings, t } = Astro.props;
+---
+
+<div class:list={['archive-tags-outer', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+    <archive-tags data-current-tag="all-tags">
+        <div class="button archive-tag-button">
+            <input id="all-tags" type="radio" name="archive-tags" checked>
+            <label class="radio-button-text" for="all-tags">
+                {t.archive_page.all_tags}
+            </label>
+        </div>
+        {
+            unique_tags.map((tag) =>
+                <div class="button archive-tag-button">
+                        <input id={tag.slug} type="radio" name="archive-tags"/>
+                        <label class="radio-button-text" for={tag.slug}>
+                            {tag.original}
+                        </label>
+                </div>      
+            )
+        }           
+    </archive-tags>
+</div>

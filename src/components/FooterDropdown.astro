@@ -1,0 +1,15 @@
+---
+import FooterLink from "@components/FooterLink.astro";
+
+import type { FooterDropdown } from "@src-types/types";
+
+const footerLink = Astro.props.footerLink;
+---
+<li class="footer-links-group">
+    <div class="footer-links-label">
+        {footerLink.text}
+    </div>
+    <ul class="footer-secondary-links">
+        {footerLink.dropdown.map((footerLinkInner: FooterDropdown) => <FooterLink footerLink={footerLinkInner} />)}
+    </ul>
+</li>

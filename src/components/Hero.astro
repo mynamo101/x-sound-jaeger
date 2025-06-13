@@ -1,0 +1,58 @@
+---
+import type { HeroProps } from "@src-types/types.ts";
+import ArchiveTags from "@components/ArchiveTags.astro";
+
+import "@styles/hero.css";
+
+const {
+	title,
+    description,
+    is_homepage,
+    is_archivepage = false,
+    total_number
+} = Astro.props as HeroProps;
+
+const { globalSettings, t } = Astro.props;
+---
+
+<section class="hero">
+    <div class="wide-container">
+        <div class="hero-wrapper">
+            <div class="hero-text-wrapper section-padding-bottom">
+                <div class:list={['hero-heading-wrapper section-padding-top', { 'full-width': !description }]}>               
+                    <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}>{title}</h1>
+
+                    {!is_homepage && (
+                        <>
+                            <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                            {total_number && (
+                                <h3 class:list={['hero-number', { 'hero-number-animation': globalSettings.use_page_load_animations }]}>
+                                    {total_number}
+                                </h3>
+                            )}
+                        </>
+                    )}
+                </div> 
+                
+                {description &&
+                    <div class="hero-paragraph-wrapper">
+                        {!is_homepage &&
+                            <div class:list={['hero-top-border hide-on-mobile', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                        }
+                        <div class:list={['hero-paragraph-inner', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="200">
+                            <p>
+                                {description}
+                            </p>
+                        </div>
+                    </div>
+                }
+
+                {is_archivepage &&
+                    <ArchiveTags globalSettings={globalSettings} t={t}/>
+                }
+                
+                <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+            </div>
+        </div>
+    </div>
+</section>

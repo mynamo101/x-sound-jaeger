@@ -1,0 +1,88 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import globalSettings from '@config/config.json.ts';
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+import "@styles/post.css";
+import "@styles/post-content.css";
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+const page  = Astro.props.page as CollectionEntry<"page">;
+
+const { title, excerpt, feature_image, page_header_type } = page.data;
+const post_header_type_global = globalSettings.post_header_type;
+const post_header = page_header_type ?? post_header_type_global;
+
+let desktopSizes = "calc(100vw - 60px)";
+if(post_header == "Narrow"){
+  desktopSizes = "70vw"
+}else if(post_header == "Vertical"){
+  desktopSizes = "(max-width: 1438px) calc((100vw - 144px) / 3), 30vw"
+}
+
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} type="image" title={title} description={excerpt} image={feature_image ? feature_image : globalSettings.site_meta_image_source}>
+    <main>
+      <article data-post-header-type={post_header} data-has-feature-image={feature_image ? "true" : "false"} data-use-reading-progress-bar={globalSettings.use_reading_progress_bar}>
+        {globalSettings.use_reading_progress_bar &&
+          <reading-progress id="progress-bar" class="reading-progress-bar"></reading-progress>
+        }
+
+        <header class:list={["hero", feature_image ? "wide-container" : "narrow-container no-image-container", post_header === "Narrow" && "narrow-container"]}>
+          <div class:list={["hero-content", post_header === "Vertical" && "vertical-post-header"]}>
+              <div class="post-hero-text-content section-padding-top">
+                <div class:list={['post-hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+
+                <h1 class:list={['post-heading', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="200">{title}</h1>
+
+                <div class:list={['excerpt-and-authors-wrapper', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="300">
+                    {excerpt &&
+                        <div class="post-excerpt-wrapper">
+                            <p>
+                                {excerpt}
+                            </p>
+                        </div>
+                    }       
+                </div>
+              </div>        
+
+              {feature_image &&
+                  <div class="post-main-image-wrapper">
+                      <div class:list={['post-hero-top-border top-vertical-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                      <div class="post-main-image">
+                        <figure class:list={[{ 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                            <Image 
+                              src={feature_image as any} 
+                              alt={title}                          
+                              loading="eager" 
+                              format="webp" 
+                              widths={[300, 400, 600, 800, 1000, 1200, 1600, 2000, 2400, 2800, 3200, 3600]}
+                              sizes={`(max-width: 479px) calc(100vw - 36px), (max-width: 991px) calc(100vw - 60px), ${desktopSizes}`}
+                            />
+                        </figure>
+                      </div>
+                  </div>
+              }  
+
+              <div class:list={["post-hero-bottom-border", globalSettings.use_page_load_animations && "horizontal-line-animation", !feature_image && "no-image-line"]}></div>             
+          </div>
+        </header>
+
+        <div class:list={['post-content narrow-container section-padding-bottom', { 'hidden-post-content': globalSettings.use_page_load_animations }]}>
+            <slot/>   
+        </div>
+      </article>
+    </main>
+</BaseLayout>
+
+{globalSettings.use_image_zoom &&
+  <script is:inline src="https://cdn.jsdelivr.net/npm/lightense-images@1.0.17/dist/lightense.min.js"></script>
+  <script>
+    import { setLightense } from "@js/global.js"
+    setLightense();
+  </script>
+}

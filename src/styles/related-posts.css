@@ -1,0 +1,188 @@
+.related-posts {
+    display: flex;
+    align-items: stretch;
+}
+
+.related-post-wrapper {
+    border-top: 1px solid var(--text-color-40);
+    border-bottom: 1px solid var(--text-color-40);
+    width: 50%;
+}
+
+.related-post {
+    display: flex;
+    padding: 84px;
+    transition: all .3s var(--ease-transition);
+}
+
+.related-post svg {
+    transition: all .3s var(--ease-transition);
+}
+
+.related-post:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+}
+
+.related-post:hover svg {
+    transform: translateX(-5px);
+}
+
+.related-post:hover svg path {
+    stroke: var(--background-color);
+}
+
+.older-post {
+    padding-left: calc(15vw - 36px);
+}
+
+.newer-post {
+    padding-right: calc(15vw - 36px);
+}
+
+.related-post-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+}
+
+.related-post-inner-margin {
+    margin-left: auto;
+    text-align: right;
+}
+
+.related-post-arrow {
+    width: 54px;
+    min-width: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.related-post-text {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 75%;
+}
+
+.newer-post-arrow {
+    transform: rotateZ(180deg);
+}
+
+.related-post-line {
+    width: 1px;
+    min-width: 1px;
+    background-color: var(--text-color-40);
+}
+
+/* Styles for large desktop */
+@media (min-width: 1439px) {     
+    .related-post {
+        padding: 5.8vw;
+    }
+
+    .older-post {
+        padding-left: calc(15vw - 2.5vw);
+    }
+    
+    .newer-post {
+        padding-right: calc(15vw - 2.5vw);
+    }
+    
+    .related-post-inner {
+        gap: calc(2.5vw * var(--scale));
+    }
+    
+    .related-post-arrow {
+        width: calc(3.75vw * var(--scale));
+        min-width: calc(3.75vw * var(--scale));
+    }
+    
+    .related-post-text {
+        font-size: calc(2.22vw * var(--scale));
+    }
+}
+
+/* Styles for extra large desktop */
+@media (min-width: 1920px) { 
+    .older-post {
+        padding-left: calc(18vw - 2.5vw);
+    }
+    
+    .newer-post {
+        padding-right: calc(18vw - 2.5vw);
+    }
+}
+
+/* Styles for tablet */
+@media (max-width: 991px) {   
+    .related-post {
+        padding: 46px;
+    }
+    
+    .related-post:hover {
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+    
+    .related-post:hover svg {
+        transform: translateX(-0px);
+    }
+    
+    .related-post:hover svg path {
+        stroke: var(--text-color);
+    }
+    
+    .older-post {
+        padding-left: 0px;
+    }
+    
+    .newer-post {
+        padding-right: 0px;
+    }
+    
+    .related-post-inner {
+        gap: 24px;
+    }
+    
+    .related-post-arrow {
+        width: 46px;
+        min-width: 46px;
+    }
+    
+    .related-post-text {
+        font-size: 26px;
+        line-height: 120%;
+    }
+}
+
+/* Styles for mobile */
+@media (max-width: 479px) { 
+    .related-post {
+        padding: 32px;
+    }
+    
+    .older-post {
+        padding-left: 0px;
+        padding-right: 18px;
+    }
+    
+    .newer-post {
+        padding-right: 0px;
+        padding-left: 18px;
+    }
+    
+    .related-post-inner {
+        gap: 16px;
+    }
+    
+    .related-post-arrow {
+        width: 40px;
+        min-width: 40px;
+    }
+    
+    .related-post-text {
+        font-size: 22px;
+    }
+}

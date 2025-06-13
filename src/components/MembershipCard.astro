@@ -1,0 +1,53 @@
+---
+import type { MembershipCardProps } from "@src-types/types"
+
+const { tier, yearly = false } = Astro.props as {tier: MembershipCardProps, yearly: boolean}
+const { globalSettings, t } = Astro.props;
+---
+
+<div class="tier-card">
+    <div class="tier-description">
+        <div class:list={['membership-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+
+        <div class:list={['tier-description-inner section-padding-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]}> 
+            {tier.description &&       
+                <h3>{tier.description}</h3>
+            }
+        </div>
+    </div>
+
+    <div class="tier-information">
+        <div class:list={['membership-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+
+        <div class:list={['tier-information-inner section-padding-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+            <div class="medium-text tier-name-and-price">
+                <span>{tier.name} -</span>
+                <span>
+                    {yearly ? (tier.yearly_price) : (tier.monthly_price) }
+                </span>
+            </div>
+
+            {tier.description && 
+                <div class="tier-description-mobile">
+                    <h3>
+                        {tier.description}
+                    </h3>
+                </div>
+            }
+
+            {tier.benefits && 
+                <div class="benefits-outer">
+                    <p>
+                        {tier.benefits}
+                    </p>
+                </div>
+            }
+
+            <div class="tier-button-wrapper">
+                <a class="button" href="#">
+                    {t.membership_page.subscribe_now}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,112 @@
+.featured-posts {
+    width: 100%;
+    border-top: 1px solid var(--text-color-40);
+}
+
+.featured-post {
+    padding: 50px 0px;
+    border-bottom: 1px solid var(--text-color-40);
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+}
+
+.featured-post-text {
+    display: flex;
+    flex-direction: column;
+    width: 32%;
+}
+
+.featured-post-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45%;
+    height: 29vw;
+    margin-left: 78px;
+    margin-right: 78px;
+}
+
+.featured-post-paragraph-wrapper {
+    max-width: 390px;
+    margin-top: auto;
+}
+
+.featured-post .slider-numbers {
+    margin-top: auto;
+    line-height: 75%;
+}
+
+.featured-post-paragraph-wrapper-mobile {
+    display: none;
+}
+
+/* Styles for large desktop */
+@media (min-width: 1439px) {  
+    .featured-post {
+        padding: 3.5vw 0px;
+    }
+    
+    .featured-post-image {
+        margin-left: 5.4vw;
+        margin-right: 5.4vw;
+    }
+    
+    .featured-post-paragraph-wrapper {
+        max-width: calc(27.1vw * var(--scale));
+    }
+}
+
+/* Styles for extra large desktop */
+@media (min-width: 1920px) {
+    .featured-post-text {
+        width: 30%;
+    }
+}
+
+/* Styles for tablet */
+@media (max-width: 991px) { 
+    .featured-post-paragraph-wrapper-desktop {
+        display: none;
+    }
+    
+    .featured-post {
+        padding: 52px 0px 46px 0px;
+        flex-direction: column;
+    }
+    
+    .featured-post-text {
+        width: 100%;
+    }
+    
+    .featured-post-image {
+        width: 100%;
+        height: 62vw;
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    
+    .featured-post-paragraph-wrapper {
+        max-width: 620px;
+        margin-top: 18px;
+    }
+    
+    .featured-post .slider-numbers {
+        display: none;
+    }
+
+    .featured-post-paragraph-wrapper-mobile {
+        display: block;
+    }
+}
+
+/* Styles for mobile */
+@media (max-width: 479px) {  
+    .featured-post {
+        padding: 36px 0px 32px 0px;
+    }
+    
+    .featured-post-paragraph-wrapper {
+        margin-top: 15px;
+    }
+}

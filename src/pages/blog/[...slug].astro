@@ -1,0 +1,32 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import { type InferGetStaticPropsType } from "astro";
+import PostLayout from "@layouts/PostLayout.astro";
+import { getSortedPosts, getPostWithSiblings } from "@utils/utils.js";
+
+export async function getStaticPaths() {
+  const { posts } = await getSortedPosts();
+
+  return posts.map((post: CollectionEntry<"blog">, index: number) => {
+    const { previous_post, next_post } = getPostWithSiblings(posts, index);
+    
+    return {
+      params: { slug: post.id },
+      props: {
+        post,
+        previous_post,
+        next_post,
+      },
+    };
+  });
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { post, previous_post, next_post } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await render(post);
+---
+
+<PostLayout post={post} previous_post={previous_post} next_post={next_post} minutes_read={remarkPluginFrontmatter.minutes_read}>
+	<Content />
+</PostLayout>

@@ -1,0 +1,41 @@
+---
+import type { SliderProps } from "@src-types/types";
+import SliderPostCard from "@components/SliderPostCard.astro";
+import SliderArrowIcon from "@assets/icons/SliderArrowIcon.astro";
+import { getSortedPosts } from "@utils/utils.js";
+
+import "@styles/slider.css";
+
+const globalSettings = Astro.props.globalSettings;
+const { posts_limit = 6 } = Astro.props as SliderProps;
+const { posts, total_posts } = await getSortedPosts({limit: posts_limit});
+let total_available_posts = posts_limit;
+
+total_posts < posts_limit ? total_available_posts = total_posts : total_available_posts = posts_limit;
+---
+<section class:list={['latest-posts-slider', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+    <custom-slider class="slider">
+        <div class="slider-outer">          
+            <div class="slider-inner iteration-container" data-length="{{posts.length}}">
+                {
+                    posts.map((post, index) =>
+                        <SliderPostCard post={post} index={index + 1} total_number={total_available_posts}/>
+                    )
+                }
+            </div>                    
+            
+            <div class="slider-scrollbar">
+                <div class="slider-scrollbar-thumb"></div>
+            </div>
+
+            <div class="slider-arrows">
+                <button class="slider-arrow unstyled-button rotated-slider-arrow" name="left" aria-label="Previous Slide">
+                    <SliderArrowIcon/>
+                </button>
+                <button class="slider-arrow unstyled-button" name="right" aria-label="Next Slide">
+                    <SliderArrowIcon/>
+                </button>
+            </div>
+        </div>
+    </custom-slider>
+</section>

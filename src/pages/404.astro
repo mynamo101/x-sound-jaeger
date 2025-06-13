@@ -1,0 +1,38 @@
+---
+import globalSettings from '@config/config.json.ts';
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+import "@styles/form-page.css"
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title={t.error_404_page.title_hero} description={t.error_404_page.description_hero}>
+    <main>
+        <section class="hero form-page wide-container">
+            <div class="form-page-outer">
+                <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div> 
+        
+                <div class="form-page-inner section-padding-extra">  
+                    <div class="form-page-content">
+                        <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}>{t.error_404_page.title_hero}</h1>
+        
+                        <div class:list={['form-page-excerpt-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="300">
+                            <p class="form-page-excerpt">
+                                {t.error_404_page.description_hero}
+                            </p>
+                        </div>
+        
+                        <div class:list={['form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                            <a class="button" href="/">{t.error_404_page.button_label}</a>
+                        </div>
+                                           
+                    </div>
+                 </div>
+        
+                <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+            </div>
+        </section>
+</BaseLayout>

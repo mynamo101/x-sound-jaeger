@@ -1,0 +1,36 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import globalSettings from '@config/config.json.ts';
+import Hero from "@components/Hero.astro";
+import AuthorCard from "@components/AuthorCard.astro";
+import { getAuthors, getUniqueAuthorsWithCount } from "@utils/utils.ts";
+
+const authors = await getAuthors();
+const unique_authors = getUniqueAuthorsWithCount(authors)
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title={t.authors_page.title_hero} description={t.authors_page.description_hero}>
+  <main>
+    <Hero 
+        globalSettings={globalSettings} 
+        title={t.authors_page.title_hero}
+        description={t.authors_page.description_hero}
+        total_number={unique_authors.length}
+    />
+
+    <section class:list={['wide-container section-padding-top grid-section', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+        <div class="grid-outer section-padding-bottom">
+            <div class="grid pagination-grid">
+                {
+                    unique_authors.map((author) =>
+                        <AuthorCard name={author.original} url={author.slug} post_count={author.count} t={t}/>
+                    )
+                } 
+            </div>
+        </div>
+    </section>
+  </main>
+</BaseLayout>

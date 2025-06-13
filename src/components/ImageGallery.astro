@@ -1,0 +1,44 @@
+---
+import type { GalleryImage, ImageGalleryProps } from "@src-types/types.ts";
+import { Image } from "astro:assets";
+
+const {
+    images,
+    images_per_row = 3,
+} = Astro.props as ImageGalleryProps;
+
+const groupImagesIntoRows = (images: GalleryImage[], images_per_row: number): GalleryImage[][] => {
+    const rows: GalleryImage[][] = [];
+    for (let i = 0; i < images.length; i += images_per_row) {
+        rows.push(images.slice(i, i + images_per_row));
+    }
+    return rows;
+};
+
+const groupedImages = groupImagesIntoRows(images, images_per_row);
+---
+
+<figure class="gallery-card">
+    <div class="gallery-container">
+        {groupedImages.map((row) => (
+            <div class="gallery-row" >
+                {row.map((image) => (
+                    <div class="gallery-image">
+                        <img 
+                              src={image.src as any} 
+                              alt={image.alt}                          
+                              loading="lazy" 
+                        />
+                    </div>
+                ))}
+            </div>
+        ))}
+    </div>
+</figure>
+
+<script>
+    import { setImageGallery } from "@js/global.js"
+    document.addEventListener('DOMContentLoaded', function () {
+        setImageGallery();
+    })    
+</script>

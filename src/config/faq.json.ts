@@ -1,0 +1,31 @@
+import type { ToggleCard } from "@src-types/types.ts";
+
+/**
+ * Array of toggle cards for FAQ page.
+ */
+
+const faqSettings: ToggleCard[] = [
+    {
+      title: 'Nulla suspendisse ridiculus amet interdum?',
+      text: 'Turpis scelerisque vitae eu netus lacus est in vulputate egestas. Aliquet porttitor sed nam facilisi accumsan. Auctor tortor in adipiscing et amet pharetra. Dictumst aliquet sociis id suspendisse eu quis. Proin sit sagittis in vel sollicitudin mi eros iaculis. Volutpat sed auctor tellus ac eget orci augue vulputate in. Aliquam porta blandit urna ut orci dignissim sed. Egestas nunc sodales id eu amet eget et. Sit egestas montes aliquam gravida nibh turpis nunc commodo nec. Tristique adipiscing neque dictumst habitant. Pretium id hendrerit nibh laoreet nisl fames diam. Orci suscipit habitant egestas nunc integer elementum adipiscing. Cursus tempor duis semper ullamcorper. Porttitor etiam enim pharetra vitae in turpis quis fringilla amet. Sed varius netus etiam id sed duis mauris nulla egestas. Urna tempus sapien vitae vitae aliquam est aliquam integer platea. Non hendrerit viverra nunc mattis pulvinar augue diam. Scelerisque eleifend cras gravida lorem at vitae. Nibh viverra sapien netus consequat orci sodales a sit pulvinar. Hendrerit ut et tortor fames enim et viverra malesuada.'
+    },
+    {
+      title: 'Commodo in lectus quis malesuada leo?',
+      text: 'Turpis scelerisque vitae eu netus lacus est in vulputate egestas. Aliquet porttitor sed nam facilisi accumsan. Auctor tortor in adipiscing et amet pharetra. Dictumst aliquet sociis id suspendisse eu quis. Proin sit sagittis in vel sollicitudin mi eros iaculis. Volutpat sed auctor tellus ac eget orci augue vulputate in. Aliquam porta blandit urna ut orci dignissim sed. Egestas nunc sodales id eu amet eget et. Sit egestas montes aliquam gravida nibh turpis nunc commodo nec. Tristique adipiscing neque dictumst habitant. Pretium id hendrerit nibh laoreet nisl fames diam. Orci suscipit habitant egestas nunc integer elementum adipiscing. Cursus tempor duis semper ullamcorper. Porttitor etiam enim pharetra vitae in turpis quis fringilla amet. Sed varius netus etiam id sed duis mauris nulla egestas. Urna tempus sapien vitae vitae aliquam est aliquam integer platea. Non hendrerit viverra nunc mattis pulvinar augue diam. Scelerisque eleifend cras gravida lorem at vitae. Nibh viverra sapien netus consequat orci sodales a sit pulvinar. Hendrerit ut et tortor fames enim et viverra malesuada.'
+    },
+    {
+      title: 'Iaculis dolor amet velit nibh adipiscing facilisis nisl?',
+      text: 'Turpis scelerisque vitae eu netus lacus est in vulputate egestas. Aliquet porttitor sed nam facilisi accumsan. Auctor tortor in adipiscing et amet pharetra. Dictumst aliquet sociis id suspendisse eu quis. Proin sit sagittis in vel sollicitudin mi eros iaculis. Volutpat sed auctor tellus ac eget orci augue vulputate in. Aliquam porta blandit urna ut orci dignissim sed. Egestas nunc sodales id eu amet eget et. Sit egestas montes aliquam gravida nibh turpis nunc commodo nec. Tristique adipiscing neque dictumst habitant. Pretium id hendrerit nibh laoreet nisl fames diam. Orci suscipit habitant egestas nunc integer elementum adipiscing. Cursus tempor duis semper ullamcorper. Porttitor etiam enim pharetra vitae in turpis quis fringilla amet. Sed varius netus etiam id sed duis mauris nulla egestas. Urna tempus sapien vitae vitae aliquam est aliquam integer platea. Non hendrerit viverra nunc mattis pulvinar augue diam. Scelerisque eleifend cras gravida lorem at vitae. Nibh viverra sapien netus consequat orci sodales a sit pulvinar. Hendrerit ut et tortor fames enim et viverra malesuada.'
+    },
+    {
+      title: 'Tortor feugiat amet montes quis mauris tellus nisi?',
+      text: 'Turpis scelerisque vitae eu netus lacus est in vulputate egestas. Aliquet porttitor sed nam facilisi accumsan. Auctor tortor in adipiscing et amet pharetra. Dictumst aliquet sociis id suspendisse eu quis. Proin sit sagittis in vel sollicitudin mi eros iaculis. Volutpat sed auctor tellus ac eget orci augue vulputate in. Aliquam porta blandit urna ut orci dignissim sed. Egestas nunc sodales id eu amet eget et. Sit egestas montes aliquam gravida nibh turpis nunc commodo nec. Tristique adipiscing neque dictumst habitant. Pretium id hendrerit nibh laoreet nisl fames diam. Orci suscipit habitant egestas nunc integer elementum adipiscing. Cursus tempor duis semper ullamcorper. Porttitor etiam enim pharetra vitae in turpis quis fringilla amet. Sed varius netus etiam id sed duis mauris nulla egestas. Urna tempus sapien vitae vitae aliquam est aliquam integer platea. Non hendrerit viverra nunc mattis pulvinar augue diam. Scelerisque eleifend cras gravida lorem at vitae. Nibh viverra sapien netus consequat orci sodales a sit pulvinar. Hendrerit ut et tortor fames enim et viverra malesuada.'
+    },
+    {
+      title: 'Cras amet sit at elementum dui odio aliquam?',
+      text: 'Turpis scelerisque vitae eu netus lacus est in vulputate egestas. Aliquet porttitor sed nam facilisi accumsan. Auctor tortor in adipiscing et amet pharetra. Dictumst aliquet sociis id suspendisse eu quis. Proin sit sagittis in vel sollicitudin mi eros iaculis. Volutpat sed auctor tellus ac eget orci augue vulputate in. Aliquam porta blandit urna ut orci dignissim sed. Egestas nunc sodales id eu amet eget et. Sit egestas montes aliquam gravida nibh turpis nunc commodo nec. Tristique adipiscing neque dictumst habitant. Pretium id hendrerit nibh laoreet nisl fames diam. Orci suscipit habitant egestas nunc integer elementum adipiscing. Cursus tempor duis semper ullamcorper. Porttitor etiam enim pharetra vitae in turpis quis fringilla amet. Sed varius netus etiam id sed duis mauris nulla egestas. Urna tempus sapien vitae vitae aliquam est aliquam integer platea. Non hendrerit viverra nunc mattis pulvinar augue diam. Scelerisque eleifend cras gravida lorem at vitae. Nibh viverra sapien netus consequat orci sodales a sit pulvinar. Hendrerit ut et tortor fames enim et viverra malesuada.'
+    }
+]
+  
+
+export default faqSettings;

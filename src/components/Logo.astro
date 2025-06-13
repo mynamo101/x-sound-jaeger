@@ -1,0 +1,24 @@
+---
+import { getImage } from "@utils/utils.ts";
+import { Image } from "astro:assets";
+
+const logo_glob = import.meta.glob<{ default: string }>('@assets/images/logo/*.{jpg,jpeg,png,webp,gif,svg}', { eager: true });
+const logo = getImage({glob: logo_glob, folder_name: "logo", image_name: "logo" });
+
+const { globalSettings, navbar_logo = true } = Astro.props;
+---
+
+<a class={navbar_logo ? "logo" : "footer-logo"} href="/">
+    {logo ? (
+        <Image 
+            class={navbar_logo ? "logo-image" : "footer-logo-image"}
+            src={logo as any}
+            alt={globalSettings.site_name}
+            loading="eager"
+        />
+    ) : (
+        <div class={navbar_logo ? "big-text" : "footer-text"}>
+            {globalSettings.site_name}
+        </div>                       
+    )}
+</a>

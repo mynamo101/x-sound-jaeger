@@ -1,0 +1,79 @@
+---
+import FooterArrowIcon from "@assets/icons/FooterArrowIcon.astro";
+import type { FormHeroProps } from "@src-types/types";
+
+import "@styles/form-page.css"
+
+const { type, has_link = false, title, description } = Astro.props as FormHeroProps;
+const { t, globalSettings } = Astro.props;
+---
+
+<section class="hero form-page wide-container">
+    <div class="form-page-outer">
+        <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div> 
+
+        <div class="form-page-inner section-padding-extra">  
+            <div class="form-page-content">
+                <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}>{title}</h1>
+
+                {description &&
+                    <div class:list={['form-page-excerpt-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="300">
+                        <p class="form-page-excerpt">
+                            {description}
+                        </p>
+                    </div>
+                }
+
+                {type === "Contact" ? (
+                    <div class:list={['form-container contact-form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                        <form class="contact-form" action="#" method="POST" id="contactForm">
+                            <div class="contact-form-inputs">
+                                <input type="text" name="name" placeholder={t.global.form.name} required/>
+                                <input type="email" name="email" placeholder={t.global.form.email} required/>
+                            </div>
+                            <textarea name="message" placeholder={t.global.form.message} required></textarea>
+                            <button class="button" type="submit">
+                                {t.contact_page.button_label}
+                            </button>
+                        </form>
+                    </div>
+                )   :   (
+                    <div class:list={['form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                        <form class="page-form-element">
+                            {type === "Signin" ? (
+                                <div class="subscribe-wrapper">
+                                    <input data-members-email type="email" required="true" placeholder={t.global.form.email} class="subscribe-input"/>
+                                    <button class="footer-button footer-submit-button" type="submit" aria-label="Submit">
+                                        <div class="footer-arrow-icon">
+                                            <FooterArrowIcon />
+                                        </div>
+                                    </button>
+                                </div>
+                            )   :   (
+                                <div class="vertical-form">
+                                    <input data-members-name type="text" required="true" placeholder={t.global.form.name}/>
+                                    <input data-members-email type="email" required="true" placeholder={t.global.form.email}/>
+                                    <button class="button" type="submit">{type === "Signup" ? <>{t.signup_page.button_label}</> : <>{t.subscribe_page.button_label}</>}</button>
+                                </div>                                 
+                            )}
+
+                            {has_link &&
+                                <small class="under-form-text">
+                                    <span class="lower-opacity-small-text">
+                                        {type === "Signin" ? <>{t.signin_page.no_account}</> : <>{t.signup_page.has_account}</>}
+                                    </span>
+                                    <a class="bold-link" href={type === "Signin" ? '/signup/' : '/signin/'}>
+                                        {type === "Signin" ? <>{t.signin_page.sign_up}</> : <>{t.signup_page.sign_in}</>}
+                                    </a>
+                                </small>
+                            }
+                        </form>
+                    </div>
+                )}
+                        
+            </div>
+         </div>
+
+        <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+    </div>
+</section>

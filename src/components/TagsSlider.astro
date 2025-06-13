@@ -1,0 +1,49 @@
+---
+import TagCard from "@components/TagCard.astro";
+import SliderArrowIcon from "@assets/icons/SliderArrowIcon.astro";
+import { getTags, getUniqueTagsWithCount } from "@utils/utils.ts";
+
+import "@styles/tag-card.css";
+import "@styles/slider.css";
+
+const tags = await getTags();
+const unique_tags = getUniqueTagsWithCount(tags)
+
+const {
+    t
+} = Astro.props;
+---
+
+<section class="tags-slider">
+    <div class="section-header section-padding wide-container">
+        <h2>{t.global.tags_slider.title}</h2>
+        <div class="section-number">
+            {unique_tags.length === 0 ? t.global.pagination.no_tags : unique_tags.length === 1 ? t.global.pagination.one_tag : `${unique_tags.length} ${t.global.pagination.multiple_tags}`}
+        </div>
+    </div> 
+
+    <custom-slider class="slider">
+        <div class="slider-outer">
+            <div class="slider-inner tags-slider-inner iteration-container">                           
+                {
+                    unique_tags.map((tag) =>
+                        <TagCard name={tag.original} url={tag.slug} t={t}/>
+                    )
+                }                                   
+            </div>
+            
+            <div class="slider-scrollbar">
+                <div class="slider-scrollbar-thumb"></div>
+            </div>
+
+            <div class="slider-arrows">
+                <button class="slider-arrow unstyled-button rotated-slider-arrow" name="left" aria-label="Previous Slide">
+                    <SliderArrowIcon/>
+                </button>
+                <button class="slider-arrow unstyled-button" name="right" aria-label="Next Slide">
+                    <SliderArrowIcon/>
+                </button>
+            </div>
+        </div>
+    </custom-slider>
+</section>

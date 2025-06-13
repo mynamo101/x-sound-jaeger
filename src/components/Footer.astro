@@ -1,0 +1,89 @@
+---
+import FooterLink from "@components/FooterLink.astro";
+import FooterDropdown from "@components/FooterDropdown.astro";
+import FooterArrowIcon from "@assets/icons/FooterArrowIcon.astro";
+import Social from "@components/Social.astro";
+import Logo from "@components/Logo.astro";
+
+import footerSettings from "@config/footer.json.ts";
+import socialsSettings from "@config/socials.json.ts";
+
+import "@styles/footer.css";
+
+const { globalSettings, t } = Astro.props;
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+    <div class="wide-container section-padding footer-outer">
+        <div class="footer-inner">
+            <div class="footer-description">
+                <Logo globalSettings={globalSettings} navbar_logo={false}/>
+
+                <div class="footer-paragraph-wrapper">
+                    <p>{t.global.footer.footer_text}</p>
+                </div>
+
+                <form class="subscribe-form">
+                    <div class="subscribe-with-alerts">
+                        <div class="subscribe-wrapper">
+                            <input type="email" required="true" placeholder={t.global.footer.form_placeholder} class="subscribe-input"/>
+                            <button class="footer-button footer-submit-button" type="submit" aria-label="Submit">
+                                <div class="footer-arrow-icon">
+                                    <FooterArrowIcon />
+                                </div>
+                            </button>
+                        </div> 
+                    </div>            
+                </form>
+            </div>
+
+            <nav class="footer-nav">
+                <ul class="footer-navigation">
+                    {
+                        footerSettings.map((footerLink) =>
+                            "dropdown" in footerLink ? (
+                                <FooterDropdown footerLink={footerLink} />
+                            ) : (
+                                <FooterLink footerLink={footerLink}/>
+                            )
+                        )
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="footer-bottom wide-container">
+        <div class="footer-socials">
+            {
+                socialsSettings.map((social) =>
+                    <Social social={social} />
+                )
+            }
+        </div>
+
+        <div class="footer-credits">
+            <div class="footer-credit">
+                <div class="credits-line"></div>
+                <span class="copy">©</span> {currentYear} {globalSettings.site_name}. {t.global.footer.credits}
+            </div>
+        </div>
+
+        <a href="javascript:" class="footer-button social to-top-button" aria-label="Back to top">
+            <div class="footer-arrow-icon to-top">
+                <FooterArrowIcon />
+            </div>
+        </a>
+    </div>
+</footer>
+
+<script>
+    document.querySelector(".to-top-button")?.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    })
+</script>

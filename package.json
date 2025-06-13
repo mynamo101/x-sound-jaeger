@@ -1,7 +1,7 @@
 {
-  "name": "x-sound-jaeger",
+  "name": "elysian",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -9,6 +9,13 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.9.2"
+    "@astrojs/mdx": "^4.2.1",
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.3.0",
+    "astro": "^5.5.3",
+    "astro-auto-import": "^0.4.4",
+    "astro-seo": "^0.8.4",
+    "mdast-util-to-string": "^4.0.0",
+    "reading-time": "^1.5.0"
   }
 }

@@ -1,0 +1,51 @@
+---
+import Placeholder from "@assets/icons/Placeholder.astro";
+import type { TagCardProps } from "@src-types/types";
+import { Image } from "astro:assets";
+import { getImage } from "@utils/utils.ts";
+
+import "@styles/tag-card.css";
+
+// Get tag image from images/tag. Name them the same as tag slug.
+const images = import.meta.glob<{ default: string }>('@assets/images/tag/*.{jpg,jpeg,png,webp,gif,svg}', { eager: true });
+
+const { name, url, post_count } = Astro.props as TagCardProps;
+const t = Astro.props.t;
+
+const feature_image = getImage({glob: images, folder_name: "tag", image_name: url });
+---
+
+<div class="tag-card">
+    <a href={`/tags/${url}/`} class="tag-card-image" aria-label={name}>  
+        {feature_image ? (          
+            <figure>
+                <Image 
+                    class="scale-in"
+                    src={feature_image as any}
+                    alt={name}
+                    loading="lazy" 
+                    format="webp"
+                    widths={[100, 200, 300, 400, 600, 800, 1000, 1200]}
+                    sizes="(max-width: 479px) calc(50vw - 54px), (max-width: 991px) calc(50vw - 90px), 25vw"
+                />
+            </figure> 
+        ) : (
+            <div class="placeholder">
+                <Placeholder/>
+            </div>               
+        )}                      
+    </a>
+
+     <div class="tag-card-info">
+        <div class="medium-text">
+            <a href={`/tags/${url}/`}>
+                {name}
+            </a>
+        </div>
+        {post_count &&
+            <small class="tag-post-number">
+                {post_count === 0 ? t.global.pagination.no_posts : post_count === 1 ? t.global.pagination.one_post : `${post_count} ${t.global.pagination.multiple_posts}`}
+            </small>
+        }
+    </div>
+</div>

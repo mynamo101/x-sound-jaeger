@@ -1,0 +1,128 @@
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 36px;
+    row-gap: 84px;
+    width: 100%;
+}
+
+.card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card .medium-text {
+    font-size: 20px;
+}
+
+.card-paragraph-wrapper {
+    margin-top: 21px;
+    max-width: 95%;
+}
+
+.latest-posts-grid {
+    border-bottom: 1px solid var(--text-color-40);
+}
+
+.card-title-wrapper {
+    margin-top: 16px;
+    margin-bottom: 21px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    column-gap: 72px;
+}
+
+.card-info-top {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.grid-outer {
+    border-bottom: 1px solid var(--text-color-40);
+}
+
+/* Styles for large desktop */
+@media (min-width: 1439px) {  
+    .grid {
+        column-gap: 2.5vw;
+        row-gap: 5.8vw;
+    }
+    
+    .card .medium-text {
+        font-size: calc(1.39vw * var(--scale));
+    }
+    
+    .card-paragraph-wrapper {
+        margin-top: calc(1.46vw * var(--scale));
+    }
+
+    .card-title-wrapper {
+        margin-top: calc(1.1vw * var(--scale));
+        margin-bottom: calc(1.46vw * var(--scale));
+        column-gap: calc(5vw * var(--scale));
+    }
+}
+
+/* Styles for tablet */
+@media (max-width: 991px) { 
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 0px;
+        border-top: 1px solid var(--text-color-40);
+    }
+
+    .card {
+        border-bottom: 1px solid var(--text-color-40);
+        padding: 52px 0px 46px 0px;
+    }
+    
+    .card .medium-text {
+        font-size: 24px;
+    }
+    
+    .card-paragraph-wrapper {
+        margin-top: 18px;
+        max-width: 620px;
+    }
+
+    .card-title-wrapper {
+        margin-top: 12px;
+        margin-bottom: 18px;
+        column-gap: 30px;
+    }
+
+    .grid-section {
+        padding-top: 0px;
+    }
+
+    .grid-section .grid {
+        border-top: none;
+    }
+}
+
+/* Styles for mobile */
+@media (max-width: 479px) { 
+    .card {
+        padding: 36px 0px 32px 0px;
+    }
+    
+    .card .medium-text {
+        font-size: 20px;
+    }
+    
+    .card-paragraph-wrapper {
+        margin-top: 15px;
+    }
+
+    .card-title-wrapper {
+        margin-top: 7px;
+        margin-bottom: 15px;
+        column-gap: 18px;
+    }
+}

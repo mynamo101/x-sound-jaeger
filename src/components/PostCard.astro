@@ -1,0 +1,66 @@
+---
+import Placeholder from "@assets/icons/Placeholder.astro";
+import type { PostCardProps } from "@src-types/types";
+import { Image } from "astro:assets";
+import { formatDate } from "@js/global.js"
+import { slugify } from "@utils/utils";
+
+import "@styles/card.css";
+
+const { post } = Astro.props as PostCardProps;
+const formatted_date = formatDate(post.data.pub_date);
+
+let tag_slug, tag_name;
+
+if(post.data.tags && post.data.tags.length > 0){
+    tag_name = post.data.tags[0];
+    tag_slug = slugify(tag_name)
+}
+---
+
+<div class="card">
+    <div class="card-info-top">
+        <small class="flex-center">
+            {tag_slug &&
+                <>
+                    <a href={`/tags/${tag_slug}/`}>{tag_name}</a>  
+                    &nbsp;|
+                </>
+            }
+            {formatted_date}     
+        </small>
+        <div class="card-title-wrapper">
+            <div class="medium-text">
+                <a href={`/blog/${post.id}`}>
+                    {post.data.title}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <a href={`/blog/${post.id}/`} class="card-image" aria-label={post.data.title}>
+        {post.data.feature_image ? (                 
+            <figure>
+                <Image 
+                    class="scale-in"
+                    src={post.data.feature_image as any} 
+                    alt={post.data.title}
+                    loading="lazy" 
+                    format="webp"
+                    widths={[300, 400, 600, 800, 1000, 1200, 1600]}
+                    sizes="(max-width: 479px) calc(100vw - 36px), (max-width: 991px) calc(100vw - 60px), 40vw"
+                />
+            </figure>                       
+        ) : (
+            <div class="placeholder">
+                <Placeholder/>
+            </div>               
+        )}
+    </a>
+
+    <div class="card-paragraph-wrapper">
+        <p class="small-paragraph two-lines">
+            {post.data.excerpt}
+        </p>
+    </div>
+</div>

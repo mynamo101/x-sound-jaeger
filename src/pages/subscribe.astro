@@ -1,0 +1,15 @@
+---
+import FormHero from '@components/FormHero.astro';
+import globalSettings from '@config/config.json.ts';
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title={t.subscribe_page.title_hero} description={t.subscribe_page.description_hero}>
+    <main>
+        <FormHero type={"Subscribe"} t={t} globalSettings={globalSettings} title={t.subscribe_page.title_hero} description={t.subscribe_page.description_hero}/>
+    </main>
+</BaseLayout>

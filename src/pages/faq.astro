@@ -1,0 +1,28 @@
+---
+import globalSettings from '@config/config.json.ts';
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Hero from "@components/Hero.astro";
+import faqSettings from '@config/faq.json.ts';
+import ToggleCards from '@components/ToggleCards.astro';
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title={t.faq_page.title_hero} description={t.faq_page.description_hero}>
+    <main>
+        <Hero 
+            globalSettings={globalSettings} 
+            t={t}
+            title={t.faq_page.title_hero}
+            description={t.faq_page.description_hero}
+            total_number={faqSettings.length}
+        /> 
+
+        <section class:list={['wide-container', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+            <div class="faq-section section-padding-bottom-extra">
+                <ToggleCards toggle_cards={faqSettings}/>
+            </div>
+        </section>
+    </main>
+</BaseLayout>

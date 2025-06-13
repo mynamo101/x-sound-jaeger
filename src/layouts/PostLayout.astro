@@ -1,0 +1,242 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import globalSettings from '@config/config.json.ts';
+import type { PostProps } from "@src-types/types";
+import { Image } from "astro:assets";
+import Social from "@components/Social.astro";
+import PostAuthor from "@components/PostAuthor.astro";
+import RelatedPostArrowIcon from "@assets/icons/RelatedPostArrowIcon.astro";
+import { slugify } from "@utils/utils";
+import { formatDate } from "@js/global.js";
+
+import "@styles/post.css";
+import "@styles/post-content.css";
+import "@styles/related-posts.css";
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+const { post, previous_post, next_post, minutes_read } = Astro.props as PostProps;
+
+const { title, excerpt, feature_image, post_header_type } = post.data;
+const post_header_type_global = globalSettings.post_header_type;
+const post_header = post_header_type ?? post_header_type_global;
+const currentUrl = Astro.request.url;
+const encodedTitle = encodeURIComponent(title);
+const formatted_date = formatDate(post.data.pub_date);
+
+let desktopSizes = "calc(100vw - 60px)";
+if(post_header == "Narrow"){
+  desktopSizes = "70vw"
+}else if(post_header == "Vertical"){
+  desktopSizes = "(max-width: 1438px) calc((100vw - 144px) / 3), 30vw"
+}
+
+let tag_slug, tag_name;
+
+if(post.data.tags && post.data.tags.length > 0){
+    tag_name = post.data.tags[0];
+    tag_slug = slugify(tag_name)
+}
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} type="image" title={title} description={excerpt} image={feature_image ? feature_image : globalSettings.site_meta_image_source}>
+    <main>
+      <article data-post-header-type={post_header} data-has-feature-image={feature_image ? "true" : "false"} data-use-reading-progress-bar={globalSettings.use_reading_progress_bar}>
+        {globalSettings.use_reading_progress_bar &&
+          <reading-progress id="progress-bar" class="reading-progress-bar"></reading-progress>
+        }
+
+        <header class:list={["hero", feature_image ? "wide-container" : "narrow-container no-image-container", post_header === "Narrow" && "narrow-container"]}>
+          <div class:list={["hero-content", post_header === "Vertical" && "vertical-post-header"]}>
+              <div class="post-hero-text-content section-padding-top">
+                <div class:list={['post-hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                {tag_slug &&
+                  <a class:list={['post-tag', { 'vertical-animation': globalSettings.use_page_load_animations }]} href={`/tags/${tag_slug}`} data-delay="100">
+                    {tag_name}
+                  </a>
+                }
+
+                <h1 class:list={['post-heading', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="200">{title}</h1>
+
+                <div class:list={['excerpt-and-authors-wrapper', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="300">
+                    {excerpt &&
+                        <div class="post-excerpt-wrapper">
+                            <p>
+                                {excerpt}
+                            </p>
+                        </div>
+                    }
+
+                    {post.data.authors &&    
+                      <div class="post-authors">
+                          <div class="post-author-images">  
+                            {
+                              post.data.authors.map((name) => 
+                                <PostAuthor name={name}/> 
+                              )
+                            } 
+                          </div>
+
+                          <div class="post-authors-text">
+                            <div class="post-authors-inner" id="authors">
+                                <small class="post-author-name">
+                                  {
+                                    post.data.authors.map((name, index) => 
+                                      <a href={`/authors/${slugify(name)}/`}>
+                                        {name}
+                                      </a>
+                                      <>
+                                        {index < post.data.authors.length - 1 &&
+                                          <span> & </span>
+                                        }
+                                      </>
+                                    )
+                                  } 
+                                </small>
+                            </div>
+                            <small class="date-small-text italic">
+                                <span>
+                                    <time>
+                                        {formatted_date}
+                                    </time>
+                                </span>
+                                {minutes_read && 
+                                  <>
+                                    &nbsp;-&nbsp;
+                                    <span>{minutes_read}</span>
+                                  </>
+                                }
+                            </small>
+                          </div>  
+                      </div>
+                    }   
+                </div>
+              </div>        
+
+              {feature_image &&
+                  <div class="post-main-image-wrapper">
+                      <div class:list={['post-hero-top-border top-vertical-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                      <div class="post-main-image">
+                        <figure class:list={[{ 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                            <Image 
+                              src={feature_image as any} 
+                              alt={title}                          
+                              loading="eager" 
+                              format="webp" 
+                              widths={[300, 400, 600, 800, 1000, 1200, 1600, 2000, 2400, 2800, 3200, 3600]}
+                              sizes={`(max-width: 479px) calc(100vw - 36px), (max-width: 991px) calc(100vw - 60px), ${desktopSizes}`}
+                            />
+                        </figure>
+                      </div>
+                  </div>
+              }  
+
+              <div class:list={["post-hero-bottom-border", globalSettings.use_page_load_animations && "horizontal-line-animation", !feature_image && "no-image-line"]}></div>             
+          </div>
+        </header>
+
+        <div class:list={['post-content narrow-container section-padding-bottom', { 'hidden-post-content': globalSettings.use_page_load_animations }]}>
+            <slot/>
+
+            <div class="post-share-icons">
+              <Social social={{
+                is_share_social: true, 
+                url: `https://www.facebook.com/sharer.php?u=${currentUrl}`, 
+                text: 'Share on Facebook', 
+                icon: ` 
+                    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M14 13.5H16.5L17.5 9.5H14V7.5C14 6.47 14 5.5 16 5.5H17.5V2.14C17.174 2.097 15.943 2 14.643 2C11.928 2 10 3.657 10 6.7V9.5H7V13.5H10V22H14V13.5Z" fill="currentColor"/>
+                    </svg>
+                  `
+              }}/>
+
+              <Social social={{
+                is_share_social: true, 
+                url: `https://twitter.com/intent/tweet?url=${currentUrl}&amp;text=${encodedTitle}`, 
+                text: 'Share on X', 
+                icon: ` 
+                    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.6831 3H20.7366L14.0655 10.6246L21.9135 21H15.7677L10.9548 14.7074L5.44769 21H2.39231L9.52769 12.8446L2 3H8.3L12.6505 8.75169L17.6812 3H17.6831ZM16.6114 19.1723H18.3034L7.38154 4.73169H5.56585L16.6114 19.1723Z" fill="currentColor"/>
+                    </svg>
+                  `
+              }}/>
+
+              <Social social={{
+                is_share_social: true, 
+                url: `https://www.linkedin.com/shareArticle?mini=true&amp;url=${currentUrl}&amp;title=${encodedTitle}`, 
+                text: 'Share on Linkedin', 
+                icon: ` 
+                    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 3C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19ZM18.5 18.5V13.2C18.5 12.3354 18.1565 11.5062 17.5452 10.8948C16.9338 10.2835 16.1046 9.94 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17C14.6813 12.17 15.0374 12.3175 15.2999 12.5801C15.5625 12.8426 15.71 13.1987 15.71 13.57V18.5H18.5ZM6.88 8.56C7.32556 8.56 7.75288 8.383 8.06794 8.06794C8.383 7.75288 8.56 7.32556 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19C6.43178 5.19 6.00193 5.36805 5.68499 5.68499C5.36805 6.00193 5.19 6.43178 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56ZM8.27 18.5V10.13H5.5V18.5H8.27Z" fill="currentColor"/>
+                    </svg>
+                  `
+              }}/>
+
+              <a href="javascript:" class="footer-button share-button clipboard-link" aria-label="Copy link">
+                <div class="social-inner">
+                  <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotateZ(-45deg);">
+                    <path d="M11 17H7C5.61667 17 4.43733 16.5123 3.462 15.537C2.48667 14.5617 1.99933 13.3827 2 12C2 10.6167 2.48767 9.43733 3.463 8.462C4.43833 7.48667 5.61733 6.99933 7 7H11V9H7C6.16667 9 5.45833 9.29167 4.875 9.875C4.29167 10.4583 4 11.1667 4 12C4 12.8333 4.29167 13.5417 4.875 14.125C5.45833 14.7083 6.16667 15 7 15H11V17ZM8 13V11H16V13H8ZM13 17V15H17C17.8333 15 18.5417 14.7083 19.125 14.125C19.7083 13.5417 20 12.8333 20 12C20 11.1667 19.7083 10.4583 19.125 9.875C18.5417 9.29167 17.8333 9 17 9H13V7H17C18.3833 7 19.5627 7.48767 20.538 8.463C21.5133 9.43833 22.0007 10.6173 22 12C22 13.3833 21.5123 14.5627 20.537 15.538C19.5617 16.5133 18.3827 17.0007 17 17H13Z" fill="currentColor"/>
+                  </svg>
+                </div>
+              </a>
+
+              <div class="clipboard-alert">
+                  <small>{t.post.clipboard}</small>
+              </div>
+          </div>
+        </div>
+
+        <footer>
+          <div class="related-posts wide-container">
+            <div class="related-post-wrapper">
+                {previous_post && 
+                    <a href={`/blog/${previous_post.id}`} class="related-post older-post">
+                        <div class="related-post-inner">
+                            <div class="related-post-arrow older-post-arrow">
+                                <RelatedPostArrowIcon />
+                            </div>
+                            <div class="related-post-text">
+                                {t.post.older_post}
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        
+            <div class="related-post-line"></div>
+
+            <div class="related-post-wrapper">
+                {next_post && 
+                  <a href={`/blog/${next_post.id}`} class="related-post newer-post">
+                      <div class="related-post-inner related-post-inner-margin">
+                          <div class="related-post-text">
+                              {t.post.newer_post}
+                          </div>
+                          <div class="related-post-arrow newer-post-arrow">
+                              <RelatedPostArrowIcon />
+                          </div>                        
+                      </div>
+                  </a>
+              }
+            </div>               
+        </div>
+        </footer>
+      </article>
+    </main>
+</BaseLayout>
+
+{globalSettings.use_image_zoom &&
+  <script is:inline src="https://cdn.jsdelivr.net/npm/lightense-images@1.0.17/dist/lightense.min.js"></script>
+  <script>
+    import { setLightense } from "@js/global.js"
+    setLightense();
+  </script>
+}
+
+<script>
+  import { copyUrlToClipboard } from "@js/global.js"
+  document.addEventListener('DOMContentLoaded', function () {
+    copyUrlToClipboard("post-share-icons");
+  })    
+</script>

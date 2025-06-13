@@ -1,0 +1,110 @@
+---
+import globalSettings from '@config/config.json.ts';
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+import profile_image from "@assets/images/account/account.webp"
+
+import "@styles/hero.css"
+import "@styles/author.css"
+import "@styles/account.css"
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title={t.account_page.title_hero} description={t.account_page.full_name_value}>
+    <main>
+        <section class="hero account-page-hero">
+            <div class="wide-container">
+                <div class="hero-wrapper">
+                    <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                    <div class="hero-text-wrapper section-padding-bottom">               
+                        <div class="hero-heading-wrapper section-padding-top">               
+                            <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}>{t.account_page.title_hero}</h1>                  
+                            <h3 class:list={['hero-number', { 'hero-number-animation': globalSettings.use_page_load_animations }]}></h3>
+                        </div>
+                    </div>  
+
+                    <div class:list={['account-buttons section-padding-bottom', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                        <a href="#" class="button account-button">
+                            {t.account_page.settings}
+                        </a>
+                        <a href="#" class="button account-button">
+                            {t.account_page.log_out}
+                        </a>
+                    </div>       
+
+                    <div class="author-bottom-line-left">
+                        <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                    </div>
+                    <div class="author-bottom-line-right">
+                        <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="wide-container">
+            <div class:list={['author-info section-padding-bottom-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+                <div class="author-text-content-wrapper">            
+                    <div class="author-text-content">
+                        <div class="author-info-row author-info-count">
+                            <div class="author-info-row-inner">
+                                <h3>{t.account_page.full_name_label}</h3>
+                                <div class="medium-text">{t.account_page.full_name_value}</div>
+                            </div>
+                        </div>
+
+                        <div class="author-info-row author-info-count">
+                            <div class="author-info-row-inner">
+                                <h3>{t.account_page.email_label}</h3>
+                                <div class="medium-text">{t.account_page.email_value}</div>
+                            </div>
+                        </div>
+
+                        <div class="author-info-row author-info-count">
+                            <div class="author-info-row-inner">
+                                <h3>{t.account_page.current_plan_label}</h3>
+                                <div class="medium-text">{t.account_page.current_plan_value}</div>
+                            </div>
+                        </div>
+
+                        <div class="author-info-row author-info-count">
+                            <div class="author-info-row-inner">
+                                <h3>{t.account_page.card_label}</h3>
+                                <div class="medium-text">{t.account_page.card_value}</div>
+                            </div>
+                        </div>
+
+                        <div class="author-info-row author-info-count">
+                            <div class="author-info-row-inner">
+                                <h3>{t.account_page.billing_date_label}</h3>
+                                <div class="medium-text">{t.account_page.billing_date_value}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="author-image-wrapper section-padding-top">
+                    <div class="card-image" >
+                        <figure class="author-figure">
+                            <Image 
+                                src={profile_image as any}
+                                alt={t.account_page.full_name_value}
+                                loading="eager" 
+                                format="webp"
+                                widths={[300, 400, 600, 800, 1000, 1200, 1600]}
+                                sizes="(max-width: 479px) calc(100vw - 36px), (max-width: 991px) calc(100vw - 60px), 40vw"
+                            />
+                        </figure>                                
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</BaseLayout>
+
+<script>
+    document.querySelector('.hero-number').innerHTML = document.querySelectorAll('.author-info-count').length.toString();
+</script>

@@ -1,0 +1,118 @@
+{
+    "global": {
+        "navbar": {
+            "sign_in": "Sign in"
+        },
+        "tags_slider": {
+            "title": "Browse by Tags"
+        },
+        "footer": {
+            "footer_text": "Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.",
+            "form_placeholder": "Your.email@example.com",
+            "credits": "All rights reserved."
+        },
+        "pagination": {
+            "load_more": "Load more",
+            "no_posts": "No Posts",
+            "one_post": "1 Post",
+            "multiple_posts": "Posts",
+            "no_tags": "No Tags",
+            "one_tag": "1 Tag",
+            "multiple_tags": "Tags"
+        },
+        "form": {
+            "email": "Your Email Address",
+            "name": "Your Name",
+            "message": "Your Message"
+        }
+    },
+    "homepage": {
+        "title_hero": "Elysian",
+        "description_hero": "Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.",
+        "title_featured_posts_desktop": "Discover Our Featured Posts",
+        "title_featured_posts_mobile": "Featured Posts",
+        "title_latest_posts_desktop": "Read Our Latest Posts",
+        "title_latest_posts_mobile": "Latest Posts"
+    },
+    "post": {
+        "clipboard": "The link has been copied!",
+        "older_post": "Older Post",
+        "newer_post": "Newer Post"
+    },
+    "blog_page": {
+        "title_hero": "All Posts",
+        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
+    },
+    "tags_page": {
+        "title_hero": "All Tags",
+        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
+    },
+    "authors_page": {
+        "title_hero": "Authors",
+        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
+    },
+    "author_page": {
+        "author_info": "Author Info",
+        "full_name": "Full Name",
+        "about": "About",
+        "location": "Location",
+        "work": "'s Work"
+    },
+    "archive_page": {
+        "title_hero": "Post Archive",
+        "all_tags": "All Tags"
+    },
+    "membership_page": {
+        "title_hero": "Membership",
+        "yearly": "Yearly",
+        "monthly": "Monthly",
+        "subscribe_now": "Subscribe now"
+    },
+    "faq_page": {
+        "title_hero": "Support",
+        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
+    },
+    "account_page": {
+        "title_hero": "Account Info",
+        "settings": "Settings",
+        "log_out": "Log out",
+        "full_name_label": "Full Name",
+        "full_name_value": "John Doe",
+        "email_label": "Email",
+        "email_value": "mail@example.com",
+        "current_plan_label": "Current Plan",
+        "current_plan_value": "Bronze",
+        "card_label": "Card",
+        "card_value": "**** **** **** 4242",
+        "billing_date_label": "Billing Date",
+        "billing_date_value": "June 23, 2025 "
+    },
+    "signin_page": {
+        "title_hero": "Sign In",
+        "description_hero": "Sign into your account again and see the entire library of members-only content & updates.",
+        "no_account": "Don't have an account yet?",
+        "sign_up": "Sign up"
+    },
+    "signup_page": {
+        "title_hero": "Sign Up",
+        "description_hero": "Unlock full access and see the entire library of members-only content & updates.",
+        "button_label": "Continue",
+        "has_account": "Already have an account?",
+        "sign_in": "Sign in"
+    },
+    "subscribe_page": {
+        "title_hero": "Subscribe",
+        "description_hero": "Unlock full access and see the entire library of members-only content & updates.",
+        "button_label": "Subscribe"
+    },
+    "contact_page": {
+        "title_hero": "Contact",
+        "description_hero": "Need help or have questions? Get in touch with us and we'll be happy to assist you.",
+        "button_label": "Send Message"
+    },
+    "error_404_page": {
+        "title_hero": "404",
+        "description_hero": "The page you are looking for doesn't exist or has been moved..",
+        "button_label": "Back to homepage" 
+    }
+}

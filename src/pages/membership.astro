@@ -1,0 +1,75 @@
+---
+import globalSettings from '@config/config.json.ts';
+import BaseLayout from "@layouts/BaseLayout.astro";
+import membershipSettings from '@config/membership.json.ts';
+import MembershipCard from '@components/MembershipCard.astro';
+
+import "@styles/hero.css"
+import "@styles/membership.css"
+import "@styles/archive-tags.css"
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title={t.membership_page.title_hero} description={t.membership_page.title_hero}>
+    <main>
+        <section class="hero membership-section">
+            <div class="wide-container">
+                <div class="hero-wrapper">
+                    <div class="hero-text-wrapper section-padding">
+                        <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+
+                        <div class="hero-heading-wrapper">               
+                            <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]} class="{{#if @custom.use_page_load_animations}}letter-animation{{/if}}">{t.membership_page.title_hero}</h1>                           
+                            <h3 class:list={['hero-number', { 'hero-number-animation': globalSettings.use_page_load_animations }]}>
+                                {membershipSettings.length}
+                            </h3>
+                        </div>
+
+                        <div class:list={['membership-tab-buttons', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                            <div class="button archive-tag-button">
+                                <input class="membership-button" data-tab="yearly" id="yearly" type="radio" name="membership-buttons" checked>
+                                <label class="radio-button-text" for="yearly">
+                                    {t.membership_page.yearly}
+                                </label>
+                            </div>
+
+                            <div class="button archive-tag-button">
+                                <input class="membership-button" data-inactive="true" data-tab="monthly" id="monthly" type="radio" name="membership-buttons">
+                                <label class="radio-button-text" for="monthly">
+                                    {t.membership_page.monthly}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="wide-container">
+            <div class="membership-section-outer section-padding-bottom-extra">
+                <custom-membership class="membership-section">
+                    <div class="tiers-wrapper">
+                        <div class="membership-tiers" data-tab-content="yearly">
+                            {
+                                membershipSettings.map((tier) =>
+                                    <MembershipCard tier={tier} yearly={true} globalSettings={globalSettings} t={t}/>
+                                )
+                            } 
+                        </div>
+
+                        <div class="membership-tiers" data-inactive="true" data-tab-content="monthly">
+                            {
+                                membershipSettings.map((tier) =>
+                                    <MembershipCard tier={tier} globalSettings={globalSettings} t={t}/>
+                                )
+                            }
+                        </div>
+                    </div>                
+                </custom-membership>
+            </div> 
+        </section> 
+    </main>
+</BaseLayout>

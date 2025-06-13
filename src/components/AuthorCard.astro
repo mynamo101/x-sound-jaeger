@@ -1,0 +1,64 @@
+---
+import Placeholder from "@assets/icons/Placeholder.astro";
+import type { AuthorCardProps } from "@src-types/types";
+import { Image } from "astro:assets";
+import { getImage } from "@utils/utils.ts";
+import authorSettings from '@config/authors.json.ts';
+
+import "@styles/card.css";
+
+// Get author image from images/author. Name them the same as author slug.
+const images = import.meta.glob<{ default: string }>('@assets/images/author/*.{jpg,jpeg,png,webp,gif,svg}', { eager: true });
+
+const { name, url, post_count } = Astro.props as AuthorCardProps;
+const t = Astro.props.t;
+
+const profile_image = getImage({glob: images, folder_name: "author", image_name: url });
+
+const authorData = authorSettings.find((t) => t.slug === url);
+const bio = authorData?.bio || null;
+const location = authorData?.location || null;
+---
+
+<div class="card">
+    <div class="card-info-top">
+        <small class="flex-center">
+            {post_count === 0 ? t.global.pagination.no_posts : post_count === 1 ? t.global.pagination.one_post : `${post_count} ${t.global.pagination.multiple_posts}`}     
+        </small>
+        <div class="card-title-wrapper">
+            <div class="medium-text">
+                <a href={`/authors/${url}/`}>
+                    {name}{location && <>, {location}</>}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <a href={`/authors/${url}/`} class="card-image" aria-label={name}>
+        {profile_image ? (                 
+            <figure>
+                <Image 
+                    class="scale-in"
+                    src={profile_image as any} 
+                    alt={name}
+                    loading="lazy" 
+                    format="webp"
+                    widths={[300, 400, 600, 800, 1000, 1200, 1600]}
+                    sizes="(max-width: 479px) calc(100vw - 36px), (max-width: 991px) calc(100vw - 60px), 40vw"
+                />
+            </figure>                       
+        ) : (
+            <div class="placeholder">
+                <Placeholder/>
+            </div>               
+        )}
+    </a>
+
+    {bio &&
+        <div class="card-paragraph-wrapper">
+            <p class="small-paragraph two-lines">
+                {bio}
+            </p>
+        </div>
+    }
+</div>

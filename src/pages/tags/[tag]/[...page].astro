@@ -1,0 +1,70 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import globalSettings from '@config/config.json.ts';
+import { getPostsByTag, getTags } from "@utils/utils.js";
+import Hero from "@components/Hero.astro";
+import PostCard from "@components/PostCard.astro";
+import { type Page } from "astro";
+import Pagination from "@components/Pagination.astro";
+import tagsSettings from '@config/tags.json.ts';
+
+export async function getStaticPaths({ paginate }) {
+  const tags = await getTags();
+
+  const paths = await Promise.all(
+    tags.map(async ({ original, slug }) => {
+      const { posts } = await getPostsByTag({ tag: original });
+
+      const paginatedPaths = paginate(posts, {
+        params: { 
+          tag: slug
+        },
+        props: {
+          title: original
+        },
+        pageSize: globalSettings.pagination_posts_number,
+      });
+
+      return paginatedPaths;
+    })
+  );
+
+  return paths.flat();
+}
+
+const { page, title } = Astro.props as { page: Page, title: string };
+const { tag } = Astro.params as { tag: string };
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+const tagData = tagsSettings.find((t) => t.slug === tag);
+const description = tagData ? tagData.description : null;
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title={title} description={description}>
+    <main>
+        <div class="iteration-container">
+            <Hero 
+                globalSettings={globalSettings} 
+                title={title}
+                description={description}
+                total_number={page.total}
+            />
+        </div>
+
+        <section class:list={['wide-container section-padding-top grid-section', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+            <div class="grid-outer section-padding-bottom">
+                <div class="grid pagination-grid">
+                    {
+                        page.data.map((post) =>
+                            <PostCard post={post}/>
+                        )
+                    } 
+                </div>
+                
+                <Pagination t={t} posts_per_page={globalSettings.pagination_posts_number} total_posts={page.total} url={`/tags/${tag}/`}/>
+            </div>
+        </section>
+    </main>
+</BaseLayout>
