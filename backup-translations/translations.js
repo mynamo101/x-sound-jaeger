@@ -28,9 +28,8 @@ export const zh = {
             "name": "您的姓名",
             "message": "您的訊息"
         }
-    },
-    "homepage": {
-        "title_hero": "X-Sound Jaeger",
+    },    "homepage": {
+        "title_hero": "XXX AUDIO LAB",
         "description_hero": "X-Sound Jaeger 是一個專業的成人聲音工作室，專注於提供高品質的成人音頻內容。我們的目標是為客戶創造獨特而令人滿意的聆聽體驗。",
         "title_featured_posts_desktop": "探索我們的精選文章",
         "title_featured_posts_mobile": "精選文章",
@@ -147,9 +146,8 @@ export const en = {
             "name": "Your name",
             "message": "Your message"
         }
-    },
-    "homepage": {
-        "title_hero": "X-Sound Jaeger",
+    },    "homepage": {
+        "title_hero": "XXX AUDIO LAB",
         "description_hero": "X-Sound Jaeger is a professional adult audio studio dedicated to providing high-quality adult audio content. Our goal is to create unique and satisfying listening experiences for our clients.",
         "title_featured_posts_desktop": "Explore our Featured Articles",
         "title_featured_posts_mobile": "Featured Articles",

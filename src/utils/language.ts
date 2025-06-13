@@ -1,4 +1,4 @@
-// 语言工具函数
+// 语言工具函数 - 统一翻译管理
 export function getCurrentLanguage() {
     // 如果是服务端渲染，返回默认语言
     if (typeof window === 'undefined') {
@@ -15,25 +15,30 @@ export function getCurrentLanguage() {
     return 'zh';
 }
 
-export function setLanguage(lang) {
-    if (typeof window !== 'undefined') {
+export function setLanguage(lang: string) {
+    if (typeof window !== 'undefined' && (lang === 'zh' || lang === 'en')) {
         localStorage.setItem('lang', lang);
+        
+        // 触发语言变化事件
+        window.dispatchEvent(new CustomEvent('languageChanged', { 
+            detail: { language: lang } 
+        }));
     }
 }
 
-// 动态加载翻译文件
-export async function loadTranslations(language = 'zh') {
-    try {
-        const translations = await import(`../locales/${language}.json`);
-        return translations.default || translations;
-    } catch (error) {
-        console.warn(`Failed to load translations for ${language}, falling back to Chinese`);
-        try {
-            const fallbackTranslations = await import('../locales/zh.json');
-            return fallbackTranslations.default || fallbackTranslations;
-        } catch (fallbackError) {
-            console.error('Failed to load fallback translations:', fallbackError);
-            return {};
-        }
+// 获取翻译文本的工具函数
+export function getTranslation(key: string, lang?: string): string {
+    if (typeof window !== 'undefined' && window.translationManager) {
+        return window.translationManager.getTranslation(key, lang);
+    }
+    return key; // 后备返回
+}
+
+// 类型定义
+declare global {
+    interface Window {
+        translationManager: any;
+        currentTranslations: any;
+        currentLanguage: string;
     }
 }

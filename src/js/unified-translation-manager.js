@@ -1,19 +1,88 @@
-// 客户端语言管理
-import { zh, en } from './translations.js';
+// 统一的翻译管理器
+// 使用 JSON 文件作为唯一的翻译数据源
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 翻译数据
-    const translations = { zh, en };
+class UnifiedTranslationManager {
+    constructor() {
+        this.translations = {};
+        this.currentLanguage = 'zh';
+        this.initialized = false;
+    }
 
     // 获取当前语言
-    function getCurrentLanguage() {
-        return localStorage.getItem('lang') || 'zh';
+    getCurrentLanguage() {
+        if (typeof window !== 'undefined') {
+            const savedLang = localStorage.getItem('lang');
+            return savedLang && (savedLang === 'zh' || savedLang === 'en') ? savedLang : 'zh';
+        }
+        return 'zh';
+    }
+
+    // 设置语言
+    setLanguage(lang) {
+        if (typeof window !== 'undefined' && (lang === 'zh' || lang === 'en')) {
+            localStorage.setItem('lang', lang);
+            this.currentLanguage = lang;
+            
+            // 触发语言变化事件
+            window.dispatchEvent(new CustomEvent('languageChanged', { 
+                detail: { language: lang } 
+            }));
+        }
+    }
+
+    // 动态加载翻译文件
+    async loadTranslationFiles() {
+        try {
+            const [zhResponse, enResponse] = await Promise.all([
+                fetch('/src/locales/zh.json'),
+                fetch('/src/locales/en.json')
+            ]);
+            
+            if (!zhResponse.ok || !enResponse.ok) {
+                throw new Error('Failed to fetch translation files');
+            }
+
+            this.translations.zh = await zhResponse.json();
+            this.translations.en = await enResponse.json();
+            
+            return this.translations;
+        } catch (error) {
+            console.error('Failed to load translation files:', error);
+            // 提供后备翻译数据
+            this.translations = {
+                zh: { global: { navbar: { sign_in: "登入" } } },
+                en: { global: { navbar: { sign_in: "Sign in" } } }
+            };
+            return this.translations;
+        }
+    }
+
+    // 获取翻译文本
+    getTranslation(key, lang = null) {
+        const currentLang = lang || this.getCurrentLanguage();
+        const translations = this.translations[currentLang];
+        
+        if (!translations) return key;
+        
+        // 支持点号分隔的键路径，如 "global.navbar.sign_in"
+        const keys = key.split('.');
+        let result = translations;
+        
+        for (const k of keys) {
+            if (result && typeof result === 'object' && k in result) {
+                result = result[k];
+            } else {
+                return key; // 返回原始键名作为后备
+            }
+        }
+        
+        return result || key;
     }
 
     // 更新页面内容
-    function updatePageContent() {
-        const currentLang = getCurrentLanguage();
-        const t = translations[currentLang];
+    updatePageContent() {
+        const currentLang = this.getCurrentLanguage();
+        const t = this.translations[currentLang];
 
         if (!t) return;
 
@@ -34,31 +103,21 @@ document.addEventListener('DOMContentLoaded', function() {
             footerInput.placeholder = t.global.footer.form_placeholder;
         }
 
-        // 如果是首页，更新首页内容
-        if (window.location.pathname === '/') {
-            updateHomepageContent(t);
-        }
-
         // 更新标签滑块标题
-        const tagsSliderTitle = document.querySelector('.tags-slider-section .desktop-section-header');
+        const tagsSliderTitle = document.querySelector('.tags-slider .section-header h2');
         if (tagsSliderTitle && t.global?.tags_slider?.title) {
             tagsSliderTitle.textContent = t.global.tags_slider.title;
         }
-        
-        const tagsSliderTitleMobile = document.querySelector('.tags-slider-section .mobile-section-header');
-        if (tagsSliderTitleMobile && t.global?.tags_slider?.title) {
-            tagsSliderTitleMobile.textContent = t.global.tags_slider.title;
-        }
 
         // 更新语言选择器显示
-        updateLanguageSelector(currentLang);
+        this.updateLanguageSelector(currentLang);
 
         // 根据页面类型更新内容
-        updatePageSpecificContent(t);
+        this.updatePageSpecificContent(t);
     }
 
     // 更新首页内容
-    function updateHomepageContent(t) {
+    updateHomepageContent(t) {
         if (!t.homepage) return;
 
         // 更新英雄区域标题
@@ -68,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // 更新英雄区域描述
-        const heroDescription = document.querySelector('.hero .post-excerpt-wrapper p');
+        const heroDescription = document.querySelector('.hero .hero-paragraph-inner p');
         if (heroDescription && t.homepage.description_hero) {
             heroDescription.textContent = t.homepage.description_hero;
         }
@@ -97,8 +156,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 根据页面类型更新特定内容
-    function updatePageSpecificContent(t) {
+    updatePageSpecificContent(t) {
         const path = window.location.pathname;
+
+        // 如果是首页，更新首页内容
+        if (path === '/') {
+            this.updateHomepageContent(t);
+        }
 
         // 博客页面
         if (path.startsWith('/blog') && t.blog_page) {
@@ -120,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 tagsTitle.textContent = t.tags_page.title_hero;
             }
             
-            const tagsDescription = document.querySelector('.hero .post-excerpt-wrapper p');
+            const tagsDescription = document.querySelector('.hero .hero-paragraph-inner p');
             if (tagsDescription && t.tags_page.description_hero) {
                 tagsDescription.textContent = t.tags_page.description_hero;
             }
@@ -133,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 authorsTitle.textContent = t.authors_page.title_hero;
             }
             
-            const authorsDescription = document.querySelector('.hero .post-excerpt-wrapper p');
+            const authorsDescription = document.querySelector('.hero .hero-paragraph-inner p');
             if (authorsDescription && t.authors_page.description_hero) {
                 authorsDescription.textContent = t.authors_page.description_hero;
             }
@@ -177,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 faqTitle.textContent = t.faq_page.title_hero;
             }
             
-            const faqDescription = document.querySelector('.hero .post-excerpt-wrapper p');
+            const faqDescription = document.querySelector('.hero .hero-paragraph-inner p');
             if (faqDescription && t.faq_page.description_hero) {
                 faqDescription.textContent = t.faq_page.description_hero;
             }
@@ -242,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorTitle.textContent = t.error_404_page.title_hero;
             }
             
-            const errorDescription = document.querySelector('.form-page-excerpt-container p');
+            const errorDescription = document.querySelector('.hero .hero-paragraph-inner p');
             if (errorDescription && t.error_404_page.description_hero) {
                 errorDescription.textContent = t.error_404_page.description_hero;
             }
@@ -258,18 +322,86 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 更新语言选择器显示
-    function updateLanguageSelector(currentLang) {
+    updateLanguageSelector(currentLang) {
         const currentLanguageElement = document.getElementById('current-language');
         if (currentLanguageElement) {
             currentLanguageElement.textContent = currentLang === 'zh' ? '中文' : 'English';
         }
     }
 
-    // 初始加载时更新页面内容
-    updatePageContent();
+    // 更新页面标题
+    updatePageTitle() {
+        const path = window.location.pathname;
+        const t = this.translations[this.getCurrentLanguage()];
+        
+        if (!t) return;
+        
+        // 更新文档标题
+        if (path === '/') {
+            document.title = `${t.homepage?.title_hero || 'X-Sound Jaeger'} - X-Sound Jaeger`;
+        } else if (path.includes('/blog')) {
+            document.title = `${t.blog_page?.title_hero || 'Blog'} - X-Sound Jaeger`;
+        } else if (path.includes('/tags') && !path.includes('/tags/')) {
+            document.title = `${t.tags_page?.title_hero || 'Tags'} - X-Sound Jaeger`;
+        } else if (path.includes('/authors') && !path.includes('/authors/')) {
+            document.title = `${t.authors_page?.title_hero || 'Authors'} - X-Sound Jaeger`;
+        }
+    }
 
-    // 监听语言切换事件
-    window.addEventListener('languageChanged', function() {
-        updatePageContent();
-    });
-});
+    // 初始化翻译管理器
+    async init() {
+        if (this.initialized) return;
+
+        try {
+            // 加载翻译文件
+            await this.loadTranslationFiles();
+            
+            // 设置当前语言
+            this.currentLanguage = this.getCurrentLanguage();
+            
+            // 等待DOM加载完成
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.updatePageContent();
+                    this.updatePageTitle();
+                });
+            } else {
+                this.updatePageContent();
+                this.updatePageTitle();
+            }
+            
+            // 监听语言变化事件
+            window.addEventListener('languageChanged', () => {
+                this.currentLanguage = this.getCurrentLanguage();
+                this.updatePageContent();
+                this.updatePageTitle();
+            });
+            
+            // 监听存储变化事件（多标签页同步）
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'lang') {
+                    this.currentLanguage = this.getCurrentLanguage();
+                    this.updatePageContent();
+                    this.updatePageTitle();
+                }
+            });
+            
+            // 将实例添加到全局作用域
+            window.translationManager = this;
+            window.currentTranslations = this.translations[this.currentLanguage];
+            window.currentLanguage = this.currentLanguage;
+            
+            this.initialized = true;
+            
+            console.log('Unified Translation Manager initialized');
+        } catch (error) {
+            console.error('Failed to initialize translation manager:', error);
+        }
+    }
+}
+
+// 创建全局实例并自动初始化
+const translationManager = new UnifiedTranslationManager();
+translationManager.init();
+
+export default translationManager;
