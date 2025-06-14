@@ -34,8 +34,8 @@ class UnifiedTranslationManager {
     async loadTranslationFiles() {
         try {
             const [zhResponse, enResponse] = await Promise.all([
-                fetch('/src/locales/zh.json'),
-                fetch('/src/locales/en.json')
+                fetch('/locales/zh.json'),
+                fetch('/locales/en.json')
             ]);
             
             if (!zhResponse.ok || !enResponse.ok) {
