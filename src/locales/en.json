@@ -5,8 +5,9 @@
         },
         "tags_slider": {
             "title": "Browse by Tags"
-        },        "footer": {
-            "footer_text": "X-Sound Jaeger is a professional adult audio studio specializing in high-quality adult audio content, including ASMR, roleplay, and diverse content.",
+        },
+        "footer": {
+            "footer_text": "Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.",
             "form_placeholder": "Your.email@example.com",
             "credits": "All rights reserved."
         },
@@ -24,9 +25,10 @@
             "name": "Your Name",
             "message": "Your Message"
         }
-    },    "homepage": {
-        "title_hero": "X-SOUND JAEGER",
-        "description_hero": "X-Sound Jaeger is a professional adult audio studio specializing in high-quality adult audio content. Our goal is to create unique and satisfying listening experiences for our clients.",
+    },
+    "homepage": {
+        "title_hero": "Elysian",
+        "description_hero": "Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.",
         "title_featured_posts_desktop": "Discover Our Featured Posts",
         "title_featured_posts_mobile": "Featured Posts",
         "title_latest_posts_desktop": "Read Our Latest Posts",
@@ -36,17 +38,18 @@
         "clipboard": "The link has been copied!",
         "older_post": "Older Post",
         "newer_post": "Newer Post"
-    },    "blog_page": {
+    },
+    "blog_page": {
         "title_hero": "All Posts",
-        "description_hero": "Explore all our article content, covering various topics and types, providing you with a rich reading experience."
+        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
     },
     "tags_page": {
         "title_hero": "All Tags",
-        "description_hero": "Browse our content through tags to quickly find topics and categories that interest you."
+        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
     },
     "authors_page": {
         "title_hero": "Authors",
-        "description_hero": "Meet our content creator team and learn about their professional backgrounds and creative styles."
+        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
     },
     "author_page": {
         "author_info": "Author Info",
@@ -58,53 +61,58 @@
     "archive_page": {
         "title_hero": "Post Archive",
         "all_tags": "All Tags"
-    },    "membership_page": {
-        "title_hero": "Membership Plans",
-        "yearly": "Yearly Plan",
-        "monthly": "Monthly Plan",
-        "subscribe_now": "Subscribe Now"
+    },
+    "membership_page": {
+        "title_hero": "Membership",
+        "yearly": "Yearly",
+        "monthly": "Monthly",
+        "subscribe_now": "Subscribe now"
     },
     "faq_page": {
-        "title_hero": "Customer Support",
-        "description_hero": "Have any questions or need assistance? Check our frequently asked questions or contact our support team."
-    },    "account_page": {
-        "title_hero": "Account Information",
+        "title_hero": "Support",
+        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
+    },
+    "account_page": {
+        "title_hero": "Account Info",
         "settings": "Settings",
-        "log_out": "Log Out",
+        "log_out": "Log out",
         "full_name_label": "Full Name",
         "full_name_value": "John Doe",
         "email_label": "Email",
         "email_value": "mail@example.com",
-        "current_plan_label": "Current Plan","current_plan_value": "Bronze Member",
-        "card_label": "Credit Card",
+        "current_plan_label": "Current Plan",
+        "current_plan_value": "Bronze",
+        "card_label": "Card",
         "card_value": "**** **** **** 4242",
         "billing_date_label": "Billing Date",
-        "billing_date_value": "June 23, 2025"
-    },    "signin_page": {
+        "billing_date_value": "June 23, 2025 "
+    },
+    "signin_page": {
         "title_hero": "Sign In",
-        "description_hero": "Re-login to your account to access full member-exclusive content and latest updates.",
+        "description_hero": "Sign into your account again and see the entire library of members-only content & updates.",
         "no_account": "Don't have an account yet?",
-        "sign_up": "Sign Up"
+        "sign_up": "Sign up"
     },
     "signup_page": {
         "title_hero": "Sign Up",
-        "description_hero": "Unlock full access to view complete member-exclusive content and latest updates.",
+        "description_hero": "Unlock full access and see the entire library of members-only content & updates.",
         "button_label": "Continue",
         "has_account": "Already have an account?",
-        "sign_in": "Sign In"
-    },    "subscribe_page": {
+        "sign_in": "Sign in"
+    },
+    "subscribe_page": {
         "title_hero": "Subscribe",
-        "description_hero": "Unlock full access to view complete member-exclusive content and latest updates.",
+        "description_hero": "Unlock full access and see the entire library of members-only content & updates.",
         "button_label": "Subscribe"
     },
     "contact_page": {
-        "title_hero": "Contact Us",
-        "description_hero": "Need assistance or have any questions? Please contact us, and we'll be happy to help you.",
+        "title_hero": "Contact",
+        "description_hero": "Need help or have questions? Get in touch with us and we'll be happy to assist you.",
         "button_label": "Send Message"
     },
     "error_404_page": {
         "title_hero": "404",
-        "description_hero": "The page you're looking for doesn't exist or has been moved.",
-        "button_label": "Back to Home"
+        "description_hero": "The page you are looking for doesn't exist or has been moved..",
+        "button_label": "Back to homepage" 
     }
 }

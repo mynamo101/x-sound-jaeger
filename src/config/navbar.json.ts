@@ -1,3 +1,4 @@
+
 import type { Navbar } from "@src-types/types.ts";
 
 /**
@@ -11,88 +12,91 @@ const navbarSettings: Navbar[] = [
 		text: "Home",
 		link: "/",
 	},
-	{
-		text: "Works",
-		link: "/archive/",
+    {
+		text: "Style Guide",
+		link: "/style-guide/",
 	},
 	{
-		text: "Contact",
-		link: "/contact/",
+		text: "Documentation",
+		link: "https://www.kusa-projects.com/astro-documentation",
+		new_tab: true
 	},
 	{
-		text: "Language",
+		text: "Post Type",
 		dropdown: [
 			{
-				text: "English",
-				link: "#",
-				lang: "en"
+				text: "Wide",
+				link: "/blog/uncovering-hidden-special-places/",
 			},
 			{
-				text: "中文",
-				link: "#",
-				lang: "zh"
-			}
-		]
+				text: "Narrow",
+				link: "/blog/traveling-principles-demystified/",
+			},
+			{
+				text: "Vertical",
+				link: "/blog/traveling-on-a-budget/",
+			},
+		],
 	},
-	// {
-	// 	text: "Features",
-	// 	dropdown: [
-	// 		// {
-	// 		// 	text: "Features",
-	// 		// 	link: "/features/",
-	// 		// },
-	// 		{
-	// 			text: "Archive",
-	// 			link: "/archive/",
-	// 		},
-	// 		{
-	// 			text: "Tags",
-	// 			link: "/tags/",
-	// 		},
-	// 		{
-	// 			text: "Authors",
-	// 			link: "/authors/",
-	// 		},
-	// 		{
-	// 			text: "Account",
-	// 			link: "/account/",
-	// 		},
-	// 		{
-	// 			text: "Subscribe",
-	// 			link: "/subscribe/",
-	// 		},
-	// 		{
-	// 			text: "Membership",
-	// 			link: "/membership/",
-	// 		},
-	// 		// {
-	// 		// 	text: "Contact",
-	// 		// 	link: "/contact/",
-	// 		// },
-	// 		{
-	// 			text: "FAQ",
-	// 			link: "/faq/",
-	// 		},
-	// 		// {
-	// 		// 	text: "404",
-	// 		// 	link: "/404/",
-	// 		// },
-	// 		// {
-	// 		// 	text: "RSS Feed",
-	// 		// 	link: "/rss.xml/",
-	// 		// },
-	// 		{
-	// 			text: "Get Theme",
-	// 			link: "https://kusa-projects.lemonsqueezy.com/buy/fcfbe185-536a-46c6-a0dd-7f4621a64314",
-	// 			new_tab: true
-	// 		},
-	// 		{
-	// 			text: "KUSA Projects",
-	// 			link: "https://www.kusa-projects.com/",
-	// 			new_tab: true
-	// 		},
-	// 	],
-	// },
+	{
+		text: "Features",
+		dropdown: [
+			{
+				text: "Features",
+				link: "/features/",
+			},
+			{
+				text: "Archive",
+				link: "/archive/",
+			},
+			{
+				text: "Tags",
+				link: "/tags/",
+			},
+			{
+				text: "Authors",
+				link: "/authors/",
+			},
+			{
+				text: "Account",
+				link: "/account/",
+			},
+			{
+				text: "Subscribe",
+				link: "/subscribe/",
+			},
+			{
+				text: "Membership",
+				link: "/membership/",
+			},
+			{
+				text: "Contact",
+				link: "/contact/",
+			},
+			{
+				text: "FAQ",
+				link: "/faq/",
+			},
+			{
+				text: "404",
+				link: "/404/",
+			},
+			{
+				text: "RSS Feed",
+				link: "/rss.xml/",
+			},
+			{
+				text: "Get Theme",
+				link: "https://kusa-projects.lemonsqueezy.com/buy/fcfbe185-536a-46c6-a0dd-7f4621a64314",
+				new_tab: true
+			},
+			{
+				text: "KUSA Projects",
+				link: "https://www.kusa-projects.com/",
+				new_tab: true
+			},
+		],
+	},
 ]
 
 export default navbarSettings;

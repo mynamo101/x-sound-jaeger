@@ -20,7 +20,7 @@ const { globalSettings, t } = Astro.props;
         <div class="hero-wrapper">
             <div class="hero-text-wrapper section-padding-bottom">
                 <div class:list={['hero-heading-wrapper section-padding-top', { 'full-width': !description }]}>               
-                    <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]} style="font-size: 8vw;">{title}</h1>
+                    <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}>{title}</h1>
 
                     {!is_homepage && (
                         <>
