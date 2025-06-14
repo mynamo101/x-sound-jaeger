@@ -53,6 +53,7 @@ const { t, globalSettings } = Astro.props;
                                 <div class="vertical-form">
                                     <input data-members-name type="text" required="true" placeholder={t.global.form.name}/>
                                     <input data-members-email type="email" required="true" placeholder={t.global.form.email}/>
+                                    <input data-members-password type="password" required="true" placeholder="密碼"/>
                                     <button class="button" type="submit">{type === "Signup" ? <>{t.signup_page.button_label}</> : <>{t.subscribe_page.button_label}</>}</button>
                                 </div>                                 
                             )}
@@ -77,3 +78,76 @@ const { t, globalSettings } = Astro.props;
         <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
     </div>
 </section>
+
+<script>
+// 註冊/登入/訂閱表單通用提交處理
+function handleFormSubmit(e, type) {
+  e.preventDefault();
+  const form = e.target;
+  let url = '';
+  let data = {};
+
+  if (type === 'Signup') {
+    url = 'http://139.162.106.254:3001/api/signup';
+    data = {
+      username: form.querySelector('[data-members-name]').value,
+      email: form.querySelector('[data-members-email]').value,
+      password: form.querySelector('[data-members-password]').value
+    };
+  } else if (type === 'Signin') {
+    url = 'http://139.162.106.254:3001/api/signin';
+    data = {
+      username: form.querySelector('[data-members-email]').value,
+      password: form.querySelector('[data-members-password]') ? form.querySelector('[data-members-password]').value : ''
+    };
+  } else if (type === 'Subscribe') {
+    alert('訂閱功能尚未實作');
+    return;
+  }
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+    .then(async res => {
+      let resultText = await res.text();
+      let result;
+      try {
+        result = JSON.parse(resultText);
+      } catch (e) {
+        console.error('Response not JSON:', resultText);
+        throw new Error('Response not JSON: ' + resultText);
+      }
+      console.log('API result:', result);
+      if (!res.ok) {
+        throw new Error(result.message || result.error || 'Unknown error');
+      }
+      if (result.token) {
+        localStorage.setItem('token', result.token);
+        alert('登入/註冊成功！');
+        window.location.href = '/account/';
+      } else if (result.message) {
+        alert(result.message);
+        window.location.href = '/signin/';
+      } else if (result.error) {
+        alert(result.error);
+      }
+    })
+    .catch(function(err) {
+      console.error('Fetch error:', err);
+      alert('伺服器錯誤，請稍後再試。\n' + err);
+    });
+}
+
+// 綁定事件
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.page-form-element').forEach(form => {
+    // 直接用 Astro 傳入的 type 變數
+    const type = window.FormHeroType || 'Signup';
+    form.addEventListener('submit', e => handleFormSubmit(e, type));
+  });
+});
+// 讓 type 變數可被 JS 取得
+window.FormHeroType = "{type}";
+</script>
