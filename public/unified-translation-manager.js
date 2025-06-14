@@ -423,5 +423,3 @@ class UnifiedTranslationManager {
 // 创建全局实例并自动初始化
 const translationManager = new UnifiedTranslationManager();
 translationManager.init();
-
-export default translationManager;
