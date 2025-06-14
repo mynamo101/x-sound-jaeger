@@ -39,14 +39,12 @@ const { t, globalSettings } = Astro.props;
                     </div>
                 )   :   (
                     <div class:list={['form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
-                        <form class="page-form-element">
-                            {type === "Signin" ? (
-                                <div class="subscribe-wrapper">
-                                    <input data-members-email type="email" required="true" placeholder={t.global.form.email} class="subscribe-input"/>
-                                    <button class="footer-button footer-submit-button" type="submit" aria-label="Submit">
-                                        <div class="footer-arrow-icon">
-                                            <FooterArrowIcon />
-                                        </div>
+                        <form class="page-form-element">                            {type === "Signin" ? (
+                                <div class="vertical-form">
+                                    <input data-members-email type="email" required="true" placeholder={t.global.form.email}/>
+                                    <input data-members-password type="password" required="true" placeholder="密碼"/>
+                                    <button class="button" type="submit">
+                                        {t.signin_page.button_label || '登入'}
                                     </button>
                                 </div>
                             )   :   (
@@ -93,12 +91,12 @@ function handleFormSubmit(e, type) {
       username: form.querySelector('[data-members-name]').value,
       email: form.querySelector('[data-members-email]').value,
       password: form.querySelector('[data-members-password]').value
-    };
-  } else if (type === 'Signin') {
+    };  } else if (type === 'Signin') {
     url = 'http://139.162.106.254:3001/api/signin';
+    const passwordField = form.querySelector('[data-members-password]');
     data = {
       username: form.querySelector('[data-members-email]').value,
-      password: form.querySelector('[data-members-password]') ? form.querySelector('[data-members-password]').value : ''
+      password: passwordField ? passwordField.value : ''
     };
   } else if (type === 'Subscribe') {
     alert('訂閱功能尚未實作');
@@ -144,10 +142,10 @@ function handleFormSubmit(e, type) {
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.page-form-element').forEach(form => {
     // 直接用 Astro 傳入的 type 變數
-    const type = window.FormHeroType || 'Signup';
+    const type = (window as any).FormHeroType || 'Signup';
     form.addEventListener('submit', e => handleFormSubmit(e, type));
   });
 });
 // 讓 type 變數可被 JS 取得
-window.FormHeroType = "{type}";
+(window as any).FormHeroType = "{type}";
 </script>
