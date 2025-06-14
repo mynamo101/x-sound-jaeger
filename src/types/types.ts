@@ -96,6 +96,12 @@ export interface TagCardProps {
     post_count?: number
 }
 
+export interface AgeVerificationProps {
+    title?: string,
+    description?: string,
+    confirm_button?: string
+}
+
 export interface TagProps {
     slug: string,
     description?: string

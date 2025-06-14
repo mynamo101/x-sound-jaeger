@@ -1,0 +1,124 @@
+{    "age_verification": {
+        "title": "您必须年满18岁才能访问此网站",
+        "description": "请确认您已年满18周岁。否则请离开本网站。",
+        "yes_button": "是",
+        "no_button": "否"
+    },
+    "global": {
+        "navbar": {
+            "contact": "联系我们"
+        },
+        "tags_slider": {
+            "title": "按标签浏览"
+        },
+        "footer": {
+            "footer_text": "X-Sound Jaeger是专门为成人观众提供高质量音频体验的成人配音工作室。我们致力于提供沉浸式和专业的声音内容，专为成人娱乐而设计。",
+            "form_placeholder": "您的邮箱@example.com",
+            "credits": "版权所有。"
+        },
+        "pagination": {
+            "load_more": "加载更多",
+            "no_posts": "暂无文章",
+            "one_post": "1篇文章",
+            "multiple_posts": "篇文章",
+            "no_tags": "暂无标签",
+            "one_tag": "1个标签",
+            "multiple_tags": "个标签"
+        },
+        "form": {
+            "email": "您的电子邮箱",
+            "name": "您的姓名",
+            "message": "您的留言"
+        }
+    },
+    "homepage": {
+        "title_hero": "您好！",
+        "description_hero": "欢迎来到X-Sound Jaeger，我创作高质量的成人音频内容。希望您在这里玩得开心！",
+        "title_featured_posts_desktop": "探索我的精选作品",
+        "title_featured_posts_mobile": "精选作品",
+        "title_latest_posts_desktop": "阅读我的最新作品",
+        "title_latest_posts_mobile": "最新作品"
+    },
+    "post": {
+        "clipboard": "链接已复制！",
+        "older_post": "较早的文章",
+        "newer_post": "较新的文章"
+    },
+    "blog_page": {
+        "title_hero": "所有文章",
+        "description_hero": "浏览我们丰富的文章库，探索各种主题和风格的音频内容。"
+    },
+    "tags_page": {
+        "title_hero": "所有标签",
+        "description_hero": "按标签浏览不同类别的音频作品，找到您感兴趣的内容。"
+    },
+    "authors_page": {
+        "title_hero": "作者",
+        "description_hero": "了解我们团队中的有才华的声优和作者。"
+    },
+    "author_page": {
+        "author_info": "作者信息",
+        "full_name": "全名",
+        "about": "关于",
+        "location": "地点",
+        "work": "的作品"
+    },
+    "archive_page": {
+        "title_hero": "所有作品",
+        "all_tags": "所有标签"
+    },
+    "membership_page": {
+        "title_hero": "会员",
+        "yearly": "年度",
+        "monthly": "月度",
+        "subscribe_now": "立即订阅"
+    },
+    "faq_page": {
+        "title_hero": "支持",
+        "description_hero": "常见问题及解答，帮助您了解我们的服务和内容。"
+    },
+    "account_page": {
+        "title_hero": "账户信息",
+        "settings": "设置",
+        "log_out": "登出",
+        "full_name_label": "全名",
+        "full_name_value": "张三",
+        "email_label": "电子邮箱",
+        "email_value": "mail@example.com",
+        "current_plan_label": "当前计划",
+        "current_plan_value": "青铜会员",
+        "card_label": "信用卡",
+        "card_value": "**** **** **** 4242",
+        "billing_date_label": "账单日期",
+        "billing_date_value": "2025年6月23日"
+    },
+    "signin_page": {
+        "title_hero": "登录",
+        "description_hero": "再次登录您的账户，查看会员专属内容和更新。",
+        "button_label": "登录",
+        "no_account": "还没有账户？",
+        "sign_up": "注册"
+    },
+    "signup_page": {
+        "title_hero": "注册",
+        "description_hero": "解锁完整访问权限，查看会员专属内容和更新。",
+        "button_label": "继续",
+        "has_account": "已经有账户？",
+        "sign_in": "登录"
+    },
+    "subscribe_page": {
+        "title_hero": "订阅",
+        "description_hero": "订阅我们的通讯，获取最新更新和特别优惠。",
+        "button_label": "订阅"
+    },
+    "contact_page": {
+        "title_hero": "联系我们",
+        "description_hero": "有问题或建议？请随时与我们联系。",
+        "button_label": "发送消息"
+    },
+    "error_404_page": {
+        "title_hero": "页面未找到",
+        "description_hero": "您要寻找的页面不存在或已被移动。",
+        "button_label": "返回首页"
+    }
+}

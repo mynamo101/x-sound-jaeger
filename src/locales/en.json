@@ -1,4 +1,9 @@
-{
+{    "age_verification": {
+        "title": "You must be 18+ to visit this website",
+        "description": "Please confirm you are at least 18 years old of age. Otherwise leave the website.",
+        "yes_button": "Yes",
+        "no_button": "No"
+    },
     "global": {
         "navbar": {
             "contact": "Contact Us"
@@ -45,11 +50,11 @@
     },
     "tags_page": {
         "title_hero": "All Tags",
-        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
+        "description_hero": "Explore the diverse range of tags that categorize our content. Each tag represents a unique theme or topic."
     },
     "authors_page": {
-        "title_hero": "Authors",
-        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
+        "title_hero": "Creators",
+        "description_hero": "Meet the talented individuals behind the content. Every unique sound is crafted with care and passion."
     },
     "author_page": {
         "author_info": "Author Info",
@@ -70,7 +75,7 @@
     },
     "faq_page": {
         "title_hero": "Support",
-        "description_hero": "Adipiscing neque risus quam iaculis. Nisl a imperdiet mauris mauris gravida sapien placerat morbi. At libero leo arcu mi commodo auctor."
+        "description_hero": "Do you need assistance? Check out our FAQ section for answers to common questions! I'm here to help you with any issues you may have!"
     },
     "account_page": {
         "title_hero": "Account Info",

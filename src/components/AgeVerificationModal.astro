@@ -1,0 +1,54 @@
+---
+import type { AgeVerificationProps } from "@src-types/types.ts";
+
+import "@styles/age-verification-modal.css";
+
+const { t, globalSettings } = Astro.props;
+---
+
+<div id="age-verification-modal" class="age-verification-modal">
+    <div class="age-verification-content">
+        <div class="age-verification-header">
+            <h2>{t.age_verification.title || "您必须年满18岁才能访问此网站"}</h2>
+            <div class="age-icon">18+</div>
+        </div>
+        <div class="age-verification-body">
+            <p>{t.age_verification.description || "请确认您已年满18周岁。否则请离开本网站。"}</p>            <div class="age-verification-buttons">
+                <button id="ageVerificationYesButton" class="age-verification-button yes-button">{t.age_verification.yes_button || "是"}</button>
+                <button id="ageVerificationNoButton" class="age-verification-button no-button">{t.age_verification.no_button || "否"}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('age-verification-modal');
+        const yesButton = document.getElementById('ageVerificationYesButton');
+        const noButton = document.getElementById('ageVerificationNoButton');
+        
+        // 检查用户是否已经验证过年龄
+        const verified = localStorage.getItem('age-verified');
+        
+        // 如果未验证，显示模态框
+        if (!verified) {
+            document.body.classList.add('no-scroll');
+            modal.classList.add('show');
+        }
+
+        // "是"按钮点击事件 - 用户确认已满18岁
+        yesButton.addEventListener('click', () => {
+            // 保存验证状态到localStorage
+            localStorage.setItem('age-verified', 'true');
+            // 隐藏模态框
+            modal.classList.remove('show');
+            document.body.classList.remove('no-scroll');
+        });
+        
+        // "否"按钮点击事件 - 用户未满18岁
+        noButton.addEventListener('click', () => {
+            // 重定向到其他页面或关闭网站
+            window.location.href = 'https://www.google.com';
+        });
+    });
+</script>

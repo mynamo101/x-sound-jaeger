@@ -13,7 +13,7 @@ const globalSettings: GlobalSettingsProps = {
     site_meta_description: "X-Sound Jaeger is a lewd audio lab where you can find a variety of erotic audio content, including ASMR, roleplay, and more.",
     site_meta_image_source: "/images/kusa-projects-logo.jpg",
     twitter_username: "@x_soundjaeger",
-    language: "en", // 使用函数获取语言
+    language: "en",
     background_color: "rgb(0, 0, 0)", // Background color in rgb format
     text_color: "rgb(255, 255, 255)", // Text color in rgb format
     primary_font: "Roboto", // Google Fonts name (use the exact name as listed on Google Fonts embed link). Example: "Roboto Mono" should be "Roboto+Mono"

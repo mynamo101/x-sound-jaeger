@@ -1,0 +1,187 @@
+.age-verification-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.age-verification-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.age-verification-content {
+    background: var(--background-color);
+    border: 1px solid var(--text-color-40);
+    color: var(--text-color);
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 32px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+.age-icon {
+    color: var(--text-color-80);
+    font-size: 24px !important;
+    font-family: var(--font3);
+    font-weight: bold;
+    text-align: center;
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    background: crimson;
+    border: 2px solid var(--text-color-80);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.age-verification-header {
+    margin-bottom: 18px;
+    width: 100%;
+}
+
+.age-verification-header h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    line-height: 1.1;
+    color: var(--text-color);
+    font-family: var(--font3);
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    text-align: center;
+}
+
+.age-verification-body {
+    margin-bottom: 28px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.age-verification-body p {
+    margin: 0;
+    line-height: 1.6;
+    letter-spacing: -0.035em;
+    font-family: var(--font1);
+    text-align: center;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 16px;
+}
+
+.age-verification-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.age-verification-button {
+
+    background: transparent;
+    border: 1px solid var(--text-color-40);
+    color: var(--text-color);
+    padding: 12px 0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    font-family: var(--font2);
+    font-weight: 400;
+    min-width: 120px;
+    border-radius: 0;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.yes-button:hover {
+    background: var(--text-color);
+    color: var(--background-color);
+    border-color: var(--text-color);
+}
+
+.no-button:hover {
+    border-color: var(--text-color);
+    background: var(--text-color-40);
+    color: var(--background-color);
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
+/* 桌面大屏 */
+@media (min-width: 1439px) {
+    .age-verification-content {
+        max-width: 380px;
+        padding: 48px 36px 36px 36px;
+    }
+    .age-verification-header h2 {
+        font-size: 32px;
+    }
+    .age-icon {
+        font-size: 36px;
+    }
+}
+
+/* 平板 */
+@media (max-width: 991px) {
+    .age-verification-content {
+        max-width: 340px;
+        padding: 32px 18px 24px 18px;
+    }
+    .age-verification-header h2 {
+        font-size: 22px;
+    }
+    .age-icon {
+        font-size: 28px;
+    }
+    .age-verification-body p {
+        font-size: 15px;
+    }
+}
+
+/* 手機 */
+@media (max-width: 479px) {
+    .age-verification-content {
+        max-width: 95vw;
+        padding: 24px 8px 16px 8px;
+    }
+    .age-verification-header {
+        margin-bottom: 12px;
+    }
+    .age-verification-header h2 {
+        font-size: 18px;
+    }
+    .age-icon {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+    .age-verification-body {
+        margin-bottom: 18px;
+    }
+    .age-verification-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .age-verification-button {
+        width: 100%;
+        min-width: unset;
+        padding: 12px 0;
+        font-size: 15px;
+    }
+}

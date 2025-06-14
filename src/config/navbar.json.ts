@@ -8,10 +8,10 @@ import type { Navbar } from "@src-types/types.ts";
  */
 
 const navbarSettings: Navbar[] = [
-    {
-		text: "Home",
-		link: "/",
-	},
+    // {
+	// 	text: "Home",
+	// 	link: "/",
+	// },
 	{
 		text: "Works",
 		dropdown: [
@@ -22,10 +22,13 @@ const navbarSettings: Navbar[] = [
 			{
 				text: "Tags	",
 				link: "/tags/",
-			},
-
+			}
 		],
 	},
+	{
+		text: "About",
+		link: "/authors/",
+	}
 	// {
 	// 	text: "Post Type",
 	// 	dropdown: [

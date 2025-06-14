@@ -2,6 +2,7 @@
 import BaseHead from "@layouts/BaseHead.astro";
 import Navbar from "@components/Navbar.astro";
 import Footer from "@components/Footer.astro";
+import AgeVerificationModal from "@components/AgeVerificationModal.astro";
 import type { SeoProps } from "@src-types/types";
 
 const { globalSettings, t, load_flickity = false } = Astro.props;
@@ -29,5 +30,6 @@ const {
 			<slot />
 			<Footer globalSettings={globalSettings} t={t}/>
 		</div>
+		<AgeVerificationModal globalSettings={globalSettings} t={t} />
 	</body>
 </html>
