@@ -11,20 +11,20 @@ const footerSettings: Footer[] = [
     {
         text: "About",
         dropdown: [
+            // {
+            //     text: "Archive",
+            //     link: "/archive/",
+            // },
+            // {
+            //     text: "Tags",
+            //     link: "/tags/",
+            // },
+            // {
+            //     text: "Authors",
+            //     link: "/authors/",
+            // },
             {
-                text: "Archive",
-                link: "/archive/",
-            },
-            {
-                text: "Tags",
-                link: "/tags/",
-            },
-            {
-                text: "Authors",
-                link: "/authors/",
-            },
-            {
-                text: "Membership",
+                text: "Donate Me",
                 link: "/membership/",
             },
             {
@@ -36,19 +36,19 @@ const footerSettings: Footer[] = [
     {
         text: "Features",
         dropdown: [
-            {
-                text: "Features",
-                link: "/features/",
-            },
-            {
-                text: "Style Guide",
-                link: "/style-guide/",
-            },
-            {
-                text: "Documentation",
-                link: "https://www.kusa-projects.com/astro-documentation",
-                new_tab: true
-            },
+            // {
+            //     text: "Features",
+            //     link: "/features/",
+            // },
+            // {
+            //     text: "Style Guide",
+            //     link: "/style-guide/",
+            // },
+            // {
+            //     text: "Documentation",
+            //     link: "https://www.kusa-projects.com/astro-documentation",
+            //     new_tab: true
+            // },
             {
                 text: "Changelog",
                 link: "/changelog/",
@@ -59,32 +59,27 @@ const footerSettings: Footer[] = [
             }
         ],
     },
-    {
-        text: "Account",
-        dropdown: [
-            {
-                text: "Account",
-                link: "/account/",
-            },
-            {
-                text: "Sign in",
-                link: "/signin/",
-            },
-            {
-                text: "Sign up",
-                link: "/signup/",
-            },
-            {
-                text: "Subscribe",
-                link: "/subscribe/"            
-            },
-            {
-                text: "KUSA Projects",
-                link: "https://www.kusa-projects.com/",
-                new_tab: true
-            }
-        ],
-    },
+    // {
+    //     text: "Account",
+    //     dropdown: [
+            // {
+            //     text: "Account",
+            //     link: "/account/",
+            // },
+            // {
+            //     text: "Sign in",
+            //     link: "/signin/",
+            // },
+            // {
+            //     text: "Sign up",
+            //     link: "/signup/",
+            // },
+            // {
+            //     text: "Subscribe",
+            //     link: "/subscribe/"            
+            // }
+    //     ],
+    // },
 ]
 
 export default footerSettings;

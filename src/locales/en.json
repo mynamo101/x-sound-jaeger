@@ -1,13 +1,13 @@
 {
     "global": {
         "navbar": {
-            "sign_in": "Sign in"
+            "contact": "Contact Us"
         },
         "tags_slider": {
             "title": "Browse by Tags"
         },
         "footer": {
-            "footer_text": "Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.",
+            "footer_text": "X-Sound Jaeger is an adult voice studio specializing in high-quality audio experiences for mature audiences. We are dedicated to delivering immersive and professional voice content tailored for adult entertainment.",
             "form_placeholder": "Your.email@example.com",
             "credits": "All rights reserved."
         },
@@ -27,12 +27,12 @@
         }
     },
     "homepage": {
-        "title_hero": "Elysian",
-        "description_hero": "Elysian is a modern blog theme featuring captivating page transitions, a unique custom cursor, and a sleek scrollbar, all enhanced with smooth scrolling.",
-        "title_featured_posts_desktop": "Discover Our Featured Posts",
-        "title_featured_posts_mobile": "Featured Posts",
-        "title_latest_posts_desktop": "Read Our Latest Posts",
-        "title_latest_posts_mobile": "Latest Posts"
+        "title_hero": "Hi there!",
+        "description_hero": "Welcome to X-Sound Jaeger, I create high-quality lewd audio content. Hope you enjoy your stay!",
+        "title_featured_posts_desktop": "Discover My Featured Works",
+        "title_featured_posts_mobile": "Featured Works",
+        "title_latest_posts_desktop": "Read My Latest Works",
+        "title_latest_posts_mobile": "Latest Works"
     },
     "post": {
         "clipboard": "The link has been copied!",
@@ -59,7 +59,7 @@
         "work": "'s Work"
     },
     "archive_page": {
-        "title_hero": "Post Archive",
+        "title_hero": "All Works",
         "all_tags": "All Tags"
     },
     "membership_page": {
