@@ -115,6 +115,12 @@
         "description_hero": "Need help or have questions? Get in touch with us and we'll be happy to assist you.",
         "button_label": "Send Message"
     },
+    "about_page": {
+        "title_hero": "About Us",
+        "description_hero": "X-Sound Jaeger is an audio lab that specializes in creating one-of-a-kind audio experiences, we always know how to make it sound better.",
+        "mission_title": "SFW Content?",
+        "mission_text": "Sure! I create SFW works as well, you can check them out on <a href=\"https://soundjaeger.com\"><b>this site. </b></a>"
+    },
     "error_404_page": {
         "title_hero": "404",
         "description_hero": "The page you are looking for doesn't exist or has been moved..",

@@ -24,7 +24,7 @@ const footerSettings: Footer[] = [
             //     link: "/authors/",
             // },
             {
-                text: "Donate Me",
+                text: "Membership",
                 link: "/membership/",
             },
             {
@@ -33,9 +33,9 @@ const footerSettings: Footer[] = [
             }
         ],
     },
-    {
-        text: "Features",
-        dropdown: [
+    // {
+    //     text: "Features",
+    //     dropdown: [
             // {
             //     text: "Features",
             //     link: "/features/",
@@ -49,16 +49,16 @@ const footerSettings: Footer[] = [
             //     link: "https://www.kusa-projects.com/astro-documentation",
             //     new_tab: true
             // },
-            {
-                text: "Changelog",
-                link: "/changelog/",
-            },
-            {
-                text: "404",
-                link: "/404/",
-            }
-        ],
-    },
+            // {
+            //     text: "Changelog",
+            //     link: "/changelog/",
+            // },
+            // {
+            //     text: "404",
+            //     link: "/404/",
+            // }
+    //     ],
+    // },
     // {
     //     text: "Account",
     //     dropdown: [

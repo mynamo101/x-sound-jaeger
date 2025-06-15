@@ -32,11 +32,12 @@ if(post_header == "Narrow"){
   desktopSizes = "(max-width: 1438px) calc((100vw - 144px) / 3), 30vw"
 }
 
-let tag_slug, tag_name;
-
+let tag_slugs = [];
 if(post.data.tags && post.data.tags.length > 0){
-    tag_name = post.data.tags[0];
-    tag_slug = slugify(tag_name)
+    tag_slugs = post.data.tags.map(tag => ({
+        name: tag,
+        slug: slugify(tag)
+    }));
 }
 ---
 
@@ -51,10 +52,14 @@ if(post.data.tags && post.data.tags.length > 0){
           <div class:list={["hero-content", post_header === "Vertical" && "vertical-post-header"]}>
               <div class="post-hero-text-content section-padding-top">
                 <div class:list={['post-hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
-                {tag_slug &&
-                  <a class:list={['post-tag', { 'vertical-animation': globalSettings.use_page_load_animations }]} href={`/tags/${tag_slug}`} data-delay="100">
-                    {tag_name}
-                  </a>
+                {tag_slugs.length > 0 &&
+                  <div style="margin-bottom: 18px; display: flex; flex-wrap: wrap; gap: 10px;">
+                    {tag_slugs.map(({name, slug}) => (
+                      <a class:list={['post-tag', { 'vertical-animation': globalSettings.use_page_load_animations }]} href={`/tags/${slug}`} data-delay="100" style="margin-bottom: 0;">
+                        {name}
+                      </a>
+                    ))}
+                  </div>
                 }
 
                 <h1 class:list={['post-heading', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="200">{title}</h1>

@@ -11,19 +11,23 @@ const {
 
 <div class="toggle-cards">
     {toggle_cards.map((toggle_card: ToggleCard) => (
-        <div class="toggle-card" data-toggle-state="close">
-            <div class="toggle-heading">
-                <h4 class="toggle-heading-text">{toggle_card.title}</h4>
-                <button class="toggle-card-icon unstyled-button">      
-                    <ToggleArrowIcon />
-                </button>
+        toggle_card.type === 'section' ? (
+            <h2 class="faq-section-title">{toggle_card.title}</h2>
+        ) : (
+            <div class="toggle-card" data-toggle-state="close">
+                <div class="toggle-heading">
+                    <h4 class="toggle-heading-text">{toggle_card.title}</h4>
+                    <button class="toggle-card-icon unstyled-button">      
+                        <ToggleArrowIcon />
+                    </button>
+                </div>
+                <div class="toggle-content">
+                    <p>
+                        {toggle_card.text}
+                    </p>
+                </div>
             </div>
-            <div class="toggle-content">
-                <p>
-                    {toggle_card.text}
-                </p>
-            </div>
-        </div>
+        )
     ))}
 </div>
 

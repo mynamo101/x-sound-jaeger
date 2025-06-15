@@ -154,7 +154,8 @@ export interface CalloutProps {
 
 export interface ToggleCard {
     title: string,
-    text: string
+    text?: string,
+    type?: 'section'
 }
 
 export interface ToggleCardsProps {
@@ -181,7 +182,7 @@ export interface FormHeroProps {
     description?: string
 }
 
-export type FormHeroType = "Contact" | "Signin" | "Signup" | "Subscribe"
+export type FormHeroType = "Contact" | "Signin" | "Signup" | "Subscribe" | "About";
 
 export interface SeoProps {
     type?: "image" | "no_image";

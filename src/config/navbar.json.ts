@@ -27,7 +27,20 @@ const navbarSettings: Navbar[] = [
 	},
 	{
 		text: "About",
-		link: "/authors/",
+		dropdown: [
+			{
+				text: "X-Sound Jaeger",
+				link: "/about/",
+			},	
+			{
+				text: "Authors",
+				link: "/authors/",
+			},
+			{
+				text: "FAQ",
+				link: "/faq/",
+			}
+		]
 	}
 	// {
 	// 	text: "Post Type",

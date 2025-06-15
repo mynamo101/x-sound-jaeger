@@ -36,6 +36,9 @@ const { t, globalSettings } = Astro.props;
                                 {t.contact_page.button_label}
                             </button>
                         </form>
+                    </div>                ) : type === "About" ? (
+                    <div class:list={['form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                        <slot/>
                     </div>
                 )   :   (
                     <div class:list={['form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">

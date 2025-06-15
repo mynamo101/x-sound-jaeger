@@ -103,6 +103,16 @@
     max-width: 68%;
 }
 
+.faq-section-title {
+    font-size: max(calc(6vw * var(--scale)), 36px);
+    font-weight: bold;
+    margin-top: 1em;
+    color: var(--text-color);
+    letter-spacing: 0.03em;
+    padding-bottom: 0.2em;
+    border-bottom: 8px solid var(--text-color-80);
+}
+
 /* Styles for tablet */
 @media (max-width: 991px) {
     .toggle-card {

@@ -154,3 +154,12 @@ export function getImage({ folder_name, image_name, glob } : { image_name: strin
   return imagePath ? imagePath.default : null;
 }
 
+// 將字串中的網址自動轉換為 <a> 連結，回傳 HTML 字串
+export function linkify(text: string): string {
+  if (!text) return '';
+  const urlRegex = /(https?:\/\/[\w\-._~:/?#[\]@!$&'()*+,;=%]+)(?![^<]*>|[^&;]+;)/g;
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  });
+}
+

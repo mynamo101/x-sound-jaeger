@@ -16,8 +16,8 @@ const globalSettings: GlobalSettingsProps = {
     language: "en",
     background_color: "rgb(0, 0, 0)", // Background color in rgb format
     text_color: "rgb(255, 255, 255)", // Text color in rgb format
-    primary_font: "Roboto", // Google Fonts name (use the exact name as listed on Google Fonts embed link). Example: "Roboto Mono" should be "Roboto+Mono"
-    secondary_font: "Roboto+Mono", // Google Fonts name (use the exact name as listed on Google Fonts embed link). Example: "Roboto Mono" should be "Roboto+Mono"
+    primary_font: "Raleway", // Google Fonts name (use the exact name as listed on Google Fonts embed link). Example: "Roboto Mono" should be "Roboto+Mono"
+    secondary_font: "Noto Sans", // Google Fonts name (use the exact name as listed on Google Fonts embed link). Example: "Roboto Mono" should be "Roboto+Mono"
     logo_scale: 1, // Default logo scale (use a number for scaling)
     heading_one_scale: 1, // Default scale for H1 elements (use a number for scaling)
     pagination_posts_number: 6,
