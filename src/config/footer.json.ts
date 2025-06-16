@@ -15,14 +15,10 @@ const footerSettings: Footer[] = [
             //     text: "Archive",
             //     link: "/archive/",
             // },
-            // {
-            //     text: "Tags",
-            //     link: "/tags/",
-            // },
-            // {
-            //     text: "Authors",
-            //     link: "/authors/",
-            // },
+            {
+                text: "X-SoundJaeger",
+                link: "/about/",
+            },
             {
                 text: "Membership",
                 link: "/membership/",
@@ -30,7 +26,11 @@ const footerSettings: Footer[] = [
             {
                 text: "FAQ",
                 link: "/faq/",
-            }
+            },
+            // {
+            //     text: "Style Guide",
+            //     link: "/style-guide/",
+            // },
         ],
     },
     // {

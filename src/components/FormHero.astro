@@ -25,10 +25,9 @@ const { t, globalSettings } = Astro.props;
                 }
 
                 {type === "Contact" ? (
-                    <div class:list={['form-container contact-form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
-                        <form class="contact-form" action="#" method="POST" id="contactForm">
+                    <div class:list={["form-container contact-form-container", { "vertical-animation": globalSettings.use_page_load_animations }]} data-delay="400">
+                        <form class="contact-form" action="https://formspree.io/f/xpwrrnbp" method="POST" id="contactForm">
                             <div class="contact-form-inputs">
-                                <input type="text" name="name" placeholder={t.global.form.name} required/>
                                 <input type="email" name="email" placeholder={t.global.form.email} required/>
                             </div>
                             <textarea name="message" placeholder={t.global.form.message} required></textarea>
@@ -37,11 +36,11 @@ const { t, globalSettings } = Astro.props;
                             </button>
                         </form>
                     </div>                ) : type === "About" ? (
-                    <div class:list={['form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                    <div class:list={["form-container", { "vertical-animation": globalSettings.use_page_load_animations }]} data-delay="400">
                         <slot/>
                     </div>
                 )   :   (
-                    <div class:list={['form-container', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                    <div class:list={["form-container", { "vertical-animation": globalSettings.use_page_load_animations }]} data-delay="400">
                         <form class="page-form-element">
                             {type === "Signin" ? (
                                 <div class="subscribe-wrapper">
