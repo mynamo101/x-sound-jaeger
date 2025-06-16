@@ -8,7 +8,7 @@ import { remarkReadingTime } from './src/utils/remark-reading-time.mjs';
 
 // https://astro.build/config
 export default defineConfig({
-    site: "https://elysian-astro.kusa-projects.com",
+    site: "https://x.soundjaeger.com",
     integrations: [
         AutoImport({
 			imports: [
