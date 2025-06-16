@@ -16,7 +16,8 @@ export default defineConfig({
                 "@components/ImageGallery.astro",
                 "@components/Callout.astro",
                 "@components/ToggleCards.astro",
-                "@components/MediaEmbed.astro"
+                "@components/MediaEmbed.astro",
+                "@components/VideoPlayer.astro"
 			],
 		}),
         mdx(),

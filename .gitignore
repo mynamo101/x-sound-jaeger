@@ -25,3 +25,4 @@ pnpm-debug.log*
 node_modules
 Auto Upload.bat
 src/assets/images/tag/
+*.mp4

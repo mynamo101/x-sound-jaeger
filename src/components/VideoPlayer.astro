@@ -1,0 +1,22 @@
+---
+export interface VideoPlayerProps {
+  src: string;
+  poster?: string;
+  controls?: boolean;
+  autoplay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+}
+const { src, poster, controls = true, autoplay = false, loop = false, muted = false } = Astro.props;
+---
+<video
+  src={src}
+  poster={poster}
+  controls={controls}
+  autoplay={autoplay}
+  loop={loop}
+  muted={muted}
+  style="width: 100%; height: auto;"
+>
+  您的浏览器不支持视频播放。
+</video>
