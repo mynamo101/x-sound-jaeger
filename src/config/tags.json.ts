@@ -17,6 +17,10 @@ const tagsSettings: TagProps[] = [
         slug: "blowjob",
         description: "Passionate oral scenes with detailed animations and intimate storytelling."
     },
+    {   
+        slug: "black",
+        description: "Black characters and themes, celebrating diversity and unique storytelling in adult content."
+    },
     {
         slug: "bondage",
         description: "Exploring restraint, control, and passion with intricate bindings and thrilling visuals."
@@ -68,6 +72,10 @@ const tagsSettings: TagProps[] = [
     {
         slug: "lactation",
         description: "Intimate and nurturing themes with stunning animations and unique storytelling."
+    },
+    {
+        slug: "machine",
+        description: "Exploring the intersection of technology and desire with thrilling, imaginative storytelling."
     },
     {
         slug: "milf",

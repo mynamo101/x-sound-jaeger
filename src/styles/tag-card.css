@@ -54,6 +54,13 @@
     margin-top: 4px;
 }
 
+.tag-description {
+    font-size: 14px;
+    opacity: 0.8;
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
 /* Styles for large desktop */
 @media (min-width: 1439px) { 
     .tags-slider-inner {

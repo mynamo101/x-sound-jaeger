@@ -93,7 +93,8 @@ export interface PostCardProps {
 export interface TagCardProps {
     name: string,
     url: string,
-    post_count?: number
+    post_count?: number,
+    description?: string
 }
 
 export interface AgeVerificationProps {

@@ -3,10 +3,9 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import globalSettings from '@config/config.json.ts';
 import Hero from "@components/Hero.astro";
 import TagCard from "@components/TagCard.astro";
-import { getTags, getUniqueTagsWithCount } from "@utils/utils.ts";
+import { getTagsFromConfig } from "@utils/utils.ts";
 
-const tags = await getTags();
-const unique_tags = getUniqueTagsWithCount(tags)
+const unique_tags = await getTagsFromConfig(true); // 传入 true 来包含文章数为0的标签
 
 const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
   .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
@@ -22,12 +21,11 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
     />
 
     <section class:list={['tags-section wide-container section-padding-top-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
-      <div class="grid tags-grid section-padding-bottom">
-        {
+      <div class="grid tags-grid section-padding-bottom">        {
           unique_tags.map((tag) =>
-              <TagCard name={tag.original} url={tag.slug} post_count={tag.count} t={t}/>
+              <TagCard name={tag.original} url={tag.slug} post_count={tag.count} description={tag.description} t={t}/>
           )
-        } 
+        }
       </div>
     </section>
   </main>

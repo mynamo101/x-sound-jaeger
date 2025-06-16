@@ -23,3 +23,5 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 node_modules
+Auto Upload.bat
+src/assets/images/tag/

@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import tagsSettings from "@config/tags.json.ts";
 
 export async function getSortedPosts({
   limit,
@@ -161,5 +162,34 @@ export function linkify(text: string): string {
   return text.replace(urlRegex, (url) => {
     return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
   });
+}
+
+export async function getTagsFromConfig(includeZeroCount = false) {
+  // 获取所有文章
+  const { posts } = await getSortedPosts();
+  
+  // 为每个预定义的标签计算文章数量
+  const tagsWithCount = tagsSettings.map(tagConfig => {
+    const count = posts.filter(post => 
+      post.data.tags && 
+      post.data.tags.some(postTag => 
+        slugify(postTag) === tagConfig.slug
+      )
+    ).length;
+    
+    return {
+      original: tagConfig.slug,
+      slug: tagConfig.slug,
+      description: tagConfig.description,
+      count: count
+    };
+  });
+  
+  // 根据参数决定是否包含文章数为0的标签
+  if (includeZeroCount) {
+    return tagsWithCount.sort((a, b) => a.original.localeCompare(b.original));
+  } else {
+    return tagsWithCount.filter(tag => tag.count > 0).sort((a, b) => a.original.localeCompare(b.original));
+  }
 }
 

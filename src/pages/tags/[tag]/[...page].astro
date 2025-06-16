@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import globalSettings from '@config/config.json.ts';
-import { getPostsByTag, getTags } from "@utils/utils.js";
+import { getPostsByTag, getTagsFromConfig } from "@utils/utils.js";
 import Hero from "@components/Hero.astro";
 import PostCard from "@components/PostCard.astro";
 import { type Page } from "astro";
@@ -9,7 +9,7 @@ import Pagination from "@components/Pagination.astro";
 import tagsSettings from '@config/tags.json.ts';
 
 export async function getStaticPaths({ paginate }) {
-  const tags = await getTags();
+  const tags = await getTagsFromConfig(true); // 包含所有标签，即使文章数为0
 
   const paths = await Promise.all(
     tags.map(async ({ original, slug }) => {
