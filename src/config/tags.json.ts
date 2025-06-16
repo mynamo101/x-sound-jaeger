@@ -1,4 +1,5 @@
 import type { TagProps } from "@src-types/types.rimjobts";
+import { slash } from "node_modules/astro/dist/core/path";
 
 /**
  * Array of tag descriptions for Tag page.
@@ -7,143 +8,103 @@ import type { TagProps } from "@src-types/types.rimjobts";
 const tagsSettings: TagProps[] = [
     {
         slug: "ahegao",
-        description: "Over-the-top pleasure and wild facial expressions that define ultimate ecstasy."
+        description: "Twisted climax face, dazed eyes, drooling, as if broken.",
+        zh: "高潮到扭曲的臉，眼神迷離，口水直流，像是壞掉了一樣。"
+    },
+    {
+        slug: "animal",
+        description: "Forbidden union between humans and animals, primal desire unleashed.",
+        zh: "人和動物的禁忌交合，獸性爆發，充滿原始的欲望。"
     },
     {
         slug: "bdsm",
-        description: "Intense dynamics of power, submission, and passion in thrilling hentai stories."
+        description: "Whips, handcuffs, candles, the ultimate pleasure of domination and submission.",
+        zh: "皮鞭、手銬、蠟燭，支配與服從的極致快感。"
     },
     {
         slug: "blowjob",
-        description: "Passionate oral scenes with detailed animations and intimate storytelling."
+        description: "Deep-throating a man's hardness, licking and sucking, making him unable to resist.",
+        zh: "用嘴深喉男人的硬物，舔弄吸吮，讓他欲罷不能。"
     },
     {   
         slug: "black",
-        description: "Black characters and themes, celebrating diversity and unique storytelling in adult content."
-    },
-    {
-        slug: "bondage",
-        description: "Exploring restraint, control, and passion with intricate bindings and thrilling visuals."
-    },
-    {
-        slug: "cosplay",
-        description: "Creative costumes and playful roleplay bring fantasies to life in stunning animations."
+        description: "Dark skin, thick rod, full of powerful invasion.",
+        zh: "黑色的肌膚，粗壯的肉棒，充滿力量的侵略。"
     },
     {
         slug: "creampie",
-        description: "Intimate moments and emotional connections in beautifully animated passionate scenes."
-    },
-    {
-        slug: "foot-job",
-        description: "Elegant and playful moments of intimate pleasure with stunning animations."
+        description: "Deeply shooting inside, feeling the warm liquid filling every inch.",
+        zh: "深深地射進去，感受溫熱的液體填滿每一寸。"
     },
     {
         slug: "futanari",
-        description: "Unique characters and bold storytelling in a distinctive adult genre."
+        description: "Both a firm rod and full breasts, the allure of being hermaphroditic.",
+        zh: "既有堅挺的肉棒，又有豐滿的胸部，雌雄同體的誘惑。"
     },
     {
         slug: "gangbang",
-        description: "Bold group encounters with intense energy and captivating storytelling."
-    },
-    {
-        slug: "glasses",
-        description: "Stylish characters with glasses bring charm and allure to stunning stories."
-    },
-    {
-        slug: "hand-job",
-        description: "Intimate and sensual moments brought to life with detailed animations."
-    },
-    {
-        slug: "harem",
-        description: "Multiple love interests and exciting adventures in dynamic, passionate stories."
+        description: "One person being taken by many, the ultimate physical pleasure.",
+        zh: "一個人被多個人輪流侵占，肉體的極限快感。"
     },
     {
         slug: "horror",
-        description: "Dark themes, suspenseful stories, and chilling animations with a sensual twist."
+        description: "The intertwining of horror and erotica, irresistible temptation amidst fright.",
+        zh: "恐怖與情色交織，驚悚中帶著難以抗拒的誘惑。"
+    },
+    {
+        slug: "hypnosis",
+        description: "Losing oneself under hypnosis, being controlled, immersed in irresistible pleasure.",
+        zh: "被催眠後失去自我，任由操控，沉浸在不可抗拒的快感中。"
     },
     {
         slug: "incest",
-        description: "Taboo relationships and intense narratives brought to life with stunning animations."
+        description: "Forbidden love between blood relatives, family members entangled in flesh.",
+        zh: "血緣之間的禁忌之愛，家人之間的肉體交纏。"
     },
     {
         slug: "inflation",
-        description: "Bold and imaginative fantasies with creative scenarios and stunning visuals."
-    },
-    {
-        slug: "lactation",
-        description: "Intimate and nurturing themes with stunning animations and unique storytelling."
+        description: "Body filled to the limit, the pleasure of expansion is irresistible.",
+        zh: "身體被充滿到極限，膨脹的快感讓人無法自拔。"
     },
     {
         slug: "machine",
-        description: "Exploring the intersection of technology and desire with thrilling, imaginative storytelling."
-    },
-    {
-        slug: "milf",
-        description: "Mature characters and passionate stories with stunning visuals and depth."
-    },
-    {
-        slug: "mind-break",
-        description: "Bold transformations and intense stories with stunning animations and depth."
-    },
-    {
-        slug: "mind-control",
-        description: "Exploring themes of influence and power with bold stories and stunning visuals."
+        description: "Cold machines penetrating, precisely stimulating every sensitive point.",
+        zh: "冷冰冰的機械深入，精準地刺激每一個敏感點。"
     },
     {
         slug: "monster",
-        description: "Extraordinary creatures and bold fantasies brought to life with stunning visuals."
-    },
-    {
-        slug: "oral",
-        description: "Scenes involving oral sex."
+        description: "Union of alien tentacles and humans, forbidden pleasure.",
+        zh: "異形的觸手與人類的交合，禁忌的快感。"
     },
     {
         slug: "orgy",
-        description: "Bold group scenarios with thrilling action and captivating animations."
-    },
-    {
-        slug: "plot",
-        description: "Engaging narratives and character-driven stories paired with stunning animations."
+        description: "Group chaos, bodies intertwined, a carnival of desire.",
+        zh: "多人混戰，肉體交纏，欲望的狂歡。"
     },
     {
         slug: "pregnant",
-        description: "Pregnancy and related themes."
-    },
-    {
-        slug: "public-sex",
-        description: "Bold and thrilling encounters in public settings with stunning animations."
+        description: "The body nurturing life, full of maternal allure.",
+        zh: "孕育生命的身體，充滿母性的誘惑。"
     },
     {
         slug: "rape",
-        description: "Intense drama and complex storytelling with bold themes and detailed animations."
-    },
-    {
-        slug: "reverse-rape",
-        description: "When the guy didn’t ask for it, but not as bad as it sounds."
+        description: "Forced invasion, the intertwining of pain and pleasure in forbidden scenarios.",
+        zh: "強制的侵占，痛苦與快感交織的禁忌情節。"
     },
     {
         slug: "tentacle",
-        description: "Exotic creatures and bold fantasies with thrilling, imaginative storytelling."
-    },
-    {
-        slug: "threesome",
-        description: "Contains sex scenes with more complexity and social dynamic."
-    },
-    {
-        slug: "toys",
-        description: "Making use of advanced tools like dildos, vibrators, and anal beads."
+        description: "Tentacles penetrating every corner, filling all gaps, forbidden pleasure.",
+        zh: "觸手深入每一個角落，填滿所有空隙，禁忌的快感。"
     },
     {
         slug: "trap",
-        description: "Do you see that hot girl? That is actually a guy. BAMBOOZLED."
+        description: "Looks like a cute girl but actually has a male secret.",
+        zh: "外表是可愛的少女，實際上是擁有男性的秘密。"
     },
     {
         slug: "x-ray",
-        description: "Revealing perspectives and bold visuals with stunning and creative animations."
-    },
-    {
-        slug: "yaoi",
-        description: "Passionate male relationships and romantic stories with stunning animations."
+        description: "Perspective view, clearly seeing the internal invasion scene.",
+        zh: "透視的視角，清楚地看到內部被侵占的畫面。"
     }
 ]
 
