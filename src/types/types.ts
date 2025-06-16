@@ -105,7 +105,8 @@ export interface AgeVerificationProps {
 
 export interface TagProps {
     slug: string,
-    description?: string
+    description?: string,
+    zh?: string
 }
 
 export interface AuthorProps {

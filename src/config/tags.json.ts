@@ -1,4 +1,4 @@
-import type { TagProps } from "@src-types/types.rimjobts";
+import type { TagProps } from "@src-types/types.ts";
 import { slash } from "node_modules/astro/dist/core/path";
 
 /**
