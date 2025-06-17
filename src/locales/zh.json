@@ -38,11 +38,17 @@
         "title_featured_posts_mobile": "精选作品",
         "title_latest_posts_desktop": "阅读我的最新作品",
         "title_latest_posts_mobile": "最新作品"
-    },
-    "post": {
+    },    "post": {
         "clipboard": "链接已复制！",
         "older_post": "较早的文章",
         "newer_post": "较新的文章"
+    },
+    "password_protection": {
+        "title": "此内容受密码保护",
+        "description": "请输入密码以查看此文章的内容。",
+        "placeholder": "请输入密码",
+        "submit": "确认",
+        "error": "密码错误，请重试"
     },
     "blog_page": {
         "title_hero": "所有文章",

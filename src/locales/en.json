@@ -38,11 +38,17 @@
         "title_featured_posts_mobile": "Featured Works",
         "title_latest_posts_desktop": "Read My Latest Works",
         "title_latest_posts_mobile": "Latest Works"
-    },
-    "post": {
+    },    "post": {
         "clipboard": "The link has been copied!",
         "older_post": "Older Post",
         "newer_post": "Newer Post"
+    },
+    "password_protection": {
+        "title": "This content is password protected",
+        "description": "Please enter the password to view the content of this post.",
+        "placeholder": "Enter password",
+        "submit": "Submit",
+        "error": "Incorrect password, please try again"
     },
     "blog_page": {
         "title_hero": "All Posts",

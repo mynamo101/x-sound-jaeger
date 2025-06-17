@@ -5,6 +5,7 @@ import type { PostProps } from "@src-types/types";
 import { Image } from "astro:assets";
 import Social from "@components/Social.astro";
 import PostAuthor from "@components/PostAuthor.astro";
+import PasswordProtection from "@components/PasswordProtection.astro";
 import RelatedPostArrowIcon from "@assets/icons/RelatedPostArrowIcon.astro";
 import { slugify } from "@utils/utils";
 import { formatDate } from "@js/global.js";
@@ -12,18 +13,20 @@ import { formatDate } from "@js/global.js";
 import "@styles/post.css";
 import "@styles/post-content.css";
 import "@styles/related-posts.css";
+import "@styles/password-protection.css";
 
 const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
   .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
 
 const { post, previous_post, next_post, minutes_read } = Astro.props as PostProps;
 
-const { title, excerpt, feature_image, post_header_type } = post.data;
+const { title, excerpt, feature_image, post_header_type, password } = post.data;
 const post_header_type_global = globalSettings.post_header_type;
 const post_header = post_header_type ?? post_header_type_global;
 const currentUrl = Astro.request.url;
 const encodedTitle = encodeURIComponent(title);
 const formatted_date = formatDate(post.data.pub_date);
+const isPasswordProtected = !!password;
 
 let desktopSizes = "calc(100vw - 60px)";
 if(post_header == "Narrow"){
@@ -43,7 +46,7 @@ if(post.data.tags && post.data.tags.length > 0){
 
 <BaseLayout globalSettings={globalSettings} t={t} type="image" title={title} description={excerpt} image={feature_image ? feature_image : globalSettings.site_meta_image_source}>
     <main>
-      <article data-post-header-type={post_header} data-has-feature-image={feature_image ? "true" : "false"} data-use-reading-progress-bar={globalSettings.use_reading_progress_bar}>
+      <article data-post-header-type={post_header} data-has-feature-image={feature_image ? "true" : "false"} data-use-reading-progress-bar={globalSettings.use_reading_progress_bar} class:list={[isPasswordProtected && "password-protected"]}>
         {globalSettings.use_reading_progress_bar &&
           <reading-progress id="progress-bar" class="reading-progress-bar"></reading-progress>
         }
@@ -139,9 +142,7 @@ if(post.data.tags && post.data.tags.length > 0){
 
               <div class:list={["post-hero-bottom-border", globalSettings.use_page_load_animations && "horizontal-line-animation", !feature_image && "no-image-line"]}></div>             
           </div>
-        </header>
-
-        <div class:list={['post-content narrow-container section-padding-bottom', { 'hidden-post-content': globalSettings.use_page_load_animations }]}>
+        </header>        <div class:list={['post-content narrow-container section-padding-bottom', { 'hidden-post-content': globalSettings.use_page_load_animations }, isPasswordProtected && 'password-protected-content']} style={isPasswordProtected ? 'display: none;' : ''}>
             <slot/>
 
             <div class="post-share-icons">
@@ -215,9 +216,18 @@ if(post.data.tags && post.data.tags.length > 0){
               }
             </div>               
         </div>
-        </footer>
-      </article>
-    </main>
+        </footer>      </article>
+    </main>    {isPasswordProtected && 
+      <PasswordProtection t={t} />
+      <script define:vars={{password}}>
+        document.addEventListener('DOMContentLoaded', function() {
+          const modal = document.getElementById('password-protection-modal');
+          if (modal) {
+            modal.dataset.correctPassword = password;
+          }
+        });
+      </script>
+    }
 </BaseLayout>
 
 {globalSettings.use_image_zoom &&
