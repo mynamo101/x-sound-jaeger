@@ -193,3 +193,28 @@ export async function getTagsFromConfig(includeZeroCount = false) {
   }
 }
 
+export async function getSortedaudiopackss({
+  limit,
+  featured = false
+}: { limit?: number; featured?: boolean } = {}) {
+  const audiopackss = await getCollection("audiopacks", ({ data }) => {
+    return !data.draft && (!featured || data.featured);
+  });
+
+  audiopackss.sort((a, b) => new Date(b.data.pub_date).getTime() - new Date(a.data.pub_date).getTime());
+
+  const total_audiopackss = audiopackss.length;
+
+  return {
+    audiopackss: limit ? audiopackss.slice(0, limit) : audiopackss,
+    total_audiopackss
+  };
+}
+
+export function getaudiopacksWithSiblings(audiopackss: CollectionEntry<"audiopacks">[], index: number) {
+  const previous_pack = audiopackss[index + 1] || null;
+  const next_pack = audiopackss[index - 1] || null;
+
+  return { previous_pack, next_pack };
+}
+

@@ -1,0 +1,11 @@
+---
+export async function getStaticPaths() {
+  return [
+    { params: {} }
+  ];
+}
+
+export async function get({ redirect }) {
+  return redirect('/audiopacks/1/');
+}
+---

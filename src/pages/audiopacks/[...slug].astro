@@ -1,0 +1,32 @@
+---
+import { render, type CollectionEntry } from "astro:content";
+import { type InferGetStaticPropsType } from "astro";
+import PostLayout from "../../layouts/PostLayout.astro";
+import { getSortedaudiopackss, getaudiopacksWithSiblings } from "../../utils/utils.js";
+
+export async function getStaticPaths() {
+  const { audiopackss } = await getSortedaudiopackss();
+
+  return audiopackss.map((pack: CollectionEntry<"audiopacks">, index: number) => {
+    const { previous_pack, next_pack } = getaudiopacksWithSiblings(audiopackss, index);
+    
+    return {
+      params: { slug: pack.id },
+      props: {
+        pack,
+        previous_pack,
+        next_pack,
+      },
+    };
+  });
+}
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { pack, previous_pack, next_pack } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await render(pack);
+---
+
+<PostLayout post={pack} previous_post={previous_pack} next_post={next_pack} minutes_read={remarkPluginFrontmatter.minutes_read}>
+	<Content />
+</PostLayout>

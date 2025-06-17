@@ -20,6 +20,10 @@ const navbarSettings: Navbar[] = [
 				link: "/works/",
 			},
 			{
+				text: "Audio Packs",
+				link: "/audiopacks/",
+			},
+			{
 				text: "Tags	",
 				link: "/tags/",
 			}

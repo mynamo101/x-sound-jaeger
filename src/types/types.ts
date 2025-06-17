@@ -193,3 +193,9 @@ export interface SeoProps {
 	image?: CollectionEntry<"blog">["data"]["feature_image"];
 	noindex?: boolean;
 }
+
+export interface AudioPackCardProps {
+    post: CollectionEntry<"audiopacks">,
+    index?: number,
+    total_number?: number
+}

@@ -126,5 +126,9 @@
         "title_hero": "页面未找到",
         "description_hero": "您要寻找的页面不存在或已被移动。",
         "button_label": "返回首页"
+    },
+    "audiopacks_page": {
+        "title_hero": "所有 Samples Pack",
+        "description_hero": "瀏覽我們的 Samples Pack，發現更多音頻資源。"
     }
 }
