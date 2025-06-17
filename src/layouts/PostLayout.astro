@@ -45,6 +45,23 @@ if(post.data.tags && post.data.tags.length > 0){
 ---
 
 <BaseLayout globalSettings={globalSettings} t={t} type="image" title={title} description={excerpt} image={feature_image ? feature_image : globalSettings.site_meta_image_source}>
+    {isPasswordProtected && 
+      <script is:inline define:vars={{password}}>
+        // Early session check to prevent flash
+        (function() {
+          const storedPassword = sessionStorage.getItem('post-password-' + window.location.pathname);
+          if (storedPassword === password) {
+            // Add CSS to immediately show content
+            const style = document.createElement('style');
+            style.textContent = `
+              .password-protected-content { display: block !important; opacity: 1 !important; }
+              .password-protection-modal { display: none !important; }
+            `;
+            document.head.appendChild(style);
+          }
+        })();
+      </script>
+    }
     <main>
       <article data-post-header-type={post_header} data-has-feature-image={feature_image ? "true" : "false"} data-use-reading-progress-bar={globalSettings.use_reading_progress_bar} class:list={[isPasswordProtected && "password-protected"]}>
         {globalSettings.use_reading_progress_bar &&
@@ -142,7 +159,7 @@ if(post.data.tags && post.data.tags.length > 0){
 
               <div class:list={["post-hero-bottom-border", globalSettings.use_page_load_animations && "horizontal-line-animation", !feature_image && "no-image-line"]}></div>             
           </div>
-        </header>        <div class:list={['post-content narrow-container section-padding-bottom', { 'hidden-post-content': globalSettings.use_page_load_animations }, isPasswordProtected && 'password-protected-content']} style={isPasswordProtected ? 'display: none;' : ''}>
+        </header>        <div class:list={['post-content narrow-container section-padding-bottom', { 'hidden-post-content': globalSettings.use_page_load_animations }, isPasswordProtected && 'password-protected-content']}>
             <slot/>
 
             <div class="post-share-icons">
@@ -218,15 +235,9 @@ if(post.data.tags && post.data.tags.length > 0){
         </div>
         </footer>      </article>
     </main>    {isPasswordProtected && 
-      <PasswordProtection t={t} />
-      <script define:vars={{password}}>
-        document.addEventListener('DOMContentLoaded', function() {
-          const modal = document.getElementById('password-protection-modal');
-          if (modal) {
-            modal.dataset.correctPassword = password;
-          }
-        });
-      </script>
+      <div id="password-protection-modal" class="password-protection-modal" data-correct-password={password}>
+        <PasswordProtection t={t} />
+      </div>
     }
 </BaseLayout>
 
