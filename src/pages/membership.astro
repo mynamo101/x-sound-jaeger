@@ -27,40 +27,15 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 {membershipSettings.length}
                             </h3>
                         </div>
-
-                        <div class:list={['membership-tab-buttons', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
-                            <div class="button archive-tag-button">
-                                <input class="membership-button" data-tab="yearly" id="yearly" type="radio" name="membership-buttons" checked>
-                                <label class="radio-button-text" for="yearly">
-                                    {t.membership_page.yearly}
-                                </label>
-                            </div>
-
-                            <div class="button archive-tag-button">
-                                <input class="membership-button" data-inactive="true" data-tab="monthly" id="monthly" type="radio" name="membership-buttons">
-                                <label class="radio-button-text" for="monthly">
-                                    {t.membership_page.monthly}
-                                </label>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="wide-container">
-            <div class="membership-section-outer section-padding-bottom-extra">
-                <custom-membership class="membership-section">
+            <div class="membership-section-outer section-padding-bottom-extra">                <custom-membership class="membership-section">
                     <div class="tiers-wrapper">
-                        <div class="membership-tiers" data-tab-content="yearly">
-                            {
-                                membershipSettings.map((tier) =>
-                                    <MembershipCard tier={tier} yearly={true} globalSettings={globalSettings} t={t}/>
-                                )
-                            } 
-                        </div>
-
-                        <div class="membership-tiers" data-inactive="true" data-tab-content="monthly">
+                        <div class="membership-tiers">
                             {
                                 membershipSettings.map((tier) =>
                                     <MembershipCard tier={tier} globalSettings={globalSettings} t={t}/>

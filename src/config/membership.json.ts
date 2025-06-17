@@ -9,22 +9,36 @@ const membershipSettings: MembershipCardProps[] = [
         name: "Support",
         description: "Early Access to Public Works",
         yearly_price: "$12",
-        monthly_price: "$1",
-        benefits: "Access to public posts, Receive weekly email newsletter"
+        monthly_price: "$3",
+        benefits: [
+            "Access to public free posts",
+            "Acess to public posts before they are published",
+            "Thanks for supporting me!",
+        ]
     },
     {
-        name: "Premium",
+        name: "Creator's Choice",
         description: "Full Access to Premium Content",
         yearly_price: "$100",
-        monthly_price: "$10",
-        benefits: "Full access to Premium Plus posts, Receive weekly email newsletter, Support indie publishing, Simple secure card payment"
+        monthly_price: "$8",
+        benefits: [
+            "Everything from Tier 1",
+            "Full access to Premium posts",
+            "Access to bonus content",
+            "Get monthly free audio toolkit",
+            "Special mention in the credits",
+        ]
     },
     {
-        name: "Creator",
+        name: "My Hero",
         description: "Full Access to Everything",
         yearly_price: "$89",
-        monthly_price: "$9",
-        benefits: "Full access to Premium Plus posts, Receive weekly email newsletter, Support indie publishing, Simple secure card payment, Access to exclusive deals"
+        monthly_price: "$15",
+        benefits: [
+            "Everything from Tier 2",
+            "Customized content requests",
+            "Shoutout on our site",
+        ]
     }
 ]
 

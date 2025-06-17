@@ -70,10 +70,6 @@
     width: 100%;
 }
 
-.membership-tiers[data-inactive="true"] {
-    display: none;
-}
-
 .tier-description-mobile {
     display: none;
 }
@@ -88,6 +84,10 @@
 
 .horizontal-line-animation {
     width: 0%;
+}
+
+.paypal-powered-by{
+    display: none !important;
 }
 
 /* Styles for large desktop */

@@ -358,30 +358,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelector('custom-pagination').loadMorePosts(true);
             }
         })
-    }
-
-    if (!customElements.get('custom-membership')) {
+    }    if (!customElements.get('custom-membership')) {
         customElements.define('custom-membership', class CustomMembership extends HTMLElement {
             constructor() {
                 super(); 
-    
-                document.querySelectorAll('.membership-button').forEach(button => {
-                    button.addEventListener('change', this.tabChange.bind(this))
-                })
-            }
-    
-            tabChange(e) {
-                if(e.target.getAttribute('data-inactive') == "true"){
-                    e.target.setAttribute('data-inactive', "false");
-                    let name = e.target.getAttribute('data-tab')
-                    this.querySelector(`.membership-tiers[data-tab-content=${name}]`).setAttribute('data-inactive', "false")
-            
-                    let oposite;
-                    name == "yearly" ? oposite = "monthly" : oposite = "yearly"
-            
-                    document.querySelector(`.membership-button[data-tab=${oposite}]`).setAttribute('data-inactive', "true");
-                    this.querySelector(`.membership-tiers[data-tab-content=${oposite}]`).setAttribute('data-inactive', "true")
-                }   
+                // No longer need tab switching functionality
             }
         })
     }

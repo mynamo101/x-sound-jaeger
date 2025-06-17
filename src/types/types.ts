@@ -174,7 +174,7 @@ export interface MembershipCardProps {
     description?: string,
     yearly_price: string,
     monthly_price: string,
-    benefits?: string
+    benefits?: string[]
 }
 
 export interface FormHeroProps {
