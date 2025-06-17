@@ -133,7 +133,7 @@
         "button_label": "Back to homepage" 
     },
     "audiopacks_page": {
-        "title_hero": "All Samples Packs",
-        "description_hero": "Browse our samples packs and discover more audio resources."
+        "title_hero": "Audio Packs",
+        "description_hero": "Browse our audio packs!"
     }
 }
