@@ -8,7 +8,7 @@ const faqSettings: ToggleCard[] = [
     { title: 'About', type: 'section' },
     {
         title: 'Who are you?',
-        text: "Hi, I'm Ethan! I used to be an sound designer and audio editor for games and animations, and I have over 10 years of experience in audio production."
+        text: "Hi, I'm Ethan. I used to be an sound designer and audio editor for games and animations, and I have over 10 years of experience in audio production."
     },
     {
         title: 'What do you do?',

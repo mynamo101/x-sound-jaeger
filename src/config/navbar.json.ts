@@ -17,7 +17,7 @@ const navbarSettings: Navbar[] = [
 		dropdown: [
 			{
 				text: "All Works",
-				link: "/archive/",
+				link: "/works/",
 			},
 			{
 				text: "Tags	",
