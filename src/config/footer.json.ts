@@ -28,8 +28,8 @@ const footerSettings: Footer[] = [
                 link: "/account/",
             },
             {
-                text: "Sign In",
-                link: "/signin/",
+                text: "Sign Up",
+                link: "/signup/",
             }
 
             // {

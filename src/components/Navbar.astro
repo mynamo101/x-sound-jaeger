@@ -7,6 +7,7 @@ import AccountIcon from "@assets/icons/AccountIcon.astro";
 import navbarSettings from "@config/navbar.json.ts";
 
 import "@styles/navbar.css";
+import "@styles/notification.css";
 
 const { globalSettings, t } = Astro.props;
 ---
@@ -53,6 +54,16 @@ const { globalSettings, t } = Astro.props;
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let signOutHandler = null;
+          // 動態加載通知系統
+        async function loadNotificationSystem() {
+            try {
+                await import('../js/notification-system.js');
+                return true;
+            } catch (error) {
+                console.warn('Failed to load notification system:', error);
+                return false;
+            }
+        }
         
         // 動態更新導航欄認證狀態
         function updateNavbarAuth() {
@@ -89,10 +100,8 @@ const { globalSettings, t } = Astro.props;
                 authText.textContent = isZh ? '登录' : 'Sign in';
                 authButton.setAttribute('href', '/signin/');
             }
-        }
-        
-        // 處理登出
-        function handleSignOut() {
+        }        // 處理登出
+        async function handleSignOut() {
             // 清除本地存儲
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user_info');
@@ -100,10 +109,22 @@ const { globalSettings, t } = Astro.props;
             
             // 顯示登出成功訊息
             const isZh = document.documentElement.lang === 'zh';
-            alert(isZh ? '成功退出登录' : 'Logged out successfully');
+            const hasNotificationSystem = await loadNotificationSystem();
             
-            // 重新整理頁面或跳轉到首頁
-            window.location.reload();
+            if (hasNotificationSystem && (window as any).notify) {
+                (window as any).notify.success(
+                    isZh ? '成功退出登录' : 'Logged out successfully',
+                    { title: isZh ? '再見' : 'Goodbye' }
+                );
+                
+                // 延遲重新整理，讓用戶看到通知
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                // 如果通知系統不可用，直接重新整理
+                window.location.reload();
+            }
         }
         
         // 初始更新
@@ -115,8 +136,7 @@ const { globalSettings, t } = Astro.props;
                 updateNavbarAuth();
             }
         });
-        
-        // 監聽頁面可見性變化，以便在切換標籤時更新
+          // 監聽頁面可見性變化，以便在切換標籤時更新
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden) {
                 updateNavbarAuth();

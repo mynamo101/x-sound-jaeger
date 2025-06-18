@@ -150,8 +150,14 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                         'My Hero': 'My Hero Member'
                 };
                 return tierDisplayNames[tier] || tier;
-        }        function handleLogout() {
+        }        async function handleLogout() {
                 console.log('[Account] Logging out...');
+                  // 動態加載通知系統
+                try {
+                    await import('../js/notification-system.js');
+                } catch (error) {
+                    console.warn('Failed to load notification system:', error);
+                }
                 
                 // Clear localStorage
                 localStorage.removeItem('auth_token');
@@ -159,10 +165,19 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                 localStorage.removeItem('login_time');
                 
                 // Show logout success message
-                alert('Logged out successfully');
-                
-                // Redirect to sign in page
-                window.location.href = '/signin/';
+                if ((window as any).notify) {
+                    (window as any).notify.success('Logged out successfully', {
+                        title: 'Goodbye'
+                    });
+                    
+                    // Delay redirect to show notification
+                    setTimeout(() => {
+                        window.location.href = '/signin/';
+                    }, 1000);
+                } else {
+                    // Fallback if notification system is not available
+                    window.location.href = '/signin/';
+                }
         }async function loadAccountData() {
                 console.log('[Account] Start loading user data');
                 

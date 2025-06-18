@@ -3,6 +3,8 @@ import FooterArrowIcon from "@assets/icons/FooterArrowIcon.astro";
 import type { FormHeroProps } from "@src-types/types";
 
 import "@styles/form-page.css"
+import "@styles/password-strength.css"
+import "@styles/notification.css"
 
 const { type, has_link = false, title, description } = Astro.props as FormHeroProps;
 const { t, globalSettings } = Astro.props;
@@ -43,18 +45,26 @@ const { t, globalSettings } = Astro.props;
                     <div class:list={["form-container", { "vertical-animation": globalSettings.use_page_load_animations }]} data-delay="400">
                         <form class="page-form-element" id="signupForm">                            {type === "Signin" ? (
                                 <div class="vertical-form">
-                                    <input data-members-email type="email" required="true" placeholder={t.global.form.email} class="subscribe-input"/>
-                                    <input data-members-password type="password" required="true" placeholder={t.global.form.password || '密碼'} class="subscribe-input"/>
-                                    <button class="button" type="submit">{t.signin_page.button_label || '登入'}</button>
-                                </div>
-                            )   :   (
+                                    <input data-members-email type="email" required="true" placeholder={t.global.form.email} class="subscribe-input"/>                                    <input data-members-password type="password" required="true" placeholder={t.global.form.password || 'Password'} class="subscribe-input"/>
+                                    <button class="button" type="submit">{t.signin_page.button_label || 'Sign In'}</button>
+                                </div>                            )   :   (
                                 <div class="vertical-form">
                                     <input data-members-name type="text" required="true" placeholder={t.global.form.name}/>
                                     <input data-members-username type="text" required="true" placeholder={t.global.form.username}/>
                                     <input data-members-email type="email" required="true" placeholder={t.global.form.email}/>
-                                    <input data-members-password type="password" required="true" placeholder={t.global.form.password || '密碼'}/>
-                                    <button class="button" type="submit">{type === "Signup" ? <>{t.signup_page.button_label}</> : <>{t.subscribe_page.button_label}</>}</button>
-                                </div>                                 
+                                    <div class="password-input-container">
+                                        <input data-members-password type="password" required="true" placeholder={t.global.form.password || 'Password'} id="signup-password"/>
+                                        <div class="password-strength-indicator" id="password-strength">
+                                            <div class="strength-bar"></div>
+                                            <div class="strength-text">Password Strength</div>
+                                        </div>                                        <div class="password-requirements" id="password-requirements">
+                                            <div class="requirement" id="req-length">At least 8 characters</div>
+                                            <div class="requirement" id="req-lowercase">One lowercase letter</div>
+                                            <div class="requirement" id="req-uppercase">One uppercase letter</div>
+                                        </div>
+                                    </div>
+                                    <button class="button" type="submit" id="signup-submit" disabled>{type === "Signup" ? <>{t.signup_page.button_label}</> : <>{t.subscribe_page.button_label}</>}</button>
+                                </div>
                             )}
 
                             {has_link &&
@@ -78,9 +88,100 @@ const { t, globalSettings } = Astro.props;
     </div>
 </section>
 
-{type === "Signup" && (
-  <script type="module">
+{type === "Signup" && (  <script type="module">
     import '/src/js/membership-auth.js';
+    import '/src/js/notification-system.js';
+      // Password strength validation
+    function validatePassword(password) {
+      const requirements = {
+        length: password.length >= 8,
+        lowercase: /[a-z]/.test(password),
+        uppercase: /[A-Z]/.test(password)
+      };
+      
+      const score = Object.values(requirements).filter(Boolean).length;
+      let strength = 'weak';
+      
+      if (score === 3) strength = 'strong';
+      else if (score >= 2) strength = 'good';
+      else if (score >= 1) strength = 'fair';
+      
+      return { requirements, strength, score };
+    }
+      function updatePasswordStrength() {
+      const passwordInput = document.getElementById('signup-password');
+      const strengthBar = document.querySelector('.strength-bar');
+      const strengthText = document.querySelector('.strength-text');
+      const strengthIndicator = document.querySelector('.password-strength-indicator');
+      const requirementsContainer = document.getElementById('password-requirements');
+      const submitButton = document.getElementById('signup-submit');
+      
+      if (!passwordInput || !strengthBar || !strengthText || !requirementsContainer || !strengthIndicator) return;
+      
+      const password = passwordInput.value;
+      
+      if (password.length === 0) {
+        // Hide strength indicator when password is empty
+        strengthIndicator.classList.remove('show');
+        strengthBar.className = 'strength-bar';
+        strengthText.className = 'strength-text';
+        strengthText.textContent = 'Password Strength';
+        requirementsContainer.classList.remove('show');
+        submitButton.disabled = true;
+        return;
+      }
+      
+      // Show strength indicator when user starts typing
+      strengthIndicator.classList.add('show');
+      
+      const validation = validatePassword(password);
+      
+      // Update strength bar and text
+      strengthBar.className = `strength-bar ${validation.strength}`;
+      strengthText.className = `strength-text ${validation.strength}`;
+      
+      const strengthLabels = {
+        weak: 'Weak',
+        fair: 'Fair', 
+        good: 'Good',
+        strong: 'Strong'
+      };
+      
+      strengthText.textContent = `Password Strength: ${strengthLabels[validation.strength]}`;
+      
+      // Update requirements
+      requirementsContainer.classList.add('show');
+        const reqElements = {
+        length: document.getElementById('req-length'),
+        lowercase: document.getElementById('req-lowercase'),
+        uppercase: document.getElementById('req-uppercase')
+      };
+      
+      Object.keys(validation.requirements).forEach(req => {
+        const element = reqElements[req];
+        if (element) {
+          if (validation.requirements[req]) {
+            element.classList.add('met');
+          } else {
+            element.classList.remove('met');
+          }
+        }
+      });
+      
+      // Enable/disable submit button
+      const allRequirementsMet = Object.values(validation.requirements).every(Boolean);
+      submitButton.disabled = !allRequirementsMet;
+    }
+    
+    // Setup password strength checking
+    document.addEventListener('DOMContentLoaded', function() {
+      const passwordInput = document.getElementById('signup-password');
+      if (passwordInput) {
+        passwordInput.addEventListener('input', updatePasswordStrength);
+        passwordInput.addEventListener('focus', updatePasswordStrength);
+      }
+    });
+    
     const form = document.getElementById('signupForm');
     if (form) {
       form.addEventListener('submit', async (e) => {
@@ -89,35 +190,79 @@ const { t, globalSettings } = Astro.props;
         const username = form.querySelector('[data-members-username]').value.trim();
         const email = form.querySelector('[data-members-email]').value.trim();
         const password = form.querySelector('[data-members-password]').value;
-        if (!name || !username || !email || !password) {
-          alert('請輸入姓名、用戶名、信箱與密碼');
+          if (!name || !username || !email || !password) {
+          window.notify.warning('Please fill in all required fields', {
+            title: 'Missing Information'
+          });
           return;
         }
-        // 呼叫 API 註冊
+        
+        // Client-side password validation
+        const validation = validatePassword(password);
+        if (!Object.values(validation.requirements).every(Boolean)) {
+          window.notify.error('Please ensure your password meets all security requirements', {
+            title: 'Password Requirements'
+          });
+          return;
+        }
+        
+        // Show loading notification
+        const loadingId = window.notify.loading('Creating your account...', {
+          title: 'Registering'
+        });
+        
+        // Call API for registration
         const res = await fetch('http://localhost:3001/api/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, username, email, password })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          // 註冊成功，自動登入
+        });        const data = await res.json();
+        
+        // Remove loading notification
+        window.notify.remove(loadingId);
+          if (res.ok) {
+          // Registration successful, auto login
+          window.notify.replace(loadingId, 'Account created successfully! Signing you in...', 'success', {
+            title: 'Welcome!',
+            duration: 3000
+          });
+          
           if (window.membershipAuth) {
             const loginResult = await window.membershipAuth.login(username, password);
             if (loginResult.success) {
-              window.location.href = '/account';
+              setTimeout(() => {
+                window.location.href = '/account';
+              }, 1500);
             } else {
-              alert('註冊成功，但自動登入失敗，請手動登入');
+              window.notify.warning('Registration successful, but auto-login failed. Please log in manually', {
+                title: 'Registration Complete'
+              });
             }
           } else {
-            alert('註冊成功，請手動登入');
+            window.notify.success('Registration successful, please log in manually', {
+              title: 'Registration Complete'
+            });
           }
         } else {
-          if (data.error && data.error.includes('exists')) {
-            alert('此用戶名或信箱已註冊，請直接登入');
-          } else {
-            alert(data.error || '註冊失敗');
-          }
+          // Remove loading notification first
+          window.notify.remove(loadingId);
+          
+          // Show error after delay
+          setTimeout(() => {
+            if (data.details && Array.isArray(data.details)) {
+              window.notify.error(data.details.join('\n'), {
+                title: 'Password Requirements Not Met'
+              });
+            } else if (data.error && data.error.includes('exists')) {
+              window.notify.warning('This username or email is already registered, please sign in directly', {
+                title: 'Account Already Exists'
+              });
+            } else {
+              window.notify.error(data.error || 'Registration failed', {
+                title: 'Registration Error'
+              });
+            }
+          }, 200);
         }
       });
     }
@@ -127,41 +272,65 @@ const { t, globalSettings } = Astro.props;
 {type === "Signin" && (
   <script type="module">
     import '/src/js/membership-auth.js';
+    import '/src/js/notification-system.js';
     const form = document.getElementById('signupForm');
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = form.querySelector('[data-members-email]').value.trim();
-        const password = form.querySelector('[data-members-password]')?.value;
-        
-        if (!email) {
-          alert('請輸入電子信箱');
+        const password = form.querySelector('[data-members-password]')?.value;        if (!email) {
+          window.notify.warning('Please enter your email address', {
+            title: 'Missing Email'
+          });
           return;
         }
         
         if (!password) {
-          alert('請輸入密碼');
+          window.notify.warning('Please enter your password', {
+            title: 'Missing Password'
+          });
           return;
         }
         
-        // 呼叫 API 登入
+        // Show loading notification
+        const loadingId = window.notify.loading('Signing you in...', {
+          title: 'Please wait'
+        });
+        
+        // Call API for signin
         const res = await fetch('http://localhost:3001/api/signin', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: email, password })
         });
+          const data = await res.json();
         
-        const data = await res.json();
+        // Remove loading notification
+        window.notify.remove(loadingId);
           if (res.ok) {
-          // 登入成功，儲存資料
+          // Login successful, save data
           localStorage.setItem('auth_token', data.token);
           localStorage.setItem('user_info', JSON.stringify(data.user));
           localStorage.setItem('login_time', Date.now().toString());
           
-          alert('登入成功！');
-          window.location.href = '/account';
+          // Replace loading notification with success notification
+          window.notify.replace(loadingId, 'Welcome back! Redirecting to your account...', 'success', {
+            title: 'Login Successful',
+            duration: 2000
+          });
+          
+          setTimeout(() => {
+            window.location.href = '/account';
+          }, 1500);
         } else {
-          alert(data.error || '登入失敗');
+          // Remove loading notification and show error
+          window.notify.remove(loadingId);
+          
+          setTimeout(() => {
+            window.notify.error(data.error || 'Login failed', {
+              title: 'Login Error'
+            });
+          }, 200);
         }
       });
     }

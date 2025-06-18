@@ -98,6 +98,45 @@ const createTables = () => {
 // 初始化數據庫表
 createTables();
 
+// 密碼安全驗證函數
+function validatePassword(password) {
+  const errors = [];
+  
+  // 最小長度檢查
+  if (password.length < 8) {
+    errors.push('Password must be at least 8 characters long');
+  }
+  
+  // 最大長度檢查
+  if (password.length > 128) {
+    errors.push('Password must be no more than 128 characters long');
+  }
+  
+  // 必須包含至少一個小寫字母
+  if (!/[a-z]/.test(password)) {
+    errors.push('Password must contain at least one lowercase letter');
+  }
+    // 必須包含至少一個大寫字母
+  if (!/[A-Z]/.test(password)) {
+    errors.push('Password must contain at least one uppercase letter');
+  }
+  
+  // 檢查常見弱密碼
+  const commonPasswords = [
+    'password', '123456', '123456789', 'qwerty', 'abc123', 
+    'password123', 'admin', 'letmein', 'welcome', 'monkey'
+  ];
+  
+  if (commonPasswords.includes(password.toLowerCase())) {
+    errors.push('Password is too common and not secure');
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    errors: errors
+  };
+}
+
 // 驗證會員狀態的中間件
 function verifyMembership(requiredTier = 'Support') {
   return async (req, res, next) => {
@@ -170,7 +209,17 @@ app.post('/api/signup', async (req, res) => {
   let { username, email, password, name } = req.body;
   console.log('收到註冊請求:', req.body); // log 輸入資料
   console.log('name 欄位實際值:', name, 'username:', username, 'email:', email);
+  
   if (!username || !password) return res.status(400).json({ error: '用戶名和密碼不能為空' });
+  
+  // 密碼安全驗證
+  const passwordValidation = validatePassword(password);
+  if (!passwordValidation.isValid) {
+    return res.status(400).json({ 
+      error: 'Password does not meet security requirements',
+      details: passwordValidation.errors
+    });
+  }
 
   // 如果 email 沒有傳，直接用 username 當 email
   if (!email) email = username;

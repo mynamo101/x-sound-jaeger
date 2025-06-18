@@ -1,0 +1,216 @@
+/* Notification System Styles */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.notification {
+    background: var(--background-color, #ffffff);
+    border: 1px solid var(--text-color-20, #e5e7eb);
+    border-radius: 8px;
+    padding: 20px 30px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+    max-width: 500px;
+    pointer-events: auto;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    will-change: transform, opacity;
+}
+
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.notification.hide {
+    transform: translateY(-20px);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.notification.success {
+    border-left: 4px solid #10b981;
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+}
+
+.notification.error {
+    border-left: 4px solid #ef4444;
+    background: linear-gradient(135deg, #fef2f2 0%, #fef7f7 100%);
+}
+
+.notification.warning {
+    border-left: 4px solid #f59e0b;
+    background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%);
+}
+
+.notification.info {
+    border-left: 4px solid #3b82f6;
+    background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+}
+
+.notification.loading {
+    border-left: 4px solid #6366f1;
+    background: linear-gradient(135deg, #f0f0ff 0%, #f8f9ff 100%);
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.notification-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notification-icon.success::before {
+    content: '✓';
+    color: #10b981;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.notification-icon.error::before {
+    content: '✕';
+    color: #ef4444;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.notification-icon.warning::before {
+    content: '⚠';
+    color: #f59e0b;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.notification-icon.info::before {
+    content: 'ℹ';
+    color: #3b82f6;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.notification-icon.loading::before {
+    content: '⌛';
+    color: #6366f1;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.notification-text {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 100%;
+    color: var(--text-color, #1f2937);
+    margin: 0 0 4px 0;
+}
+
+.notification-message {
+    font-size: 100%;
+    color: var(--text-color-80, #4b5563);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.notification-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-color-60, #6b7280);
+    font-size: 100%;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.notification-close:hover {
+    background: var(--text-color-10, #f3f4f6);
+}
+
+.notification-close::before {
+    content: '×';
+}
+
+/* Loading spinner for async operations */
+.notification-loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--text-color-20, #e5e7eb);
+    border-radius: 50%;
+    border-top-color: var(--text-color, #1f2937);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+    .notification {
+        background: var(--background-color, #1f2937);
+        border-color: var(--text-color-20, #374151);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .notification.success {
+        background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    }
+    
+    .notification.error {
+        background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+    }
+    
+    .notification.warning {
+        background: linear-gradient(135deg, #78350f 0%, #92400e 100%);
+    }
+      .notification.info {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    }
+      .notification.loading {
+        background: linear-gradient(135deg, #2d2d3a 0%, #3a3a4a 100%);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .notification-container {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        transform: none;
+    }
+    
+    .notification {
+        min-width: auto;
+        max-width: none;
+        width: 100%;
+    }
+}
