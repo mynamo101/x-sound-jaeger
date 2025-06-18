@@ -298,14 +298,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 let nextPage = cleanList ? "" : currentPage + 1;
                 let lastPage = parseInt(this.getAttribute("data-last-page"))
                 let subUrl = this.getAttribute("data-url")
-                let startUrl = window.location;        
-
-                if(this.getAttribute('data-is-archivepage') == "true"){
+                let startUrl = window.location;                if(this.getAttribute('data-is-archivepage') == "true"){
                     let tagName = document.querySelector('archive-tags').getAttribute('data-current-tag');
                     if(tagName != "all-tags"){
-                        subUrl = `/tags/${tagName}/`
+                        // 根据当前页面路径决定使用哪个标签路径
+                        if(window.location.pathname.includes('/audiopacks')){
+                            subUrl = `/audiotags/${tagName}/`
+                        } else {
+                            subUrl = `/tags/${tagName}/`
+                        }
                     }              
-                }           
+                }
                 
                 let url = startUrl.origin + `${subUrl}${nextPage}`;
     
@@ -350,12 +353,38 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.querySelectorAll('.archive-tag-button').forEach(button => {
                     button.addEventListener('change', this.archiveButtonChange.bind(this))
                 })
-            }
-
-            archiveButtonChange(e){  
+            }            archiveButtonChange(e){  
                 this.setAttribute('data-current-tag', e.target.id);
                 
-                document.querySelector('custom-pagination').loadMorePosts(true);
+                // 如果在 audiopacks 页面，执行客户端过滤而不是重新加载页面
+                if(window.location.pathname.includes('/audiopacks')){
+                    this.filterAudioPacksByTag(e.target.id);
+                } else {
+                    document.querySelector('custom-pagination').loadMorePosts(true);
+                }
+            }            filterAudioPacksByTag(tagSlug) {
+                const grid = document.querySelector('.pagination-grid');
+                const allCards = Array.from(grid.querySelectorAll('.audiopack-card, .post-card'));
+                
+                allCards.forEach(card => {
+                    if(tagSlug === 'all-tags') {
+                        card.style.display = '';
+                    } else {
+                        const cardTags = card.getAttribute('data-tags');
+                        if(cardTags && cardTags.split(',').includes(tagSlug)) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+                
+                // 更新显示的数量
+                const visibleCards = allCards.filter(card => card.style.display !== 'none');
+                const heroNumber = document.querySelector('.hero-number');
+                if(heroNumber) {
+                    heroNumber.textContent = visibleCards.length;
+                }
             }
         })
     }    if (!customElements.get('custom-membership')) {

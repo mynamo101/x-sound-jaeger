@@ -1,0 +1,98 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import globalSettings from '@config/config.json.ts';
+import { getSortedaudiopackss } from "@utils/utils.js";
+import Hero from "@components/Hero.astro";
+import AudioPackCard from "@components/AudioPackCard.astro";
+import { type Page } from "astro";
+import Pagination from "@components/Pagination.astro";
+import audiotagsSettings from '@config/audiotags.json.ts';
+import { slugify } from "@utils/utils.ts";
+
+import "@styles/archive-tags.css"
+
+export async function getStaticPaths({ paginate }) {
+  const { audiopackss } = await getSortedaudiopackss();
+  
+  // 获取所有标签
+  const allTags = audiopackss.flatMap(pack => pack.data.tags ?? []).filter(Boolean);
+  const uniqueTags = Array.from(new Set(allTags));
+  
+  const paths = await Promise.all(
+    uniqueTags.map(async (tag) => {
+      // 过滤包含该标签的 audio packs
+      const filteredPacks = audiopackss.filter(pack => 
+        pack.data.tags && pack.data.tags.some(packTag => 
+          slugify(packTag) === slugify(tag)
+        )
+      );
+
+      const paginatedPaths = paginate(filteredPacks, {
+        params: { 
+          tag: slugify(tag)
+        },
+        props: {
+          title: tag
+        },
+        pageSize: globalSettings.pagination_posts_number,
+      });
+
+      return paginatedPaths;
+    })
+  );
+
+  return paths.flat();
+}
+
+const { page, title } = Astro.props as { page: Page, title: string };
+const { tag } = Astro.params as { tag: string };
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+const tWithArchive = {
+  ...t,
+  archive_page: {
+    ...t.archive_page,
+    all_tags: t.archive_page?.all_tags || 'All Tags'
+  }
+};
+
+const audiopackTags = audiotagsSettings.map(tag => ({
+  ...tag,
+  original: tag.slug
+}));
+
+const tagData = audiotagsSettings.find((t) => t.slug === tag);
+const description = tagData ? tagData.description : null;
+---
+
+<BaseLayout globalSettings={globalSettings} t={tWithArchive} title={title} description={description}>
+    <main>
+        <div class="iteration-container">
+            <Hero 
+                globalSettings={globalSettings} 
+                title={title}
+                description={description}
+                total_number={page.total}
+                is_archivepage={true}
+                t={tWithArchive}
+                tags={audiopackTags}
+            />
+        </div>
+
+        <section class:list={['wide-container section-padding-top grid-section', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
+            <div class="grid-outer section-padding-bottom">
+                <div class="grid pagination-grid">
+                    {
+                        page.data.map((pack) =>
+                            <AudioPackCard post={pack}/>
+                        )
+                    } 
+                </div>
+                
+                <Pagination t={tWithArchive} posts_per_page={globalSettings.pagination_posts_number} total_posts={page.total} url={`/audiotags/${tag}/`} is_archivepage={true}/>
+            </div>
+        </section>
+    </main>
+</BaseLayout>

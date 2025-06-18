@@ -5,6 +5,9 @@ import { getSortedaudiopackss } from "@utils/utils.js";
 import Hero from "@components/Hero.astro";
 import AudioPackCard from "@components/AudioPackCard.astro";
 import Pagination from "@components/Pagination.astro";
+import audiotagsSettings from "@config/audiotags.json.ts";
+
+import "@styles/archive-tags.css"
 
 const { audiopackss, total_audiopackss } = await getSortedaudiopackss();
 const pageSize = globalSettings.pagination_posts_number;
@@ -12,17 +15,42 @@ const pageData = audiopackss.slice(0, pageSize);
 
 const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
   .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+const tWithArchive = {
+  ...t,
+  archive_page: {
+    ...t.archive_page,
+    all_tags: t.archive_page?.all_tags || 'All Tags'
+  }
+};
+
+// 获取实际存在于 audiopackss 中的标签
+const actualTags = audiopackss.flatMap(pack => pack.data.tags ?? []).filter(Boolean);
+const uniqueActualTags = Array.from(new Set(actualTags));
+
+// 只显示实际存在的标签，并从 audiotagsSettings 获取描述信息
+const audiopackTags = uniqueActualTags.map(tag => {
+  const configTag = audiotagsSettings.find(config => config.slug.toLowerCase() === tag.toLowerCase());
+  return {
+    slug: tag.toLowerCase(),
+    original: tag,
+    description: configTag?.description,
+    zh: configTag?.zh
+  };
+});
 ---
 
-<BaseLayout globalSettings={globalSettings} t={t} title={t.audiopacks_page?.title_hero ?? 'All Samples'} description={t.audiopacks_page?.description_hero ?? 'Browse all samples packs.'}>
+<BaseLayout globalSettings={globalSettings} t={tWithArchive} title={t.audiopacks_page?.title_hero ?? 'All Samples'}>
     <main>
-        <div class="iteration-container">
-            <Hero 
+        <div class="iteration-container">            <Hero 
                 globalSettings={globalSettings} 
                 title={t.audiopacks_page?.title_hero ?? 'All Samples'}
-                description={t.audiopacks_page?.description_hero ?? 'Browse all samples packs.'} 
                 total_number={total_audiopackss}
+                is_archivepage={true}
+                t={tWithArchive}
+                tags={audiopackTags}
             />
+
         </div>
 
         <section class:list={["wide-container section-padding-top grid-section", { 'hidden-animation': globalSettings.use_page_load_animations }]}> 
@@ -35,7 +63,57 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                     } 
                 </div>
                 <Pagination t={t} posts_per_page={pageSize} total_posts={total_audiopackss}/>
-            </div>
-        </section>
+            </div>        </section>
     </main>
 </BaseLayout>
+
+<script>
+    // 处理标签链接点击
+    document.addEventListener('DOMContentLoaded', function() {
+        // 检查URL中是否有标签参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const tagFilter = urlParams.get('tag');
+        
+        if (tagFilter) {
+            // 等待页面完全加载后选择对应标签
+            setTimeout(() => {
+                const tagButton = document.getElementById(tagFilter);
+                if (tagButton) {
+                    tagButton.checked = true;
+                    const archiveTags = document.querySelector('archive-tags');
+                    if (archiveTags) {
+                        archiveTags.setAttribute('data-current-tag', tagFilter);
+                        // 触发过滤
+                        const event = new Event('change');
+                        tagButton.dispatchEvent(event);
+                    }
+                }
+            }, 100);
+        }
+        
+        // 处理标签链接点击
+        document.addEventListener('click', function(e) {
+            const tagFilter = e.target.getAttribute('data-tag-filter');
+            if (tagFilter) {
+                e.preventDefault();
+                // 更新URL参数
+                const url = new URL(window.location);
+                url.searchParams.set('tag', tagFilter);
+                window.history.pushState({}, '', url);
+                
+                // 选择对应标签
+                const tagButton = document.getElementById(tagFilter);
+                if (tagButton) {
+                    tagButton.checked = true;
+                    const archiveTags = document.querySelector('archive-tags');
+                    if (archiveTags) {
+                        archiveTags.setAttribute('data-current-tag', tagFilter);
+                        // 触发过滤
+                        const event = new Event('change');
+                        tagButton.dispatchEvent(event);
+                    }
+                }
+            }
+        });
+    });
+</script>

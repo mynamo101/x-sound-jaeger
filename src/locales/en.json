@@ -133,7 +133,6 @@
         "button_label": "Back to homepage" 
     },
     "audiopacks_page": {
-        "title_hero": "Audio Packs",
-        "description_hero": "Browse our audio packs!"
+        "title_hero": "Audio Packs"
     }
 }

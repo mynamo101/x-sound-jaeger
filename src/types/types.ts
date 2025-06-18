@@ -70,7 +70,8 @@ export interface HeroProps {
     description?: string,
     is_homepage?: boolean,
     is_archivepage?: boolean,
-    total_number?: number
+    total_number?: number,
+    tags?: any[]
 }
 
 export interface PaginationProps {

@@ -15,14 +15,16 @@ if(post.data.tags && post.data.tags.length > 0){
     tag_name = post.data.tags[0];
     tag_slug = slugify(tag_name)
 }
+
+// 创建所有标签的 slug 数组用于过滤
+const tagSlugs = post.data.tags ? post.data.tags.map(tag => slugify(tag)).join(',') : '';
 ---
 
-<div class="card">
+<div class="card audiopack-card" data-tags={tagSlugs}>
     <div class="card-info-top">
-        <small class="flex-center">
-            {tag_slug &&
+        <small class="flex-center">            {tag_slug &&
                 <>
-                    <a href={`/tags/${tag_slug}/`}>{tag_name}</a>  
+                    <a href={`/audiopacks/`} data-tag-filter={tag_slug}>{tag_name}</a>  
                     &nbsp;|
                 </>
             }

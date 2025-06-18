@@ -1,10 +1,13 @@
 ---
 import { getTags, getUniqueTagsWithCount } from "@utils/utils.ts";
 
-const tags = await getTags();
-const unique_tags = getUniqueTagsWithCount(tags)
+const { globalSettings, t, tags: customTags } = Astro.props;
 
-const { globalSettings, t } = Astro.props;
+let tags = customTags;
+if (!tags) {
+  tags = await getTags();
+}
+const unique_tags = getUniqueTagsWithCount(tags);
 ---
 
 <div class:list={['archive-tags-outer', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">

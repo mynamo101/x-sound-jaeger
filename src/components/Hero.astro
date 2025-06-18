@@ -9,7 +9,8 @@ const {
     description,
     is_homepage,
     is_archivepage = false,
-    total_number
+    total_number,
+    tags
 } = Astro.props as HeroProps;
 
 const { globalSettings, t } = Astro.props;
@@ -45,10 +46,8 @@ const { globalSettings, t } = Astro.props;
                             </p>
                         </div>
                     </div>
-                }
-
-                {is_archivepage &&
-                    <ArchiveTags globalSettings={globalSettings} t={t}/>
+                }                {is_archivepage &&
+                    <ArchiveTags globalSettings={globalSettings} t={t} tags={tags}/>
                 }
                 
                 <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>

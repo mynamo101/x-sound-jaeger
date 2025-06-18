@@ -6,9 +6,14 @@ import type { TagProps } from "@src-types/types.ts";
 
 const audiotagsSettings: TagProps[] = [
     {
-        slug: "Water",
+        slug: "water",
         description: "this is the tag for the Water audiopack.",
         zh: "這是水的音色包的標籤。"
+    },
+    {
+        slug: "fire",
+        description: "this is the tag for the Fire audiopack.",
+        zh: "這是火的音色包的標籤。"
     },
     {
         slug: "audiopacks",
