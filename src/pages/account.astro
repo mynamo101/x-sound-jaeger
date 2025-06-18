@@ -2,7 +2,7 @@
 import globalSettings from '@config/config.json.ts';
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
-import profile_image from "@assets/images/account/account.webp"
+import default_avatar from "@assets/images/account/account.jpg"
 
 import "@styles/hero.css"
 import "@styles/author.css"
@@ -97,17 +97,17 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 </div>
         
                                 <div class="author-image-wrapper section-padding-top">
-                                        <div class="card-image" >
-                                                <figure class="author-figure">
+                                        <div class="card-image" >                                                <figure class="author-figure">
                                                         <Image 
-                                                                src={profile_image as any}
+                                                                src={default_avatar as any}
                                                                 alt={t.account_page.full_name_value}
                                                                 loading="eager" 
                                                                 format="webp"
                                                                 widths={[300, 400, 600, 800, 1000, 1200, 1600]}
                                                                 sizes="(max-width: 479px) calc(100vw - 36px), (max-width: 991px) calc(100vw - 60px), 40vw"
+                                                                id="user-avatar"
                                                         />
-                                                </figure>                                
+                                                </figure>
                                         </div>
                                 </div>
                         </div>
@@ -115,8 +115,32 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
         </main>
 </BaseLayout>
 
-<script>        // Wait for DOM to load
+<script>
+        // 登录检查和自动跳转
+        function checkAuthAndRedirect() {
+                const token = localStorage.getItem('auth_token');
+                if (!token) {
+                        console.log('[Account] Not logged in, redirecting to signin');
+                        // 如果没有登录，立即跳转到登录页面
+                        window.location.replace('/signin/');
+                        return false;
+                }
+                return true;
+        }
+
+        // 立即执行登录检查，在DOM加载前
+        if (!checkAuthAndRedirect()) {
+                // 如果没有登录，停止执行后续代码
+                throw new Error('Not logged in, redirecting...');
+        }
+
+        // Wait for DOM to load
         document.addEventListener('DOMContentLoaded', function() {
+                // 再次检查登录状态（防止localStorage在页面加载期间被清除）
+                if (!checkAuthAndRedirect()) {
+                        return;
+                }
+                
                 console.log('[Account] DOM loaded, start loading user data');
                 loadAccountData();
                 setupLoginStatusClick();
@@ -139,9 +163,7 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 handleLogout();
                         });
                 }
-        });
-
-        // Get user tier display name
+        });        // Get user tier display name
         function getUserTierDisplayName(tier) {
                 const tierDisplayNames = {
                         'free': 'Free Member',
@@ -150,7 +172,28 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                         'My Hero': 'My Hero Member'
                 };
                 return tierDisplayNames[tier] || tier;
-        }        async function handleLogout() {
+        }        // 更新用户头像
+        function updateUserAvatar(user) {
+                const avatarImg = document.getElementById('user-avatar') as HTMLImageElement;
+                if (!avatarImg) return;
+                
+                // 如果用户有自定义头像URL，使用用户头像
+                if (user.avatar_url && user.avatar_url.trim()) {
+                        avatarImg.src = user.avatar_url;
+                        avatarImg.alt = `${user.name || user.username}'s avatar`;
+                } else {
+                        // 否则保持默认头像
+                        avatarImg.alt = `${user.name || user.username || 'User'}'s default avatar`;
+                }
+                
+                // 添加头像加载错误处理
+                avatarImg.onerror = function() {
+                        console.warn('[Account] Failed to load user avatar, using default');
+                        // 如果用户头像加载失败，恢复为默认头像 - 使用默认图片的实际路径
+                        (this as HTMLImageElement).src = '/src/assets/images/account/account.jpg';
+                        (this as HTMLImageElement).alt = 'Default user avatar';
+                };
+        }async function handleLogout() {
                 console.log('[Account] Logging out...');
                   // 動態加載通知系統
                 try {
@@ -243,18 +286,11 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 if (logoutButton) logoutButton.style.display = 'none';
                                 if (loginButton) loginButton.style.display = 'flex';
                         }
-                }
-                  if (!token) {
-                        console.log('[Account] Not logged in');
-                        updateLoginStatus(false);
-                        fullnameEl.innerText = document.documentElement.lang === 'zh' ? '请先登录' : 'Please log in first';
-                        emailEl.innerText = '-';
-                        tierEl.innerText = '-';
-                        
-                        // Update page title to show login status
-                        document.title = `${document.title} - ${document.documentElement.lang === 'zh' ? '未登录' : 'Not Logged In'}`;
+                }                if (!token) {
+                        console.log('[Account] Not logged in, redirecting...');
+                        window.location.replace('/signin/');
                         return;
-                }                // User is logged in
+                }// User is logged in
                 const loginTime = localStorage.getItem('login_time');
                 let formattedLoginTime = null;
                 
@@ -271,12 +307,14 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
 
                 // Show cached data
                 if (userInfoStr) {
-                        try {
-                                const user = JSON.parse(userInfoStr);
+                        try {                                const user = JSON.parse(userInfoStr);
                                 console.log('[Account] Show cached data:', user);
                                 fullnameEl.innerText = user.name || user.username || user.email || '-';
                                 emailEl.innerText = user.email || user.username || '-';
                                 tierEl.innerText = getUserTierDisplayName(user.tier || 'free');
+                                
+                                // 更新用户头像
+                                updateUserAvatar(user);
                         } catch (e) {
                                 console.error('[Account] Failed to parse cached data:', e);
                         }
