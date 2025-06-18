@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>測試多個 DownloadBlock</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 40px 0;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #ff6b35;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: #333;
+        }
+        .success { background: #2d5a27; }
+        .error { background: #5a2727; }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #e55a2b;
+        }
+    </style>
+</head>
+<body>
+    <h1>DownloadBlock 通知系統測試</h1>
+    
+    <div class="test-section">
+        <h2>測試步驟</h2>
+        <ol>
+            <li>檢查全局通知系統是否正確初始化（應該只有一個實例）</li>
+            <li>模擬未登入用戶點擊免費檔案下載</li>
+            <li>驗證通知是否只顯示一次</li>
+            <li>測試通知的手動關閉功能</li>
+            <li>測試通知的自動消失功能</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>系統狀態檢查</h2>
+        <div id="systemStatus" class="status">檢查中...</div>
+        <button onclick="checkSystem()">重新檢查系統</button>
+        <button onclick="clearStorage()">清除登入狀態</button>
+    </div>
+
+    <div class="test-section">
+        <h2>通知測試</h2>
+        <button onclick="testWarningNotification()">測試警告通知</button>
+        <button onclick="testErrorNotification()">測試錯誤通知</button>
+        <button onclick="testSuccessNotification()">測試成功通知</button>
+        <button onclick="testMultipleNotifications()">測試多個通知</button>
+    </div>
+
+    <div class="test-section">
+        <h2>模擬下載測試</h2>
+        <button onclick="simulateFreeDownload()">模擬免費檔案下載（未登入）</button>
+        <button onclick="simulateLoginAndDownload()">模擬登入後下載</button>
+    </div>
+
+    <script>
+        // 模擬通知系統（簡化版）
+        class TestNotificationSystem {
+            constructor() {
+                this.container = null;
+                this.notifications = new Map();
+                this.nextId = 1;
+                this.init();
+            }
+
+            init() {
+                this.container = document.getElementById('notification-container');
+                if (!this.container) {
+                    this.container = document.createElement('div');
+                    this.container.id = 'notification-container';
+                    this.container.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        z-index: 10000;
+                        pointer-events: none;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                    `;
+                    document.body.appendChild(this.container);
+                }
+                console.log('✅ Test notification system initialized');
+            }
+
+            show(message, type = 'info', options = {}) {
+                const { title = null, duration = 5000 } = options;
+                const notificationId = `notification-${this.nextId++}-${Date.now()}`;
+                
+                console.log(`🔔 Creating ${type} notification:`, { id: notificationId, message });
+
+                const notification = this.createNotification(message, type, title, notificationId);
+                this.container.appendChild(notification);
+                this.notifications.set(notificationId, notification);
+
+                setTimeout(() => notification.classList.add('show'), 10);
+
+                if (duration > 0) {
+                    setTimeout(() => this.remove(notificationId), duration);
+                }
+
+                return notificationId;
+            }
+
+            createNotification(message, type, title, id) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.style.cssText = `
+                    background: #ffffff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 8px;
+                    padding: 20px 30px;
+                    margin-bottom: 12px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    min-width: 300px;
+                    max-width: 500px;
+                    pointer-events: auto;
+                    transform: translateY(-100px);
+                    opacity: 0;
+                    transition: all 0.3s ease-out;
+                    color: #333;
+                `;
+
+                if (type === 'warning') {
+                    notification.style.borderLeft = '4px solid #f59e0b';
+                } else if (type === 'error') {
+                    notification.style.borderLeft = '4px solid #ef4444';
+                } else if (type === 'success') {
+                    notification.style.borderLeft = '4px solid #10b981';
+                }
+
+                const content = document.createElement('div');
+                if (title) {
+                    const titleEl = document.createElement('div');
+                    titleEl.textContent = title;
+                    titleEl.style.fontWeight = 'bold';
+                    content.appendChild(titleEl);
+                }
+
+                const messageEl = document.createElement('div');
+                messageEl.textContent = message;
+                content.appendChild(messageEl);
+
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = '×';
+                closeBtn.style.cssText = `
+                    position: absolute;
+                    top: 8px;
+                    right: 8px;
+                    border: none;
+                    background: none;
+                    cursor: pointer;
+                    font-size: 18px;
+                `;
+                closeBtn.addEventListener('click', () => this.remove(id));
+
+                notification.appendChild(content);
+                notification.appendChild(closeBtn);
+
+                return notification;
+            }
+
+            remove(id) {
+                const notification = this.notifications.get(id);
+                if (!notification) return;
+
+                notification.style.transform = 'translateY(-50px)';
+                notification.style.opacity = '0';
+
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                    this.notifications.delete(id);
+                }, 300);
+            }
+
+            warning(message, options = {}) {
+                return this.show(message, 'warning', options);
+            }
+
+            error(message, options = {}) {
+                return this.show(message, 'error', options);
+            }
+
+            success(message, options = {}) {
+                return this.show(message, 'success', options);
+            }
+        }
+
+        // 初始化測試通知系統
+        if (!window.notify) {
+            window.notify = new TestNotificationSystem();
+            window.notificationSystemReady = true;
+        }
+
+        // 添加 show 樣式
+        const style = document.createElement('style');
+        style.textContent = `
+            .notification.show {
+                transform: translateY(0) !important;
+                opacity: 1 !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        function checkSystem() {
+            const status = document.getElementById('systemStatus');
+            const hasNotify = !!window.notify;
+            const hasContainer = !!document.getElementById('notification-container');
+            const isLoggedIn = !!localStorage.getItem('auth_token');
+            
+            let statusText = `
+                通知系統: ${hasNotify ? '✅ 已初始化' : '❌ 未初始化'}<br>
+                通知容器: ${hasContainer ? '✅ 已創建' : '❌ 未創建'}<br>
+                登入狀態: ${isLoggedIn ? '✅ 已登入' : '❌ 未登入'}<br>
+                準備狀態: ${window.notificationSystemReady ? '✅ 準備就緒' : '❌ 未準備'}
+            `;
+            
+            status.innerHTML = statusText;
+            status.className = 'status ' + (hasNotify && hasContainer ? 'success' : 'error');
+        }
+
+        function clearStorage() {
+            localStorage.removeItem('auth_token');
+            checkSystem();
+            console.log('🗑️ 已清除登入狀態');
+        }
+
+        function testWarningNotification() {
+            if (window.notify) {
+                window.notify.warning('這是一個警告通知測試', {
+                    title: '警告',
+                    duration: 4000
+                });
+            }
+        }
+
+        function testErrorNotification() {
+            if (window.notify) {
+                window.notify.error('這是一個錯誤通知測試', {
+                    title: '錯誤',
+                    duration: 5000
+                });
+            }
+        }
+
+        function testSuccessNotification() {
+            if (window.notify) {
+                window.notify.success('這是一個成功通知測試', {
+                    title: '成功',
+                    duration: 3000
+                });
+            }
+        }
+
+        function testMultipleNotifications() {
+            if (window.notify) {
+                window.notify.warning('第一個通知', { title: '通知 1' });
+                setTimeout(() => {
+                    window.notify.error('第二個通知', { title: '通知 2' });
+                }, 500);
+                setTimeout(() => {
+                    window.notify.success('第三個通知', { title: '通知 3' });
+                }, 1000);
+            }
+        }
+
+        function simulateFreeDownload() {
+            // 清除登入狀態
+            localStorage.removeItem('auth_token');
+            
+            if (window.notify) {
+                window.notify.warning('請先登入會員後再下載檔案', {
+                    title: '需要登入',
+                    duration: 4000
+                });
+            }
+        }
+
+        function simulateLoginAndDownload() {
+            // 模擬登入
+            localStorage.setItem('auth_token', 'fake-token-for-test');
+            
+            if (window.notify) {
+                window.notify.success('已登入，開始下載...', {
+                    title: '下載開始',
+                    duration: 2000
+                });
+            }
+        }
+
+        // 頁面加載時檢查系統
+        document.addEventListener('DOMContentLoaded', checkSystem);
+    </script>
+</body>
+</html>
