@@ -1,0 +1,35 @@
+---
+title: "Water Sound Pack"
+excerpt: "這是一個範例 samples pack 的簡介。"
+feature_image: "public/Samples/AudioPack_Cover.jpg"
+pub_date: 2025-06-18
+draft: false
+tags: ["fire", "audiopacks"]
+authors: ["Ethan"]
+password: "123"
+---
+
+### **Samples Preview**
+
+
+<WaveSurfer 
+  src="/Samples/test.wav"
+  height={100}
+/>
+
+{/* 免費下載 */}
+<DownloadBlock 
+  downloadUrl="/audio/Free/test.wav"
+  title="免費試聽檔案"
+  description="無需會員即可下載的試聽版本"
+  require_tier={0}
+/>
+
+{/* 需要會員的下載 */}
+<DownloadBlock 
+  downloadUrl="/audio/Tier_1/D.Va Mission Failed [Sound Redone].mp4"
+  title="完整音檔包"
+  description="包含所有高品質音檔，僅限會員下載"
+  requiresMembership={true}
+  require_tier={3}
+/>

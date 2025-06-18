@@ -15,9 +15,8 @@ class NotificationSystem {
             this.container.className = 'notification-container';
             document.body.appendChild(this.container);
         }
-    }
-
-    show(message, type = 'info', options = {}) {
+        console.log('Notification system initialized');
+    }show(message, type = 'info', options = {}) {
         const {
             title = null,
             duration = 5000,
@@ -36,9 +35,11 @@ class NotificationSystem {
         this.container.appendChild(notification);
         this.notifications.set(notificationId, notification);
 
-        // Trigger show animation
+        // Trigger show animation after a short delay to ensure DOM is ready
         requestAnimationFrame(() => {
-            notification.classList.add('show');
+            requestAnimationFrame(() => {
+                notification.classList.add('show');
+            });
         });
 
         // Auto remove after duration (unless persistent)
@@ -95,13 +96,13 @@ class NotificationSystem {
             notification.classList.add('hide');
             notification.classList.remove('show');
             
-            // Wait for animation to complete
+            // Wait for animation to complete (match CSS transition duration)
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
                 }
                 this.notifications.delete(id);
-            }, 400); // Match CSS transition duration
+            }, 300); // Match CSS transition duration
         }
     }
 

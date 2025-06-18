@@ -35,7 +35,7 @@ const pageCollection = defineCollection({
 });
 
 const audiopacksCollection = defineCollection({
-  loader: glob({ pattern: "**/[^_]*{md,mdx}", base: "./src/content/samples" }),
+  loader: glob({ pattern: "**/[^_]*{md,mdx}", base: "./src/content/audiopacks" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     excerpt: z.string().optional(),
