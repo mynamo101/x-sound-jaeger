@@ -5,25 +5,30 @@ interface Props {
   description?: string;
   fileSize?: string;
   requiresMembership?: boolean;
-  requiredTier?: 'Support' | 'Creator\'s Choice' | 'My Hero';
-  fileId?: string;
+  require_tier?: 0 | 1 | 2 | 3;
 }
 
-const { 
+const {
   downloadUrl,
-  title = "Download File",
-  description = "",
+  title = "下載檔案",
+  description,
   fileSize,
   requiresMembership = false,
-  requiredTier = 'Support',
-  fileId
+  require_tier = 0
 } = Astro.props;
 
-// Auto extract file info from download URL
+const tierNameMap = [
+  '免費',
+  'Support',
+  "Creator's Choice",
+  'My Hero'
+];
+const getTierLabel = (tier: number) => tierNameMap[tier] || '未知等級';
+const getTierString = (tier: number) => tierNameMap[tier] || 'Support';
+
 const getFileInfo = (url: string) => {
   const fileName = url.split('/').pop() || 'unknown';
   const fileExtension = fileName.split('.').pop()?.toLowerCase() || '';
-  // Determine format by extension
   const formatInfo = {
     'wav': { format: 'WAV', color: '#ff6b35' },
     'mp3': { format: 'MP3', color: '#4CAF50' },
@@ -36,419 +41,504 @@ const getFileInfo = (url: string) => {
     'rar': { format: 'RAR', color: '#795548' },
     '7z': { format: '7Z', color: '#9C27B0' }
   };
-  
   const info = formatInfo[fileExtension as keyof typeof formatInfo] || {
     format: fileExtension.toUpperCase(),
     color: '#666'
   };
-  
   return {
     fileName,
     fileFormat: info.format,
-    fileSize: fileSize || 'Unknown file size',
-    formatColor: info.color
+    formatColor: info.color,
+    fileSize: fileSize || '檔案大小未知'
   };
 };
-
 const fileInfo = getFileInfo(downloadUrl);
 ---
 
-<div class="download-block" data-download-url={downloadUrl} data-requires-membership={requiresMembership} data-required-tier={requiredTier} data-file-id={fileId}>
-  <div class="download-header">
-    <h3 class="download-title">{title}</h3>
-    {description && <p class="download-description">{description}</p>}
-    {requiresMembership && (
-      <div class="membership-badge">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-          <circle cx="12" cy="16" r="1"></circle>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-        </svg>
-        {requiredTier} membership required
-      </div>
-    )}
-  </div>
-  <div class="download-content">
-    <div class="file-info">
-      <div class="file-details">
-        <h4 class="file-name">{fileInfo.fileName}</h4>
-        <div class="file-meta">
-          <span class="file-format" style={`background: ${fileInfo.formatColor}`}>{fileInfo.fileFormat}</span>
-          <span class="file-size" data-file-size>{fileInfo.fileSize}</span>
-        </div>
-      </div>
-      <div class="file-actions">
-        <button class="download-btn" data-download-action>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7,10 12,15 17,10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span class="download-text">下載</span>
-        </button>
+<div class="download-block-flex" data-download-url={downloadUrl} data-requires-membership={requiresMembership} data-require-tier={require_tier}>
+  <div class="membership-label">{getTierLabel(require_tier)}</div>  <div class="download-flex-row">
+    <div class="file-info-flex">
+      <div class="file-title">{title}</div>
+      {description && <div class="file-description">{description}</div>}
+      <div class="file-badges">
+        <span class="badge format-badge" style={`background:${fileInfo.formatColor}`}>{fileInfo.fileFormat}</span>
+        <span class="badge size-badge" data-file-size>{fileInfo.fileSize}</span>
+        <span class="badge name-badge">{fileInfo.fileName}</span>
       </div>
     </div>
-  </div>
-  
-  <!-- 會員登錄提示 -->
-  <div class="membership-prompt" style="display: none;">
-    <div class="membership-prompt-content">
-      <h4>需要會員資格</h4>
-      <p>此內容需要 <strong>{requiredTier}</strong> 或更高等級的會員資格才能下載。</p>
-      <div class="membership-actions">
-        <a href="/signin" class="btn-signin">登錄</a>
-        <a href="/membership" class="btn-upgrade">升級會員</a>
-      </div>
+    <div class="file-action-flex">
+      <button class="download-btn-flex" data-download-action disabled>下載</button>
     </div>
   </div>
 </div>
 
-<script>
-  // 嘗試獲取真實檔案大小
-  async function fetchFileSize(url: string): Promise<string> {
+<script type="module">
+  async function fetchFileSize(url) {
     try {
       const response = await fetch(url, { method: 'HEAD' });
       const contentLength = response.headers.get('Content-Length');
-      
       if (contentLength) {
         const bytes = parseInt(contentLength);
         return formatFileSize(bytes);
       }
-    } catch (error) {
-      console.log('無法獲取檔案大小:', error);
-    }
+    } catch {}
     return '';
   }
-
-  function formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    
+  function formatFileSize(bytes) {
+    if (!bytes) return '檔案大小未知';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  // 檢查用戶認證狀態
-  function getAuthToken(): string | null {
+  }  function getAuthToken() {
     return localStorage.getItem('auth_token');
   }
-
-  // 驗證下載權限
-  async function checkDownloadAccess(fileId: string, requiredTier: string): Promise<{access: boolean, error?: string}> {
+    // 檢查用戶會員等級
+  async function checkUserTier() {
     const token = getAuthToken();
+    if (!token) return null;
     
-    if (!token) {
-      return { access: false, error: 'not_authenticated' };
-    }
-
     try {
-      const response = await fetch(`/api/check-download-access/${fileId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await fetch('http://localhost:3001/api/user/profile', {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-
-      const data = await response.json();
-      
       if (response.ok) {
-        return { access: true };
-      } else {
-        return { access: false, error: data.error };
+        const data = await response.json();
+        return data.user.tier;
       }
     } catch (error) {
-      return { access: false, error: 'network_error' };
+      console.error('Failed to get user info:', error);
     }
+    return null;
   }
-
-  // 處理下載按鈕點擊
-  async function handleDownloadClick(event: Event, block: Element) {
-    event.preventDefault();
-    
-    const downloadUrl = block.getAttribute('data-download-url');
-    const requiresMembership = block.getAttribute('data-requires-membership') === 'true';
-    const requiredTier = block.getAttribute('data-required-tier');
-    const fileId = block.getAttribute('data-file-id');
-    const downloadBtn = block.querySelector('.download-btn') as HTMLButtonElement;
-    const downloadText = downloadBtn.querySelector('.download-text') as HTMLElement;
-    const membershipPrompt = block.querySelector('.membership-prompt') as HTMLElement;
-
-    if (!requiresMembership) {
-      // 直接下載，無需驗證
-      window.open(downloadUrl, '_blank');
-      return;
+    // 比較會員等級
+  function compareTiers(userTier, requiredTier) {
+    const tierLevels = {
+      'Free': 0,
+      'Support': 1,
+      'Creator\'s Choice': 2,
+      'My Hero': 3
+    };
+    return tierLevels[userTier] >= tierLevels[requiredTier];
+  }
+  
+  // 向後端驗證下載權限（最終安全檢查）
+  async function verifyDownloadPermission(fileUrl) {
+    const token = getAuthToken();
+    if (!token) {
+      return { allowed: false, message: '請先登入' };
     }
-
-    // 顯示載入狀態
-    downloadText.textContent = '檢查權限...';
-    downloadBtn.disabled = true;
-
-    const accessCheck = await checkDownloadAccess(fileId || 'unknown', requiredTier || 'Support');
-
-    if (accessCheck.access) {
-      // 有權限，開始下載
-      downloadText.textContent = '下載中...';
-      window.open(downloadUrl, '_blank');
-      setTimeout(() => {
-        downloadText.textContent = '下載';
-        downloadBtn.disabled = false;
-      }, 2000);
-    } else {
-      // 無權限，顯示會員提示
-      downloadText.textContent = '下載';
-      downloadBtn.disabled = false;
-      membershipPrompt.style.display = 'block';
+    
+    try {
+      // 從檔案 URL 中提取檔案名作為 fileId
+      const fileName = fileUrl.split('/').pop();
+      console.log('向後端驗證檔案權限:', fileName);
+      const response = await fetch(`http://localhost:3001/api/check-download-access/${fileName}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       
-      // 3秒後自動隱藏提示
-      setTimeout(() => {
-        membershipPrompt.style.display = 'none';
-      }, 5000);
-    }
-  }
-
-  // 當組件載入時初始化
-  document.addEventListener('DOMContentLoaded', async () => {
-    const downloadBlocks = document.querySelectorAll('.download-block[data-download-url]');
-    
-    for (const block of downloadBlocks) {
-      const url = block.getAttribute('data-download-url');
-      const fileSizeElement = block.querySelector('[data-file-size]');
-      const downloadBtn = block.querySelector('[data-download-action]');
-
-      // 獲取檔案大小
-      if (url && fileSizeElement && fileSizeElement.textContent === '檔案大小未知') {
-        const realSize = await fetchFileSize(url);
-        if (realSize) {
-          fileSizeElement.textContent = realSize;
+      console.log('後端回應狀態:', response.status);
+      if (response.ok) {
+        return { allowed: true };      } else {
+        const data = await response.json();
+        console.log('後端驗證失敗，回傳資料:', data);
+        
+        // 根據不同錯誤類型給出不同提示
+        let message = '後端驗證失敗';
+        if (data.error === 'File not found') {
+          message = '檔案不存在於系統中，請聯繫管理員';
+        } else if (data.required_tier && data.current_tier) {
+          message = `需要 ${data.required_tier} 等級，您目前是 ${data.current_tier}`;
+        } else {
+          message = data.error || '權限驗證失敗';
         }
+        
+        return { 
+          allowed: false, 
+          message: message
+        };
+      }
+    } catch (error) {
+      console.error('Download permission check failed:', error);
+      return { allowed: false, message: '權限驗證失敗，請稍後再試' };
+    }
+  }  document.addEventListener('DOMContentLoaded', async () => {
+    const blocks = document.querySelectorAll('.download-block-flex');
+    
+    blocks.forEach(async (block) => {
+      const btn = block.querySelector('.download-btn-flex');
+      const requiresMembership = block.getAttribute('data-requires-membership') === 'true';
+      const requireTier = parseInt(block.getAttribute('data-require-tier'));
+      const downloadUrl = block.getAttribute('data-download-url');
+      const fileSizeElement = block.querySelector('[data-file-size]');
+        // 檔案大小自動補全
+      if (fileSizeElement && fileSizeElement.textContent === '檔案大小未知') {
+        const realSize = await fetchFileSize(downloadUrl);
+        if (realSize) fileSizeElement.textContent = realSize;
       }
 
-      // 綁定下載事件
-      if (downloadBtn) {
-        downloadBtn.addEventListener('click', (event) => handleDownloadClick(event, block));
+      // 根據會員等級設定背景色彩
+      const tierClasses = ['tier-free', 'tier-support', 'tier-creators', 'tier-hero'];
+      block.classList.add(tierClasses[requireTier] || 'tier-free');
+
+      // 免費檔案（require_tier 為 0）直接開放下載
+      if (requireTier === 0) {
+        btn.disabled = false;
+        btn.classList.add('can-download');
+        btn.title = '';
+        btn.addEventListener('click', () => {
+          window.open(downloadUrl, '_blank');
+        });
+        return;
       }
-    }
+
+      // 付費檔案：先進行前端檢查顯示 UI 狀態
+      let frontendCheckPassed = false;
+      if (requiresMembership) {
+        const userTier = await checkUserTier();
+        if (!userTier) {
+          frontendCheckPassed = false;
+          btn.title = '請先登入會員';
+        } else {
+          const tierNames = ['Free', 'Support', 'Creator\'s Choice', 'My Hero'];
+          const requiredTierName = tierNames[requireTier] || 'Support';
+          
+          if (compareTiers(userTier, requiredTierName)) {
+            frontendCheckPassed = true;
+          } else {
+            frontendCheckPassed = false;
+            btn.title = `需要等級：${requiredTierName}，您目前：${userTier}`;
+          }
+        }
+      } else {
+        frontendCheckPassed = true;
+      }
+
+      // 根據前端檢查結果設定按鈕狀態
+      if (frontendCheckPassed) {
+        btn.disabled = false;
+        btn.classList.add('can-download');
+        btn.title = '';
+      } else {
+        btn.disabled = true;
+        btn.classList.remove('can-download');
+      }
+
+      // 點擊事件：付費檔案進行後端驗證，免費檔案直接下載
+      btn.addEventListener('click', async () => {
+        if (!frontendCheckPassed) return;
+        
+        // 只對付費檔案進行後端驗證
+        if (requiresMembership && requireTier > 0) {
+          console.log('正在進行後端權限驗證...');
+          const finalCheck = await verifyDownloadPermission(downloadUrl);
+          if (finalCheck.allowed) {
+            window.open(downloadUrl, '_blank');
+          } else {
+            alert(finalCheck.message || '下載權限驗證失敗');
+          }
+        } else {
+          // 免費檔案直接下載
+          window.open(downloadUrl, '_blank');
+        }
+      });
+    });
   });
 </script>
 
 <style>
-  .download-block {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
+.download-block-flex {
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
 
-  .download-block:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    border-color: #444;
-  }
+/* 免費等級 - 深灰色 */
+.download-block-flex.tier-free {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border: 1px solid #333;
+}
 
-  .download-header {
-    margin-bottom: 1rem;
-  }
+/* Support 等級 - 藍色漸變 */
+.download-block-flex.tier-support {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1d4ed8 100%);
+  border: 1px solid #2563eb;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
 
-  .download-title {
-    color: #fff;
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
-  }
+/* Creator's Choice 等級 - 紫色漸變 */
+.download-block-flex.tier-creators {
+  background: linear-gradient(135deg, #581c87 0%, #8b5cf6 50%, #7c3aed 100%);
+  border: 1px solid #8b5cf6;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+}
 
-  .download-description {
-    color: #ccc;
-    font-size: 0.9rem;
-    margin: 0;
-    line-height: 1.5;
-  }
+/* My Hero 等級 - 金色漸變 */
+.download-block-flex.tier-hero {
+  background: linear-gradient(135deg, #92400e 0%, #f59e0b 30%, #fbbf24 50%, #f59e0b 70%, #d97706 100%);
+  border: 1px solid #f59e0b;
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.3);
+}
 
-  .download-content {
-    display: flex;
+/* 為最高等級添加發光效果 */
+.download-block-flex.tier-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  animation: shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+/* Hover 效果 */
+.download-block-flex.tier-support:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
+}
+
+.download-block-flex.tier-creators:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.35);
+}
+
+.download-block-flex.tier-hero:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+}
+
+.membership-label {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  position: relative;
+}
+
+/* 免費等級標籤 */
+.tier-free .membership-label {
+  color: #d1d5db;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+/* Support 等級標籤 */
+.tier-support .membership-label {
+  color: #dbeafe;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Creator's Choice 等級標籤 */
+.tier-creators .membership-label {
+  color: #ede9fe;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 8px rgba(139, 92, 246, 0.3);
+}
+
+/* My Hero 等級標籤 - 金色效果但保持可讀性 */
+.tier-hero .membership-label {
+  color: #fef3c7;
+  text-shadow: 
+    0 1px 2px rgba(0,0,0,0.8),
+    0 0 10px rgba(245, 158, 11, 0.5),
+    0 0 20px rgba(245, 158, 11, 0.3);
+  font-weight: 700;
+  animation: gold-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes gold-glow {
+  0% { 
+    text-shadow: 
+      0 1px 2px rgba(0,0,0,0.8),
+      0 0 10px rgba(245, 158, 11, 0.5),
+      0 0 20px rgba(245, 158, 11, 0.3);
+  }
+  100% { 
+    text-shadow: 
+      0 1px 2px rgba(0,0,0,0.8),
+      0 0 15px rgba(245, 158, 11, 0.8),
+      0 0 30px rgba(245, 158, 11, 0.5);
+  }
+}
+.download-flex-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.file-info-flex {
+  flex: 1;
+  min-width: 0;
+}
+.file-title {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.7rem;
+  word-break: break-all;
+}
+.file-description {
+  color: #d1d5db;
+  font-size: 0.95rem;
+  font-weight: 400;
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+/* 根據不同等級調整描述文字顏色 */
+.tier-support .file-description {
+  color: #bfdbfe;
+}
+.tier-creators .file-description {
+  color: #ddd6fe;
+}
+.tier-hero .file-description {
+  color: #fef3c7;
+  opacity: 0.95;
+}
+.file-badges {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #fff;
+  background: #444;
+  letter-spacing: 0.5px;
+}
+.format-badge {
+  text-transform: uppercase;
+}
+.size-badge {
+  background: #666;
+}
+.name-badge {
+  background: #333;
+  color: #eee;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-action-flex {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.download-btn-flex {
+  min-width: 120px;
+  padding: 0.85rem 1.7rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  background: #555;
+  color: #fff;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-btn-flex:disabled {
+  opacity: 0.7;
+}
+
+/* 免費等級按鈕 */
+.tier-free .download-btn-flex.can-download {
+  background: rgba(70 70 70 / 0.8);
+  cursor: pointer;
+}
+
+.tier-free .download-btn-flex.can-download:hover {
+  background: rgba(224 224 224 / 0.9);
+}
+
+/* Support 等級按鈕 */
+.tier-support .download-btn-flex.can-download {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  border: 1px solid #2563eb;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.tier-support .download-btn-flex.can-download:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Creator's Choice 等級按鈕 */
+.tier-creators .download-btn-flex.can-download {
+  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+  border: 1px solid #8b5cf6;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
+}
+
+.tier-creators .download-btn-flex.can-download:hover {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* My Hero 等級按鈕 - 豪華金色 */
+.tier-hero .download-btn-flex.can-download {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
+  border: 1px solid #f59e0b;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+  font-weight: 700;
+}
+
+.tier-hero .download-btn-flex.can-download:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fcd34d 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(245, 158, 11, 0.4);
+}
+
+/* 金色按鈕發光效果 */
+.tier-hero .download-btn-flex.can-download::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+  animation: button-shimmer 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes button-shimmer {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+@media (max-width: 700px) {
+  .download-flex-row {
     flex-direction: column;
-    gap: 1rem;
+    align-items: stretch;
+    gap: 1.2rem;
   }
-
-  .file-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+  .file-action-flex {
+    justify-content: stretch;
   }
-
-  .file-details {
-    flex: 1;
-  }
-
-  .file-name {
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 500;
-    margin: 0 0 0.5rem 0;
-    word-break: break-all;
-  }
-
-  .file-meta {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.85rem;
-  }
-  .file-format {
-    color: #fff;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-    text-transform: uppercase;
-  }
-
-  .file-size {
-    color: #bbb;
-    background: #333;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-  }
-  .file-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-shrink: 0;
-  }
-
-  .download-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    color: #fff;
-  }
-
-  .download-btn:hover {
-    background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
-  }
-  .download-btn svg {
-    flex-shrink: 0;
-  }
-
-  .membership-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    color: #fff;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-top: 0.5rem;
-  }
-
-  .membership-badge svg {
-    flex-shrink: 0;
-  }
-
-  .membership-prompt {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #2a2a2a;
-    border: 1px solid #444;
-    border-radius: 8px;
-    border-left: 4px solid #ff6b35;
-  }
-
-  .membership-prompt-content h4 {
-    color: #fff;
-    margin: 0 0 0.5rem 0;
-    font-size: 1rem;
-  }
-
-  .membership-prompt-content p {
-    color: #ccc;
-    margin: 0 0 1rem 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
-  }
-
-  .membership-actions {
-    display: flex;
-    gap: 0.75rem;
-  }
-
-  .btn-signin,
-  .btn-upgrade {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .btn-signin {
-    background: #333;
-    color: #fff;
-    border: 1px solid #555;
-  }
-
-  .btn-signin:hover {
-    background: #444;
-    border-color: #666;
-  }
-
-  .btn-upgrade {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    color: #fff;
-  }
-
-  .btn-upgrade:hover {
-    background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
-  }
-
-  .download-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-  }
-
-  .download-btn:disabled:hover {
-    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    box-shadow: none;
-  }
-
-  @media (max-width: 768px) {
-    .download-block {
-      padding: 1rem;
-    }
-
-    .file-info {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 1rem;
-    }    .file-actions {
-      justify-content: stretch;
-    }
-
-    .download-btn {
-      flex: 1;
-      justify-content: center;
-    }
-
-    .file-meta {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-  }
+}
 </style>

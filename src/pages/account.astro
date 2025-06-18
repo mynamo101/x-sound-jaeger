@@ -166,7 +166,7 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
         });        // Get user tier display name
         function getUserTierDisplayName(tier) {
                 const tierDisplayNames = {
-                        'free': 'Free Member',
+                        'Free': 'Free Member',
                         'Support': 'Support Member',
                         "Creator's Choice": "Creator's Choice Member",
                         'My Hero': 'My Hero Member'
@@ -311,7 +311,7 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 console.log('[Account] Show cached data:', user);
                                 fullnameEl.innerText = user.name || user.username || user.email || '-';
                                 emailEl.innerText = user.email || user.username || '-';
-                                tierEl.innerText = getUserTierDisplayName(user.tier || 'free');
+                                tierEl.innerText = getUserTierDisplayName(user.tier || 'Free');
                                 
                                 // 更新用户头像
                                 updateUserAvatar(user);
@@ -333,7 +333,7 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 console.log('[Account] API response data:', data);
                                 const userInfo = {
                                         ...data.user,
-                                        tier: data.user.tier || 'free'
+                                        tier: data.user.tier || 'Free'
                                 };
 
                                 // Update display

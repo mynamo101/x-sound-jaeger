@@ -3,10 +3,15 @@ const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(cors());
+
 
 // 數據庫配置
 const db = mysql.createConnection({
@@ -30,7 +35,7 @@ const createTables = () => {
       password VARCHAR(255) NOT NULL,
       name VARCHAR(255),
       paypal_payer_id VARCHAR(255),
-      tier ENUM('free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'free',
+      tier ENUM('Free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'Free',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
@@ -44,14 +49,14 @@ const createTables = () => {
       file_size VARCHAR(50),
       file_format VARCHAR(10),
       download_url VARCHAR(500) NOT NULL,
-      required_tier ENUM('free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'Support',
+      required_tier ENUM('Free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'Support',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
   // 更新現有 protected_files 表的 ENUM
   db.query(`
     ALTER TABLE protected_files 
-    MODIFY COLUMN required_tier ENUM('free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'Support'
+    MODIFY COLUMN required_tier ENUM('Free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'Support'
   `, (err) => {
     if (err && !err.message.includes('duplicate')) {
       console.log('更新 required_tier ENUM:', err.message);
@@ -137,7 +142,7 @@ function verifyMembership(requiredTier = 'Support') {
           }
           const user = results[0];
           const tierLevels = {
-            'free': 0,
+            'Free': 0,
             'Support': 1,
             'Creator\'s Choice': 2,
             'My Hero': 3
@@ -165,7 +170,7 @@ function verifyMembership(requiredTier = 'Support') {
   };
 }
 
-// 註冊接口（直接寫 tier='free'）
+// 註冊接口（直接寫 tier='Free'）
 app.post('/api/signup', async (req, res) => {
   let { username, email, password, name } = req.body;
   if (!username || !password) return res.status(400).json({ error: '用戶名和密碼不能為空' });
@@ -181,7 +186,7 @@ app.post('/api/signup', async (req, res) => {
   const insertSql = name
     ? 'INSERT INTO users (username, email, password, name, tier) VALUES (?, ?, ?, ?, ?)' 
     : 'INSERT INTO users (username, email, password, tier) VALUES (?, ?, ?, ?)';
-  const insertParams = name ? [username, email, hash, name, 'free'] : [username, email, hash, 'free'];
+  const insertParams = name ? [username, email, hash, name, 'Free'] : [username, email, hash, 'Free'];
   db.query(insertSql, insertParams, (err, result) => {
     if (err) {
       return res.status(400).json({ error: err.sqlMessage || '用戶名已存在' });
@@ -223,7 +228,7 @@ app.get('/api/check-download-access/:fileId', verifyMembership(), (req, res) => 
       }
       const file = results[0];
       const tierLevels = {
-        'free': 0,
+        'Free': 0,
         'Support': 1,
         'Creator\'s Choice': 2,
         'My Hero': 3
@@ -284,7 +289,7 @@ app.post('/api/paypal-webhook', express.raw({type: 'application/json'}), (req, r
 function handleSubscriptionActivated(subscription) {
   const planIdToTier = {
     'P-3MP41776X70737201NBIOZRQ': 'Support',
-    'P-5VY34435YG791411WNBIPG6A': 'Creator\'s Choice',
+    'P-5VY34435YG791411WNBIPG6A': "Creator's Choice",
     'P-658069381H438834BNBIPIDA': 'My Hero'
   };
   const tier = planIdToTier[subscription.plan_id];
@@ -305,12 +310,12 @@ function handleSubscriptionActivated(subscription) {
 function handleSubscriptionCancelled(subscription) {
   db.query(
     'UPDATE users SET tier = ? WHERE paypal_payer_id = ?',
-    ['free', subscription.subscriber.payer_id],
+    ['Free', subscription.subscriber.payer_id],
     (err) => {
       if (err) {
         console.error('Error cancelling user tier:', err);
       } else {
-        console.log(`User ${subscription.subscriber.payer_id} 會員已取消，降級為 free`);
+        console.log(`User ${subscription.subscriber.payer_id} 會員已取消，降級為 Free`);
       }
     }
   );
@@ -364,6 +369,123 @@ app.get('/api/user/profile', (req, res) => {
 app.get('/api/user/subscription', verifyMembership(), (req, res) => {
   res.json({
     user: req.user
+  });
+});
+
+// 設定 multer 暫存路徑，之後再根據 tier 移動檔案
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // 先暫存到 temp 資料夾
+    const tempDir = path.join(__dirname, 'temp');
+    fs.mkdirSync(tempDir, { recursive: true });
+    cb(null, tempDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+const upload = multer({ storage });
+
+// 改用 fields 支援多欄位
+app.post('/api/admin/upload-protected-file', upload.fields([
+  { name: 'file', maxCount: 1 },
+  { name: 'required_tier', maxCount: 1 }
+]), (req, res) => {
+  const required_tier = req.body.required_tier;
+  console.log('Upload API - req.body:', req.body);
+  console.log('Upload API - required_tier:', required_tier);
+  
+  if (!req.files || !req.files.file) return res.status(400).json({ error: '未選擇檔案' });
+  const file = req.files.file[0];
+  const file_id = file.originalname;
+  const file_name = file.originalname;
+  const file_size = file.size;
+  const file_format = file.originalname.split('.').pop().toLowerCase();
+  
+  // 決定目標資料夾
+  const folderMap = {
+    'free': 'Free',
+    'Free': 'Free',
+    'Support': 'Tier_1',
+    "Creator's Choice": 'Tier_2',
+    'My Hero': 'Tier_3'
+  };
+  const folder = folderMap[required_tier] || 'Tier_1';
+  console.log('Upload API - target folder:', folder);
+  
+  // 建立目標資料夾
+  const targetDir = path.join(__dirname, 'public', 'audio', folder);
+  fs.mkdirSync(targetDir, { recursive: true });
+  
+  // 移動檔案從 temp 到目標資料夾
+  const tempPath = file.path;
+  const finalPath = path.join(targetDir, file.originalname);
+  
+  console.log('Upload API - moving file from:', tempPath);
+  console.log('Upload API - moving file to:', finalPath);
+  
+  fs.rename(tempPath, finalPath, (err) => {
+    if (err) {
+      console.error('File move error:', err);
+      return res.status(500).json({ error: '檔案移動失敗', detail: err.message });
+    }
+    
+    const download_url = `/audio/${folder}/${file.originalname}`;
+    console.log('Upload API - final download_url:', download_url);
+    
+    // 寫入資料库
+    db.query(
+      `INSERT INTO protected_files (file_id, file_name, file_size, file_format, download_url, required_tier)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE file_size=VALUES(file_size), file_format=VALUES(file_format), download_url=VALUES(download_url), required_tier=VALUES(required_tier)`,
+      [file_id, file_name, file_size, file_format, download_url, required_tier],
+      (err) => {
+        if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ error: '資料庫寫入失敗', detail: err.message });
+        }
+        res.json({ message: '上傳成功', file: file_name, tier: required_tier, folder: folder });
+      }
+    );
+  });
+});
+
+// 取得所有 protected_files
+app.get('/api/admin/list-protected-files', (req, res) => {
+  db.query(
+    'SELECT file_name, required_tier, download_url FROM protected_files ORDER BY created_at DESC',
+    (err, results) => {
+      if (err) return res.status(500).json({ error: 'DB error' });
+      res.json(results);
+    }
+  );
+});
+
+// 刪除受保護檔案的 API
+app.post('/api/admin/delete-protected-file', (req, res) => {
+  const { file_name } = req.body;
+  if (!file_name) return res.status(400).json({ error: '缺少檔名' });
+  // 查詢檔案資訊
+  db.query('SELECT * FROM protected_files WHERE file_name = ?', [file_name], (err, results) => {
+    if (err || results.length === 0) return res.status(404).json({ error: '找不到檔案' });
+    const file = results[0];
+    // 刪除資料庫紀錄
+    db.query('DELETE FROM protected_files WHERE file_name = ?', [file_name], (err2) => {
+      if (err2) return res.status(500).json({ error: '資料庫刪除失敗' });
+      // 刪除實體檔案
+      const folderMap = {
+        'Free': 'Free',
+        'Support': 'Tier_1',
+        "Creator's Choice": 'Tier_2',
+        'My Hero': 'Tier_3'
+      };
+      const folder = folderMap[file.required_tier] || 'Tier_1';
+      const filePath = path.join(__dirname, 'public', 'audio', folder, file_name);
+      fs.unlink(filePath, (err3) => {
+        // 即使檔案不存在也不影響
+        res.json({ message: '已刪除' });
+      });
+    });
   });
 });
 

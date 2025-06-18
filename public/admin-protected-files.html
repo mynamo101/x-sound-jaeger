@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>管理員 - 上傳受保護檔案</title>
+  <style>
+    body { background: #1a1a1a; color: #fff; font-family: sans-serif; }
+    .container { max-width: 400px; margin: 40px auto; background: #232323; border-radius: 10px; padding: 32px; box-shadow: 0 2px 12px #0004; }
+    h1 { color: #ff6b35; text-align: center; }
+    .dropzone {
+      border: 2px dashed #ff6b35;
+      border-radius: 8px;
+      background: #181818;
+      padding: 36px 0;
+      text-align: center;
+      color: #ff6b35;
+      font-size: 18px;
+      margin-bottom: 24px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .dropzone.dragover { border-color: #f7931e; background: #222; }
+    .select-group { margin-bottom: 24px; }
+    select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #333; background: #1a1a1a; color: #fff; }
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%); color: #fff; font-size: 16px; cursor: pointer; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .msg { margin-top: 18px; text-align: center; }
+    .msg.success { color: #4caf50; }
+    .msg.error { color: #f44336; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>上傳受保護檔案</h1>
+    <div id="dropzone" class="dropzone">拖拉檔案到這裡，或點擊選擇</div>
+    <div class="select-group">
+      <label for="tier">所需會員等級</label>
+      <select id="tier">
+        <option value="Free">Free (Tier 0)</option>
+        <option value="Support">Support (Tier 1)</option>
+        <option value="Creator's Choice">Creator's Choice (Tier 2)</option>
+        <option value="My Hero">My Hero (Tier 3)</option>
+      </select>
+    </div>
+    <button id="uploadBtn" class="btn" disabled>上傳檔案</button>
+    <div id="msg" class="msg"></div>
+    <div id="fileList" style="margin-top:40px;"></div>
+  </div>
+  <input type="file" id="fileInput" style="display:none" />
+
+  <script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const msg = document.getElementById('msg');
+    let selectedFile = null;
+
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault(); dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault(); dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', e => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      selectedFile = file;
+      dropzone.textContent = `已選擇檔案：${file.name}`;
+      uploadBtn.disabled = false;
+      msg.textContent = '';
+    }
+
+    // 檔案列表管理
+    async function fetchFileList() {
+      const list = document.getElementById('fileList');
+      try {
+        const res = await fetch('/api/admin/list-protected-files');
+        if (!res.ok) {
+          list.innerHTML = '<div style="color:#f44336;text-align:center;">檔案列表載入失敗：' + res.status + '</div>';
+          return;
+        }
+        const files = await res.json();
+        console.log('取得檔案列表:', files); // 偵錯用
+        if (!files.length) {
+          list.innerHTML = '<div style="text-align:center;color:#aaa;">目前沒有檔案</div>';
+          return;
+        }
+        list.innerHTML = `
+          <h2 style="margin-bottom:16px;">已上傳檔案管理</h2>
+          <table style="width:100%;border-collapse:collapse;background:#181818;">
+            <thead>
+              <tr style="background:#222;color:#ff6b35;">
+                <th style="padding:8px 4px;">檔名</th>
+                <th style="padding:8px 4px;">權限</th>
+                <th style="padding:8px 4px;">下載</th>
+                <th style="padding:8px 4px;">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${files.map(f => `
+                <tr>
+                  <td style="padding:8px 4px;">${f.file_name}</td>
+                  <td style="padding:8px 4px;">${f.required_tier}</td>
+                  <td style="padding:8px 4px;"><a href="${f.download_url}" target="_blank" style="color:#4caf50;">下載</a></td>
+                  <td style="padding:8px 4px;"><button class="delete-btn" data-file-id="${f.file_name}" style="background:#f44336;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;">刪除</button></td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+        // 綁定刪除事件
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            if (!confirm('確定要刪除這個檔案嗎？')) return;
+            const fileName = this.getAttribute('data-file-id');
+            const res = await fetch('/api/admin/delete-protected-file', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ file_name: fileName })
+            });
+            if (res.ok) {
+              alert('已刪除');
+              fetchFileList();
+            } else {
+              const err = await res.text();
+              alert('刪除失敗: ' + err);
+            }
+          });
+        });
+      } catch (err) {
+        list.innerHTML = '<div style="color:#f44336;text-align:center;">檔案列表載入失敗：' + err.message + '</div>';
+      }
+    }
+    // 頁面載入時自動載入列表
+    fetchFileList();
+    uploadBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+      uploadBtn.disabled = true;
+      msg.textContent = '上傳中...';
+      msg.className = 'msg';
+
+      const tier = document.getElementById('tier').value;
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('required_tier', tier);
+
+      try {
+        const res = await fetch('/api/admin/upload-protected-file', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await res.json();
+        if (res.ok) {
+          msg.textContent = '✅ 上傳成功！';
+          msg.className = 'msg success';
+          dropzone.textContent = '拖拉檔案到這裡，或點擊選擇';
+          selectedFile = null;
+          fetchFileList(); // 新增：自動刷新
+        } else {
+          msg.textContent = '❌ 上傳失敗：' + (result.error || res.statusText);
+          msg.className = 'msg error';
+        }
+      } catch (err) {
+        msg.textContent = '❌ 上傳失敗：' + err.message;
+        msg.className = 'msg error';
+      }
+      uploadBtn.disabled = false;
+    });
+  </script>
+</body>
+</html>
