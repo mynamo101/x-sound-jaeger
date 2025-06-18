@@ -152,11 +152,11 @@ const { t, globalSettings } = Astro.props;
         });
         
         const data = await res.json();
-        
-        if (res.ok) {
+          if (res.ok) {
           // 登入成功，儲存資料
           localStorage.setItem('auth_token', data.token);
           localStorage.setItem('user_info', JSON.stringify(data.user));
+          localStorage.setItem('login_time', Date.now().toString());
           
           alert('登入成功！');
           window.location.href = '/account';

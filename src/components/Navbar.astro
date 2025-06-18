@@ -36,14 +36,12 @@ const { globalSettings, t } = Astro.props;
                             )
                         )
                     }
-                </ul>
-
-                <div class="signin-wrapper acc-button-wrapper">
-                    <a href="/contact/" class="acc-button">
+                </ul>                <div class="signin-wrapper acc-button-wrapper">
+                    <a href="/signin/" class="acc-button" id="navbar-auth-button">
                         <div class="account-icon">
                             <AccountIcon/>
                         </div>
-                        <span>
+                        <span id="navbar-auth-text">
                             {t.global.navbar.contact}
                         </span>                              
                     </a>                </div>
@@ -51,3 +49,78 @@ const { globalSettings, t } = Astro.props;
         </div>
     </div>
 </custom-header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let signOutHandler = null;
+        
+        // 動態更新導航欄認證狀態
+        function updateNavbarAuth() {
+            const authButton = document.getElementById('navbar-auth-button');
+            const authText = document.getElementById('navbar-auth-text');
+            
+            if (!authButton || !authText) return;
+            
+            const token = localStorage.getItem('auth_token');
+            const isLoggedIn = !!token;
+            
+            // 取得當前語言
+            const isZh = document.documentElement.lang === 'zh';
+            
+            // 先移除之前的事件監聽器
+            if (signOutHandler) {
+                authButton.removeEventListener('click', signOutHandler);
+                signOutHandler = null;
+            }
+            
+            if (isLoggedIn) {
+                // 已登入：顯示 Sign out / 退出登录
+                authText.textContent = isZh ? '退出登录' : 'Sign out';
+                authButton.setAttribute('href', '#');
+                
+                // 添加登出處理
+                signOutHandler = function(e) {
+                    e.preventDefault();
+                    handleSignOut();
+                };
+                authButton.addEventListener('click', signOutHandler);
+            } else {
+                // 未登入：顯示 Sign in / 登录
+                authText.textContent = isZh ? '登录' : 'Sign in';
+                authButton.setAttribute('href', '/signin/');
+            }
+        }
+        
+        // 處理登出
+        function handleSignOut() {
+            // 清除本地存儲
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_info');
+            localStorage.removeItem('login_time');
+            
+            // 顯示登出成功訊息
+            const isZh = document.documentElement.lang === 'zh';
+            alert(isZh ? '成功退出登录' : 'Logged out successfully');
+            
+            // 重新整理頁面或跳轉到首頁
+            window.location.reload();
+        }
+        
+        // 初始更新
+        updateNavbarAuth();
+        
+        // 監聽存儲變化，以便在其他頁面登入/登出時同步更新
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'auth_token') {
+                updateNavbarAuth();
+            }
+        });
+        
+        // 監聽頁面可見性變化，以便在切換標籤時更新
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                updateNavbarAuth();
+            }
+        });
+    });
+</script>

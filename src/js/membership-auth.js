@@ -30,14 +30,14 @@ class MembershipAuth {
                 body: JSON.stringify({ username, password })
             });
             const data = await response.json();
-            if (response.ok) {
-                this.token = data.token;
+            if (response.ok) {                this.token = data.token;
                 this.userInfo = data.user;
                 // 取得會員等級
                 const tier = await this.fetchTier();
                 if (tier) this.userInfo.tier = tier;
                 localStorage.setItem('auth_token', this.token);
                 localStorage.setItem('user_info', JSON.stringify(this.userInfo));
+                localStorage.setItem('login_time', Date.now().toString());
                 return { success: true, data };
             } else {
                 throw new Error(data.error);
@@ -60,14 +60,13 @@ class MembershipAuth {
             }
         } catch (e) {}
         return null;
-    }
-
-    // 登出
+    }    // 登出
     logout() {
         this.token = null;
         this.userInfo = null;
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user_info');
+        localStorage.removeItem('login_time');
         window.location.reload();
     }
 

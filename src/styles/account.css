@@ -62,6 +62,65 @@
     pointer-events: none;
 }
 
+/* 登录状态样式 */
+#account-login-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin: -2px -4px;
+}
+
+.status-indicator {
+    font-size: 12px;
+    line-height: 1;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 8px currentColor;
+    filter: drop-shadow(0 0 4px currentColor);
+}
+
+.status-indicator.logged-in {
+    color: #22c55e; /* 绿色表示已登录 */
+    animation: pulse-green 2s infinite;
+}
+
+.status-indicator.not-logged-in {
+    color: #ef4444; /* 红色表示未登录 */
+}
+
+@keyframes pulse-green {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+#login-status-text {
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+#login-status-text.logged-in {
+    color: var(--text-color);
+}
+
+#login-status-text.not-logged-in {
+    color: var(--text-color-60);
+}
+
+.login-time {
+    font-size: 100%;
+    color: var(--text-color-60);
+    margin-left: 8px;
+    font-style: italic;
+}
+
 /* Styles for large desktop */
 @media (min-width: 1439px) {  
     .account-buttons {
@@ -111,4 +170,11 @@
         font-size: 16px;
         padding: 6px 13px;
     }
+}
+
+#account-login-status:hover {
+    background-color: var(--text-color-10);
+    border-radius: 4px;
+    padding: 2px 4px;
+    transition: background-color 0.2s ease;
 }

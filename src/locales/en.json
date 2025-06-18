@@ -3,10 +3,10 @@
         "description": "Please confirm you are at least 18 years old of age. Otherwise leave the website.",
         "yes_button": "Yes",
         "no_button": "No"
-    },
-    "global": {
+    },    "global": {
         "navbar": {
-            "contact": "Contact Us"
+            "contact": "Sign in",
+            "sign_out": "Sign out"
         },
         "tags_slider": {
             "title": "Browse by Tags"
@@ -84,11 +84,14 @@
     "faq_page": {
         "title_hero": "Support",
         "description_hero": "Do you need assistance? Check out our FAQ section for answers to common questions! I'm here to help you with any issues you may have!"
-    },
-    "account_page": {
+    },    "account_page": {
         "title_hero": "Account Info",
         "settings": "Settings",
         "log_out": "Log out",
+        "login_status_label": "Login Status",
+        "logged_in": "Logged In",
+        "not_logged_in": "Not Logged In",
+        "please_login": "Please log in first",
         "full_name_label": "Full Name",
         "full_name_value": "John Doe",
         "email_label": "Email",

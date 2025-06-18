@@ -24,6 +24,10 @@ const footerSettings: Footer[] = [
                 link: "/membership/",
             },
             {
+                text: "Account",
+                link: "/account/",
+            },
+            {
                 text: "Sign In",
                 link: "/signin/",
             }

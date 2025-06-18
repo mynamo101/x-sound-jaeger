@@ -25,11 +25,14 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                                         <h3 class:list={['hero-number', { 'hero-number-animation': globalSettings.use_page_load_animations }]}></h3>
                                                 </div>
                                         </div>                    <div class:list={['account-buttons section-padding-bottom', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
-                                                <a href="#" class="button account-button">
+                                                <a href="#" class="button account-button" id="settings-button">
                                                         {t.account_page.settings}
                                                 </a>
                                                 <a href="#" class="button account-button" id="logout-button">
                                                         {t.account_page.log_out}
+                                                </a>
+                                                <a href="/signin" class="button account-button" id="login-button" style="display: none;">
+                                                        {globalSettings.language === 'zh' ? '登录' : 'Log In'}
                                                 </a>
                                         </div>
 
@@ -44,9 +47,18 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                 </section>
 
                 <section class="wide-container">
-                        <div class:list={['author-info section-padding-bottom-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]} >
-                                <div class="author-text-content-wrapper">            
-                                        <div class="author-text-content">
+                        <div class:list={['author-info section-padding-bottom-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]} >                                <div class="author-text-content-wrapper">            
+                                        <div class="author-text-content">                                                <div class="author-info-row author-info-count">
+                                                        <div class="author-info-row-inner">
+                                                                <h3>{t.account_page.login_status_label}</h3>
+                                                                <div class="medium-text" id="account-login-status" title="点击查看详细信息">
+                                                                        <span id="login-status-text">{t.account_page.not_logged_in}</span>
+                                                                        <span id="login-status-indicator" class="status-indicator not-logged-in">●</span>
+                                                                        <span id="login-time" class="login-time" style="display: none;"></span>
+                                                                </div>
+                                                        </div>
+                                                </div>
+
                                                 <div class="author-info-row author-info-count">
                                                         <div class="author-info-row-inner">
                                                                 <h3>{t.account_page.full_name_label}</h3>
@@ -103,11 +115,14 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
         </main>
 </BaseLayout>
 
-<script>
-        // Wait for DOM to load
+<script>        // Wait for DOM to load
         document.addEventListener('DOMContentLoaded', function() {
                 console.log('[Account] DOM loaded, start loading user data');
                 loadAccountData();
+                setupLoginStatusClick();
+                
+                // Update active time every minute
+                setInterval(updateActiveTime, 60000);
                 
                 // Set hero number
                 const heroNumber = document.querySelector('.hero-number');
@@ -135,35 +150,36 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                         'My Hero': 'My Hero Member'
                 };
                 return tierDisplayNames[tier] || tier;
-        }
-
-        function handleLogout() {
+        }        function handleLogout() {
                 console.log('[Account] Logging out...');
                 
                 // Clear localStorage
                 localStorage.removeItem('auth_token');
                 localStorage.removeItem('user_info');
+                localStorage.removeItem('login_time');
                 
                 // Show logout success message
                 alert('Logged out successfully');
                 
                 // Redirect to sign in page
                 window.location.href = '/signin/';
-        }
-
-        async function loadAccountData() {
+        }async function loadAccountData() {
                 console.log('[Account] Start loading user data');
                 
                 // Check if elements exist
                 const fullnameEl = document.getElementById('account-fullname');
                 const emailEl = document.getElementById('account-email');
                 const tierEl = document.getElementById('account-tier');
+                const loginStatusTextEl = document.getElementById('login-status-text');
+                const loginStatusIndicatorEl = document.getElementById('login-status-indicator');
                 
-                if (!fullnameEl || !emailEl || !tierEl) {
+                if (!fullnameEl || !emailEl || !tierEl || !loginStatusTextEl || !loginStatusIndicatorEl) {
                         console.error('[Account] Required elements not found:', {
                                 fullnameEl: !!fullnameEl,
                                 emailEl: !!emailEl,
-                                tierEl: !!tierEl
+                                tierEl: !!tierEl,
+                                loginStatusTextEl: !!loginStatusTextEl,
+                                loginStatusIndicatorEl: !!loginStatusIndicatorEl
                         });
                         return;
                 }
@@ -175,14 +191,68 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                 console.log('[Account] localStorage data:', { 
                         hasToken: !!token, 
                         hasUserInfo: !!userInfoStr 
-                });
-                if (!token) {
+                });                // Update login status display
+                function updateLoginStatus(isLoggedIn, loginTime = null) {
+                        const settingsButton = document.getElementById('settings-button');
+                        const logoutButton = document.getElementById('logout-button');
+                        const loginButton = document.getElementById('login-button');
+                        const loginTimeEl = document.getElementById('login-time');
+                        
+                        if (isLoggedIn) {
+                                loginStatusTextEl.innerText = document.documentElement.lang === 'zh' ? '已登录' : 'Logged In';
+                                loginStatusTextEl.className = 'logged-in';
+                                loginStatusIndicatorEl.className = 'status-indicator logged-in';
+                                  // Show login time if available
+                                if (loginTime && loginTimeEl) {
+                                        const timeText = document.documentElement.lang === 'zh' ? 
+                                                `${loginTime}` : 
+                                                `${loginTime}`;
+                                        loginTimeEl.innerText = timeText;
+                                        loginTimeEl.style.display = 'inline';
+                                }
+                                
+                                // Show logged-in buttons
+                                if (settingsButton) settingsButton.style.display = 'flex';
+                                if (logoutButton) logoutButton.style.display = 'flex';
+                                if (loginButton) loginButton.style.display = 'none';
+                        } else {
+                                loginStatusTextEl.innerText = document.documentElement.lang === 'zh' ? '未登录' : 'Not Logged In';
+                                loginStatusTextEl.className = 'not-logged-in';
+                                loginStatusIndicatorEl.className = 'status-indicator not-logged-in';
+                                
+                                // Hide login time
+                                if (loginTimeEl) loginTimeEl.style.display = 'none';
+                                
+                                // Show login button only
+                                if (settingsButton) settingsButton.style.display = 'none';
+                                if (logoutButton) logoutButton.style.display = 'none';
+                                if (loginButton) loginButton.style.display = 'flex';
+                        }
+                }
+                  if (!token) {
                         console.log('[Account] Not logged in');
-                        fullnameEl.innerText = 'Not logged in';
+                        updateLoginStatus(false);
+                        fullnameEl.innerText = document.documentElement.lang === 'zh' ? '请先登录' : 'Please log in first';
                         emailEl.innerText = '-';
                         tierEl.innerText = '-';
+                        
+                        // Update page title to show login status
+                        document.title = `${document.title} - ${document.documentElement.lang === 'zh' ? '未登录' : 'Not Logged In'}`;
                         return;
+                }                // User is logged in
+                const loginTime = localStorage.getItem('login_time');
+                let formattedLoginTime = null;
+                
+                if (loginTime) {
+                        const loginDate = new Date(parseInt(loginTime));
+                        // 只显示年/月/日
+                        formattedLoginTime = loginDate.toLocaleDateString(document.documentElement.lang === 'zh' ? 'zh-CN' : 'en-US');
                 }
+                
+                updateLoginStatus(true, formattedLoginTime);
+                
+                // Update page title to show login status
+                document.title = `${document.title} - ${document.documentElement.lang === 'zh' ? '已登录' : 'Logged In'}`;
 
                 // Show cached data
                 if (userInfoStr) {
@@ -220,12 +290,12 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
 
                                 // Update localStorage
                                 localStorage.setItem('user_info', JSON.stringify(userInfo));
-                                console.log('[Account] Data updated');
-                        } else if (response.status === 401 || response.status === 403) {
+                                console.log('[Account] Data updated');                        } else if (response.status === 401 || response.status === 403) {
                                 console.log('[Account] Authentication expired, clearing data');
                                 localStorage.removeItem('auth_token');
                                 localStorage.removeItem('user_info');
-                                fullnameEl.innerText = 'Not logged in';
+                                updateLoginStatus(false);
+                                fullnameEl.innerText = document.documentElement.lang === 'zh' ? '请先登录' : 'Please log in first';
                                 emailEl.innerText = '-';
                                 tierEl.innerText = '-';
                         } else {
@@ -235,5 +305,65 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                         console.error('[Account] Network error:', error);
                         // Keep current display on network error
                 }
+        }        // Update active session time
+        function updateActiveTime() {
+                const loginTime = localStorage.getItem('login_time');
+                const loginTimeEl = document.getElementById('login-time');
+                
+                if (loginTime && loginTimeEl && loginTimeEl.style.display !== 'none') {
+                        const loginTimestamp = parseInt(loginTime);
+                        const nowTimestamp = Date.now();
+                        const diffInMinutes = Math.floor((nowTimestamp - loginTimestamp) / (1000 * 60));
+                        
+                        let timeText;
+                        if (document.documentElement.lang === 'zh') {
+                                if (diffInMinutes < 1) {
+                                        timeText = '刚刚登录';
+                                } else if (diffInMinutes < 60) {
+                                        timeText = `${diffInMinutes}分钟前登录`;
+                                } else {
+                                        const hours = Math.floor(diffInMinutes / 60);
+                                        timeText = `${hours}小时前登录`;
+                                }
+                        } else {
+                                if (diffInMinutes < 1) {
+                                        timeText = 'Just logged in';
+                                } else if (diffInMinutes < 60) {
+                                        timeText = `Logged in ${diffInMinutes}m ago`;
+                                } else {
+                                        const hours = Math.floor(diffInMinutes / 60);
+                                        timeText = `Logged in ${hours}h ago`;
+                                }
+                        }
+                        
+                        loginTimeEl.innerText = timeText;
+                }
         }
+
+        // Add click handler for login status
+        function setupLoginStatusClick() {
+                const loginStatusEl = document.getElementById('account-login-status');
+                const loginTimeEl = document.getElementById('login-time');
+                
+                if (loginStatusEl && loginTimeEl) {
+                        loginStatusEl.style.cursor = 'pointer';
+                        loginStatusEl.addEventListener('click', function() {
+                                const token = localStorage.getItem('auth_token');
+                                if (token) {
+                                        if (loginTimeEl.style.display === 'none') {
+                                                updateActiveTime();
+                                                loginTimeEl.style.display = 'inline';
+                                        } else {
+                                                loginTimeEl.style.display = 'none';
+                                        }
+                                }
+                        });
+                }
+        }
+
+        // Initial setup
+        setupLoginStatusClick();
+
+        // Update active time every minute
+        setInterval(updateActiveTime, 60 * 1000);
 </script>

@@ -3,10 +3,10 @@
         "description": "请确认您已年满18周岁。否则请离开本网站。",
         "yes_button": "是",
         "no_button": "否"
-    },
-    "global": {
+    },    "global": {
         "navbar": {
-            "contact": "联系我们"
+            "contact": "登录",
+            "sign_out": "退出登录"
         },
         "tags_slider": {
             "title": "按标签浏览"
@@ -84,11 +84,14 @@
     "faq_page": {
         "title_hero": "支持",
         "description_hero": "常见问题及解答，帮助您了解我们的服务和内容。"
-    },
-    "account_page": {
+    },    "account_page": {
         "title_hero": "账户信息",
         "settings": "设置",
         "log_out": "登出",
+        "login_status_label": "登录状态",
+        "logged_in": "已登录",
+        "not_logged_in": "未登录",
+        "please_login": "请先登录",
         "full_name_label": "全名",
         "full_name_value": "张三",
         "email_label": "电子邮箱",
