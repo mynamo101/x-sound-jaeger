@@ -18,7 +18,8 @@ export default defineConfig({
                 "@components/MediaEmbed.astro",
                 "@components/VideoPlayer.astro",
                 "@components/WaveSurfer.astro",
-                "@components/SimpleWaveSurfer.astro"
+                "@components/SimpleWaveSurfer.astro",
+                "@components/DownloadBlock.astro"
 			],
 		}),
         mdx(),

@@ -6,7 +6,7 @@ import type { AuthorProps } from "@src-types/types.ts";
 
 const authorSettings: AuthorProps[] = [
     {
-        slug: "ethan-cheng",
+        slug: "Ethan",
         bio: "A sound designer and game producer, specializing in creating immersive audio experiences for games and interactive media. With a passion for storytelling through sound, I strive to enhance the emotional impact of every project I work on.",
         location: "Taiwan",
         website_url: "https://torigazo.com/",

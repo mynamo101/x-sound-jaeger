@@ -1,0 +1,258 @@
+---
+interface Props {
+  downloadUrl: string;
+  title?: string;
+  description?: string;
+  fileSize?: string;
+}
+
+const { 
+  downloadUrl,
+  title = "Download File",
+  description = "",
+  fileSize
+} = Astro.props;
+
+// 從下載 URL 自動提取檔案資訊
+const getFileInfo = (url: string) => {
+  const fileName = url.split('/').pop() || 'unknown';
+  const fileExtension = fileName.split('.').pop()?.toLowerCase() || '';
+    // 根據副檔名判斷格式
+  const formatInfo = {
+    'wav': { format: 'WAV', color: '#ff6b35' },
+    'mp3': { format: 'MP3', color: '#4CAF50' },
+    'flac': { format: 'FLAC', color: '#2196F3' },
+    'aiff': { format: 'AIFF', color: '#9C27B0' },
+    'ogg': { format: 'OGG', color: '#FF9800' },
+    'm4a': { format: 'M4A', color: '#795548' },
+    'aac': { format: 'AAC', color: '#607D8B' },
+    'zip': { format: 'ZIP', color: '#607D8B' },
+    'rar': { format: 'RAR', color: '#795548' },
+    '7z': { format: '7Z', color: '#9C27B0' }
+  };
+  
+  const info = formatInfo[fileExtension as keyof typeof formatInfo] || {
+    format: fileExtension.toUpperCase(),
+    color: '#666'
+  };
+  
+  return {
+    fileName,
+    fileFormat: info.format,
+    fileSize: fileSize || '檔案大小未知',
+    formatColor: info.color
+  };
+};
+
+const fileInfo = getFileInfo(downloadUrl);
+---
+
+<div class="download-block" data-download-url={downloadUrl}>
+  <div class="download-header">
+    <h3 class="download-title">{title}</h3>
+    {description && <p class="download-description">{description}</p>}
+  </div>
+    <div class="download-content">
+    <div class="file-info">
+      <div class="file-details">
+        <h4 class="file-name">{fileInfo.fileName}</h4>
+        <div class="file-meta">
+          <span class="file-format" style={`background: ${fileInfo.formatColor}`}>{fileInfo.fileFormat}</span>
+          <span class="file-size" data-file-size>{fileInfo.fileSize}</span>
+        </div>
+      </div>
+        <div class="file-actions">
+        <a href={downloadUrl} download class="download-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7,10 12,15 17,10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          下載
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 嘗試獲取真實檔案大小
+  async function fetchFileSize(url: string): Promise<string> {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      const contentLength = response.headers.get('Content-Length');
+      
+      if (contentLength) {
+        const bytes = parseInt(contentLength);
+        return formatFileSize(bytes);
+      }
+    } catch (error) {
+      console.log('無法獲取檔案大小:', error);
+    }
+    return '';
+  }
+
+  function formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // 當組件載入時嘗試獲取檔案大小
+  document.addEventListener('DOMContentLoaded', async () => {
+    const downloadBlocks = document.querySelectorAll('.download-block[data-download-url]');
+    
+    for (const block of downloadBlocks) {
+      const url = block.getAttribute('data-download-url');
+      const fileSizeElement = block.querySelector('[data-file-size]');
+      
+      if (url && fileSizeElement && fileSizeElement.textContent === '檔案大小未知') {
+        const realSize = await fetchFileSize(url);
+        if (realSize) {
+          fileSizeElement.textContent = realSize;
+        }
+      }
+    }
+  });
+</script>
+
+<style>
+  .download-block {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .download-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    border-color: #444;
+  }
+
+  .download-header {
+    margin-bottom: 1rem;
+  }
+
+  .download-title {
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .download-description {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .download-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .file-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .file-details {
+    flex: 1;
+  }
+
+  .file-name {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem 0;
+    word-break: break-all;
+  }
+
+  .file-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+  }
+  .file-format {
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .file-size {
+    color: #bbb;
+    background: #333;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+  }
+  .file-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: #fff;
+  }
+
+  .download-btn:hover {
+    background: linear-gradient(135deg, #f7931e 0%, #ff6b35 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+  }
+
+  .download-btn svg {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .download-block {
+      padding: 1rem;
+    }
+
+    .file-info {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }    .file-actions {
+      justify-content: stretch;
+    }
+
+    .download-btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .file-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+</style>
