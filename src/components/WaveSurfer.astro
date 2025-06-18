@@ -1,0 +1,180 @@
+---
+export interface WaveSurferProps {
+  src: string;
+  height?: number;
+  barWidth?: number;
+  barGap?: number;
+  waveColor?: string;
+  progressColor?: string;
+  cursorColor?: string;
+  barRadius?: number;
+  responsive?: boolean;
+  normalize?: boolean;
+  backend?: 'WebAudio' | 'MediaElement';
+  mediaControls?: boolean;
+}
+
+const { 
+  src, 
+  height = 128,
+  barWidth = 4,
+  barGap = 2,
+  waveColor = '#FFFFFFBD',
+  progressColor = '#FFFC38', 
+  cursorColor = '#FF802B',
+  barRadius = 4,
+  responsive = true,
+  normalize = true,
+  backend = 'WebAudio',
+  mediaControls = false
+} = Astro.props as WaveSurferProps;
+
+// 生成唯一ID
+const wavesurferId = `wavesurfer-${Math.random().toString(36).substr(2, 9)}`;
+const playBtnId = `play-btn-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="wavesurfer-container">
+  <div class="wavesurfer-controls">
+    <button 
+      id={playBtnId} 
+      class="wavesurfer-play-btn" 
+      aria-label="播放/暫停"
+    >
+      <svg class="play-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <polygon points="5,3 19,12 5,21"></polygon>
+      </svg>
+      <svg class="pause-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+        <rect x="6" y="4" width="4" height="16"></rect>
+        <rect x="14" y="4" width="4" height="16"></rect>
+      </svg>
+    </button>
+    <div id={wavesurferId} class="wavesurfer-waveform"></div>
+  </div>
+</div>
+
+<style>
+  .wavesurfer-container {
+    width: 100%;
+    margin: 1rem 0;
+    border: 1px solid var(--text-color-40, #e0e0e0);
+    border-radius: 8px;
+    padding: 1rem;
+    background: var(--background-color, #fff);
+  }
+  
+  .wavesurfer-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    gap: 1rem;
+  }
+  
+  .wavesurfer-play-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--text-color, #333);
+    border-radius: 50%;
+    background: var(--background-color, #fff);
+    color: var(--text-color, #333);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    padding: 0;
+    /* 移除多餘空間 */
+    overflow: hidden;
+  }
+  
+  .wavesurfer-play-btn svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    margin: 0 auto;
+  }
+  
+  .wavesurfer-waveform {
+    width: 100%;
+    flex: 1 1 0%;
+  }
+</style>
+
+<script define:vars={{ 
+  wavesurferId, 
+  playBtnId, 
+  src, 
+  height, 
+  barWidth, 
+  barGap, 
+  waveColor, 
+  progressColor, 
+  cursorColor, 
+  barRadius, 
+  responsive, 
+  normalize, 
+  backend, 
+  mediaControls 
+}}>
+  // 動態導入 WaveSurfer
+  import('https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js').then(({ default: WaveSurfer }) => {
+    const container = document.getElementById(wavesurferId);
+    const playBtn = document.getElementById(playBtnId);
+    
+    if (!container || !playBtn) return;
+    
+    // 創建 WaveSurfer 實例
+    const wavesurfer = WaveSurfer.create({
+      container: container,
+      waveColor: waveColor,
+      progressColor: progressColor,
+      cursorColor: cursorColor,
+      barWidth: barWidth,
+      barGap: barGap,
+      barRadius: barRadius,
+      responsive: responsive,
+      height: height,
+      normalize: normalize,
+      backend: backend,
+      mediaControls: mediaControls
+    });
+    
+    // 載入音頻文件
+    wavesurfer.load(src);
+    
+    // 播放按鈕事件
+    playBtn.addEventListener('click', () => {
+      wavesurfer.playPause();
+    });
+    
+    // 更新播放按鈕圖標
+    wavesurfer.on('play', () => {
+      playBtn.querySelector('.play-icon').style.display = 'none';
+      playBtn.querySelector('.pause-icon').style.display = 'block';
+    });
+    
+    wavesurfer.on('pause', () => {
+      playBtn.querySelector('.play-icon').style.display = 'block';
+      playBtn.querySelector('.pause-icon').style.display = 'none';
+    });
+    
+    wavesurfer.on('finish', () => {
+      playBtn.querySelector('.play-icon').style.display = 'block';
+      playBtn.querySelector('.pause-icon').style.display = 'none';
+    });
+    
+    // 錯誤處理
+    wavesurfer.on('error', (e) => {
+      console.error('WaveSurfer error:', e);
+      container.innerHTML = '<p style="color: red; text-align: center;">音頻載入失敗</p>';
+    });
+  }).catch(error => {
+    console.error('Failed to load WaveSurfer:', error);
+    const container = document.getElementById(wavesurferId);
+    if (container) {
+      container.innerHTML = '<p style="color: red; text-align: center;">WaveSurfer 載入失敗</p>';
+    }
+  });
+</script>

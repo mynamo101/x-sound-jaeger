@@ -1,0 +1,205 @@
+---
+export interface SimpleWaveSurferProps {
+  src: string;
+  height?: number;
+  waveColor?: string;
+  progressColor?: string;
+}
+
+const { 
+  src, 
+  height = 80,
+  waveColor = '#ddd',
+  progressColor = '#333'
+} = Astro.props as SimpleWaveSurferProps;
+
+const componentId = `audio-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div class="simple-audio-player" data-src={src} data-id={componentId}>
+  <div class="audio-controls">
+    <button class="play-button" type="button" aria-label="播放/暫停">
+      <span class="play-icon">▶</span>
+      <span class="pause-icon" style="display: none;">⏸</span>
+    </button>
+    <div class="audio-info">
+      <div class="audio-time">
+        <span class="current-time">0:00</span>
+        <span class="duration">0:00</span>
+      </div>
+    </div>
+  </div>
+  <div class="waveform-container" style={`height: ${height}px;`}>
+    <div class="waveform-placeholder">載入音頻中...</div>
+  </div>
+</div>
+
+<style>
+  .simple-audio-player {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background: #fff;
+    font-family: Arial, sans-serif;
+  }
+  
+  .audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .play-button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #333;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+  }
+  
+  .play-button:hover {
+    background: #333;
+    color: #fff;
+  }
+  
+  .audio-info {
+    flex: 1;
+  }
+  
+  .audio-time {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .current-time::after {
+    content: " / ";
+  }
+  
+  .waveform-container {
+    width: 100%;
+    background: #f5f5f5;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .waveform-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+    font-size: 14px;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 載入 WaveSurfer
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js';
+    script.type = 'module';
+    script.onload = () => {
+      // 腳本載入後初始化所有音頻播放器
+      initializeAudioPlayers();
+    };
+    document.head.appendChild(script);
+  });
+
+  async function initializeAudioPlayers() {
+    try {
+      const WaveSurfer = (await import('https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.esm.js')).default;
+      
+      const players = document.querySelectorAll('.simple-audio-player:not([data-initialized])');
+      
+      players.forEach(playerElement => {
+        playerElement.setAttribute('data-initialized', 'true');
+        
+        const src = playerElement.getAttribute('data-src');
+        const waveformContainer = playerElement.querySelector('.waveform-container');
+        const playButton = playerElement.querySelector('.play-button');
+        const playIcon = playerElement.querySelector('.play-icon');
+        const pauseIcon = playerElement.querySelector('.pause-icon');
+        const currentTimeElement = playerElement.querySelector('.current-time');
+        const durationElement = playerElement.querySelector('.duration');
+        const placeholder = playerElement.querySelector('.waveform-placeholder');
+        
+        if (!src || !waveformContainer || !playButton) return;
+        
+        // 清除占位符
+        placeholder.textContent = '正在載入波形...';
+        
+        // 創建 WaveSurfer 實例
+        const wavesurfer = WaveSurfer.create({
+          container: waveformContainer,
+          waveColor: '#ddd',
+          progressColor: '#333',
+          cursorColor: '#666',
+          barWidth: 2,
+          barGap: 1,
+          responsive: true,
+          height: waveformContainer.offsetHeight || 80
+        });
+        
+        // 載入音頻
+        wavesurfer.load(src);
+        
+        // 載入完成後移除占位符
+        wavesurfer.on('ready', () => {
+          placeholder.style.display = 'none';
+          const duration = wavesurfer.getDuration();
+          durationElement.textContent = formatTime(duration);
+        });
+        
+        // 播放按鈕事件
+        playButton.addEventListener('click', () => {
+          wavesurfer.playPause();
+        });
+        
+        // 播放狀態事件
+        wavesurfer.on('play', () => {
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+        });
+        
+        wavesurfer.on('pause', () => {
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+        });
+        
+        wavesurfer.on('finish', () => {
+          playIcon.style.display = 'block';
+          pauseIcon.style.display = 'none';
+        });
+        
+        // 時間更新
+        wavesurfer.on('timeupdate', (currentTime) => {
+          currentTimeElement.textContent = formatTime(currentTime);
+        });
+        
+        // 錯誤處理
+        wavesurfer.on('error', () => {
+          placeholder.textContent = '音頻載入失敗';
+          placeholder.style.display = 'flex';
+          placeholder.style.color = 'red';
+        });
+      });
+    } catch (error) {
+      console.error('WaveSurfer initialization failed:', error);
+    }
+  }
+  
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  }
+</script>

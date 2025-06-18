@@ -9,15 +9,16 @@ import { remarkReadingTime } from './src/utils/remark-reading-time.mjs';
 // https://astro.build/config
 export default defineConfig({
     site: "https://x.soundjaeger.com",
-    integrations: [
-        AutoImport({
+    integrations: [        AutoImport({
 			imports: [
 				"@components/Button.astro",
                 "@components/ImageGallery.astro",
                 "@components/Callout.astro",
                 "@components/ToggleCards.astro",
                 "@components/MediaEmbed.astro",
-                "@components/VideoPlayer.astro"
+                "@components/VideoPlayer.astro",
+                "@components/WaveSurfer.astro",
+                "@components/SimpleWaveSurfer.astro"
 			],
 		}),
         mdx(),
