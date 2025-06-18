@@ -24,41 +24,38 @@ const footerSettings: Footer[] = [
                 link: "/membership/",
             },
             {
-                text: "FAQ",
-                link: "/faq/",
-            },
+                text: "Sign In",
+                link: "/signin/",
+            }
+
             // {
             //     text: "Style Guide",
             //     link: "/style-guide/",
             // },
         ],
     },
-    // {
-    //     text: "Features",
-    //     dropdown: [
-            // {
-            //     text: "Features",
-            //     link: "/features/",
-            // },
-            // {
-            //     text: "Style Guide",
-            //     link: "/style-guide/",
-            // },
-            // {
-            //     text: "Documentation",
-            //     link: "https://www.kusa-projects.com/astro-documentation",
-            //     new_tab: true
-            // },
-            // {
-            //     text: "Changelog",
-            //     link: "/changelog/",
-            // },
-            // {
-            //     text: "404",
-            //     link: "/404/",
-            // }
-    //     ],
-    // },
+    {
+        text: "Works",
+        dropdown: [
+            {
+                text: "Works",
+                link: "/works/",
+            },
+            {
+                text: "Audio Packs",
+                link: "/audiopacks/",
+            },
+        ],
+    },
+    {
+        text: "Policy",
+        dropdown: [
+            {
+                text: "FAQ",
+                link: "/faq/",
+            },
+        ],
+    },
     // {
     //     text: "Account",
     //     dropdown: [

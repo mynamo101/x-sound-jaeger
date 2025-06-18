@@ -9,102 +9,231 @@ import "@styles/author.css"
 import "@styles/account.css"
 
 const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
-  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+    .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
 
 ---
 
 <BaseLayout globalSettings={globalSettings} t={t} title={t.account_page.title_hero} description={t.account_page.full_name_value}>
-    <main>
-        <section class="hero account-page-hero">
-            <div class="wide-container">
-                <div class="hero-wrapper">
-                    <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
-                    <div class="hero-text-wrapper section-padding-bottom">               
-                        <div class="hero-heading-wrapper section-padding-top">               
-                            <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}>{t.account_page.title_hero}</h1>                  
-                            <h3 class:list={['hero-number', { 'hero-number-animation': globalSettings.use_page_load_animations }]}></h3>
+        <main>
+                <section class="hero account-page-hero">
+                        <div class="wide-container">
+                                <div class="hero-wrapper">
+                                        <div class:list={['hero-top-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                                        <div class="hero-text-wrapper section-padding-bottom">               
+                                                <div class="hero-heading-wrapper section-padding-top">               
+                                                        <h1 class:list={[{ 'letter-animation': globalSettings.use_page_load_animations }]}>{t.account_page.title_hero}</h1>                  
+                                                        <h3 class:list={['hero-number', { 'hero-number-animation': globalSettings.use_page_load_animations }]}></h3>
+                                                </div>
+                                        </div>                    <div class:list={['account-buttons section-padding-bottom', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
+                                                <a href="#" class="button account-button">
+                                                        {t.account_page.settings}
+                                                </a>
+                                                <a href="#" class="button account-button" id="logout-button">
+                                                        {t.account_page.log_out}
+                                                </a>
+                                        </div>
+
+                                        <div class="author-bottom-line-left">
+                                                <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                                        </div>
+                                        <div class="author-bottom-line-right">
+                                                <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
+                                        </div>
+                                </div>
                         </div>
-                    </div>  
+                </section>
 
-                    <div class:list={['account-buttons section-padding-bottom', { 'vertical-animation': globalSettings.use_page_load_animations }]} data-delay="400">
-                        <a href="#" class="button account-button">
-                            {t.account_page.settings}
-                        </a>
-                        <a href="#" class="button account-button">
-                            {t.account_page.log_out}
-                        </a>
-                    </div>       
+                <section class="wide-container">
+                        <div class:list={['author-info section-padding-bottom-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]} >
+                                <div class="author-text-content-wrapper">            
+                                        <div class="author-text-content">
+                                                <div class="author-info-row author-info-count">
+                                                        <div class="author-info-row-inner">
+                                                                <h3>{t.account_page.full_name_label}</h3>
+                                                                <div class="medium-text" id="account-fullname"></div>
+                                                        </div>
+                                                </div>
 
-                    <div class="author-bottom-line-left">
-                        <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
-                    </div>
-                    <div class="author-bottom-line-right">
-                        <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                                                <div class="author-info-row author-info-count">
+                                                        <div class="author-info-row-inner">
+                                                                <h3>{t.account_page.email_label}</h3>
+                                                                <div class="medium-text" id="account-email"></div>
+                                                        </div>
+                                                </div>
 
-        <section class="wide-container">
-            <div class:list={['author-info section-padding-bottom-extra', { 'hidden-animation': globalSettings.use_page_load_animations }]}>
-                <div class="author-text-content-wrapper">            
-                    <div class="author-text-content">
-                        <div class="author-info-row author-info-count">
-                            <div class="author-info-row-inner">
-                                <h3>{t.account_page.full_name_label}</h3>
-                                <div class="medium-text">{t.account_page.full_name_value}</div>
-                            </div>
+                                                <div class="author-info-row author-info-count">
+                                                        <div class="author-info-row-inner">
+                                                                <h3>{t.account_page.current_plan_label}</h3>
+                                                                <div class="medium-text" id="account-tier"></div>
+                                                        </div>
+                                                </div>
+
+                                                <div class="author-info-row author-info-count">
+                                                        <div class="author-info-row-inner">
+                                                                <h3>{t.account_page.card_label}</h3>
+                                                                <div class="medium-text" id="account-card">—</div>
+                                                        </div>
+                                                </div>
+
+                                                <div class="author-info-row author-info-count">
+                                                        <div class="author-info-row-inner">
+                                                                <h3>{t.account_page.billing_date_label}</h3>
+                                                                <div class="medium-text" id="account-billing-date">—</div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+        
+                                <div class="author-image-wrapper section-padding-top">
+                                        <div class="card-image" >
+                                                <figure class="author-figure">
+                                                        <Image 
+                                                                src={profile_image as any}
+                                                                alt={t.account_page.full_name_value}
+                                                                loading="eager" 
+                                                                format="webp"
+                                                                widths={[300, 400, 600, 800, 1000, 1200, 1600]}
+                                                                sizes="(max-width: 479px) calc(100vw - 36px), (max-width: 991px) calc(100vw - 60px), 40vw"
+                                                        />
+                                                </figure>                                
+                                        </div>
+                                </div>
                         </div>
-
-                        <div class="author-info-row author-info-count">
-                            <div class="author-info-row-inner">
-                                <h3>{t.account_page.email_label}</h3>
-                                <div class="medium-text">{t.account_page.email_value}</div>
-                            </div>
-                        </div>
-
-                        <div class="author-info-row author-info-count">
-                            <div class="author-info-row-inner">
-                                <h3>{t.account_page.current_plan_label}</h3>
-                                <div class="medium-text">{t.account_page.current_plan_value}</div>
-                            </div>
-                        </div>
-
-                        <div class="author-info-row author-info-count">
-                            <div class="author-info-row-inner">
-                                <h3>{t.account_page.card_label}</h3>
-                                <div class="medium-text">{t.account_page.card_value}</div>
-                            </div>
-                        </div>
-
-                        <div class="author-info-row author-info-count">
-                            <div class="author-info-row-inner">
-                                <h3>{t.account_page.billing_date_label}</h3>
-                                <div class="medium-text">{t.account_page.billing_date_value}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="author-image-wrapper section-padding-top">
-                    <div class="card-image" >
-                        <figure class="author-figure">
-                            <Image 
-                                src={profile_image as any}
-                                alt={t.account_page.full_name_value}
-                                loading="eager" 
-                                format="webp"
-                                widths={[300, 400, 600, 800, 1000, 1200, 1600]}
-                                sizes="(max-width: 479px) calc(100vw - 36px), (max-width: 991px) calc(100vw - 60px), 40vw"
-                            />
-                        </figure>                                
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+                </section>
+        </main>
 </BaseLayout>
 
 <script>
-    document.querySelector('.hero-number').innerHTML = document.querySelectorAll('.author-info-count').length.toString();
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+                console.log('[Account] DOM loaded, start loading user data');
+                loadAccountData();
+                
+                // Set hero number
+                const heroNumber = document.querySelector('.hero-number');
+                const infoCount = document.querySelectorAll('.author-info-count').length;
+                if (heroNumber) {
+                        heroNumber.innerHTML = infoCount.toString();
+                }
+
+                // Set logout button
+                const logoutButton = document.getElementById('logout-button');
+                if (logoutButton) {
+                        logoutButton.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                handleLogout();
+                        });
+                }
+        });
+
+        // Get user tier display name
+        function getUserTierDisplayName(tier) {
+                const tierDisplayNames = {
+                        'free': 'Free Member',
+                        'Support': 'Support Member',
+                        "Creator's Choice": "Creator's Choice Member",
+                        'My Hero': 'My Hero Member'
+                };
+                return tierDisplayNames[tier] || tier;
+        }
+
+        function handleLogout() {
+                console.log('[Account] Logging out...');
+                
+                // Clear localStorage
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_info');
+                
+                // Show logout success message
+                alert('Logged out successfully');
+                
+                // Redirect to sign in page
+                window.location.href = '/signin/';
+        }
+
+        async function loadAccountData() {
+                console.log('[Account] Start loading user data');
+                
+                // Check if elements exist
+                const fullnameEl = document.getElementById('account-fullname');
+                const emailEl = document.getElementById('account-email');
+                const tierEl = document.getElementById('account-tier');
+                
+                if (!fullnameEl || !emailEl || !tierEl) {
+                        console.error('[Account] Required elements not found:', {
+                                fullnameEl: !!fullnameEl,
+                                emailEl: !!emailEl,
+                                tierEl: !!tierEl
+                        });
+                        return;
+                }
+
+                // Get cached data from localStorage
+                const token = localStorage.getItem('auth_token');
+                const userInfoStr = localStorage.getItem('user_info');
+                
+                console.log('[Account] localStorage data:', { 
+                        hasToken: !!token, 
+                        hasUserInfo: !!userInfoStr 
+                });
+                if (!token) {
+                        console.log('[Account] Not logged in');
+                        fullnameEl.innerText = 'Not logged in';
+                        emailEl.innerText = '-';
+                        tierEl.innerText = '-';
+                        return;
+                }
+
+                // Show cached data
+                if (userInfoStr) {
+                        try {
+                                const user = JSON.parse(userInfoStr);
+                                console.log('[Account] Show cached data:', user);
+                                fullnameEl.innerText = user.name || user.username || user.email || '-';
+                                emailEl.innerText = user.email || user.username || '-';
+                                tierEl.innerText = getUserTierDisplayName(user.tier || 'free');
+                        } catch (e) {
+                                console.error('[Account] Failed to parse cached data:', e);
+                        }
+                }
+                // Fetch latest data from server
+                try {
+                        console.log('[Account] Requesting latest data from API...');
+                        const response = await fetch('http://localhost:3001/api/user/profile', {
+                                headers: { 'Authorization': `Bearer ${token}` }
+                        });
+
+                        console.log('[Account] API response status:', response.status);
+
+                        if (response.ok) {
+                                const data = await response.json();
+                                console.log('[Account] API response data:', data);
+                                const userInfo = {
+                                        ...data.user,
+                                        tier: data.user.tier || 'free'
+                                };
+
+                                // Update display
+                                fullnameEl.innerText = userInfo.name || userInfo.username || userInfo.email || '-';
+                                emailEl.innerText = userInfo.email || userInfo.username || '-';
+                                tierEl.innerText = getUserTierDisplayName(userInfo.tier);
+
+                                // Update localStorage
+                                localStorage.setItem('user_info', JSON.stringify(userInfo));
+                                console.log('[Account] Data updated');
+                        } else if (response.status === 401 || response.status === 403) {
+                                console.log('[Account] Authentication expired, clearing data');
+                                localStorage.removeItem('auth_token');
+                                localStorage.removeItem('user_info');
+                                fullnameEl.innerText = 'Not logged in';
+                                emailEl.innerText = '-';
+                                tierEl.innerText = '-';
+                        } else {
+                                console.error('[Account] API error:', response.status);
+                        }
+                } catch (error) {
+                        console.error('[Account] Network error:', error);
+                        // Keep current display on network error
+                }
+        }
 </script>

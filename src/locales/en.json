@@ -28,6 +28,8 @@
         "form": {
             "email": "Your Email Address",
             "name": "Your Name",
+            "username": "Username",
+            "password": "Password",
             "message": "Your Message"
         }
     },

@@ -41,20 +41,18 @@ const { t, globalSettings } = Astro.props;
                     </div>
                 )   :   (
                     <div class:list={["form-container", { "vertical-animation": globalSettings.use_page_load_animations }]} data-delay="400">
-                        <form class="page-form-element">
-                            {type === "Signin" ? (
-                                <div class="subscribe-wrapper">
+                        <form class="page-form-element" id="signupForm">                            {type === "Signin" ? (
+                                <div class="vertical-form">
                                     <input data-members-email type="email" required="true" placeholder={t.global.form.email} class="subscribe-input"/>
-                                    <button class="footer-button footer-submit-button" type="submit" aria-label="Submit">
-                                        <div class="footer-arrow-icon">
-                                            <FooterArrowIcon />
-                                        </div>
-                                    </button>
+                                    <input data-members-password type="password" required="true" placeholder={t.global.form.password || '密碼'} class="subscribe-input"/>
+                                    <button class="button" type="submit">{t.signin_page.button_label || '登入'}</button>
                                 </div>
                             )   :   (
                                 <div class="vertical-form">
                                     <input data-members-name type="text" required="true" placeholder={t.global.form.name}/>
+                                    <input data-members-username type="text" required="true" placeholder={t.global.form.username}/>
                                     <input data-members-email type="email" required="true" placeholder={t.global.form.email}/>
+                                    <input data-members-password type="password" required="true" placeholder={t.global.form.password || '密碼'}/>
                                     <button class="button" type="submit">{type === "Signup" ? <>{t.signup_page.button_label}</> : <>{t.subscribe_page.button_label}</>}</button>
                                 </div>                                 
                             )}
@@ -79,3 +77,93 @@ const { t, globalSettings } = Astro.props;
         <div class:list={['hero-bottom-border', { 'horizontal-line-animation': globalSettings.use_page_load_animations }]}></div>
     </div>
 </section>
+
+{type === "Signup" && (
+  <script type="module">
+    import '/src/js/membership-auth.js';
+    const form = document.getElementById('signupForm');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = form.querySelector('[data-members-name]').value.trim();
+        const username = form.querySelector('[data-members-username]').value.trim();
+        const email = form.querySelector('[data-members-email]').value.trim();
+        const password = form.querySelector('[data-members-password]').value;
+        if (!name || !username || !email || !password) {
+          alert('請輸入姓名、用戶名、信箱與密碼');
+          return;
+        }
+        // 呼叫 API 註冊
+        const res = await fetch('http://localhost:3001/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, username, email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          // 註冊成功，自動登入
+          if (window.membershipAuth) {
+            const loginResult = await window.membershipAuth.login(username, password);
+            if (loginResult.success) {
+              window.location.href = '/account';
+            } else {
+              alert('註冊成功，但自動登入失敗，請手動登入');
+            }
+          } else {
+            alert('註冊成功，請手動登入');
+          }
+        } else {
+          if (data.error && data.error.includes('exists')) {
+            alert('此用戶名或信箱已註冊，請直接登入');
+          } else {
+            alert(data.error || '註冊失敗');
+          }
+        }
+      });
+    }
+  </script>
+)}
+
+{type === "Signin" && (
+  <script type="module">
+    import '/src/js/membership-auth.js';
+    const form = document.getElementById('signupForm');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = form.querySelector('[data-members-email]').value.trim();
+        const password = form.querySelector('[data-members-password]')?.value;
+        
+        if (!email) {
+          alert('請輸入電子信箱');
+          return;
+        }
+        
+        if (!password) {
+          alert('請輸入密碼');
+          return;
+        }
+        
+        // 呼叫 API 登入
+        const res = await fetch('http://localhost:3001/api/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: email, password })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          // 登入成功，儲存資料
+          localStorage.setItem('auth_token', data.token);
+          localStorage.setItem('user_info', JSON.stringify(data.user));
+          
+          alert('登入成功！');
+          window.location.href = '/account';
+        } else {
+          alert(data.error || '登入失敗');
+        }
+      });
+    }
+  </script>
+)}

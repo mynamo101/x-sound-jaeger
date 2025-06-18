@@ -28,6 +28,8 @@
         "form": {
             "email": "您的电子邮箱",
             "name": "您的姓名",
+            "username": "用戶名",
+            "password": "密码",
             "message": "您的留言"
         }
     },

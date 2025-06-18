@@ -17,6 +17,20 @@ password: "123"
   height={100}
 />
 
+{/* 免費下載 */}
+<DownloadBlock 
+  downloadUrl="/Samples/test.wav"
+  title="免費試聽檔案"
+  description="無需會員即可下載的試聽版本"
+/>
+
+{/* 需要會員的下載 */}
 <DownloadBlock 
   downloadUrl="/audio/packs/恐龍專案.zip"
+  title="完整音檔包"
+  description="包含所有高品質音檔，僅限會員下載"
+  requiresMembership={true}
+  requiredTier="Support"
+  fileId="fire-pack-001"
+  fileSize="25.6 MB"
 />
