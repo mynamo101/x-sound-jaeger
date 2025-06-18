@@ -98,14 +98,25 @@ const fileInfo = getFileInfo(downloadUrl);
         id = null
       } = options;
 
-      const notificationId = id || Date.now().toString();
+      // 以 message+type+title 組合唯一 key，避免同內容重複顯示
+      const contentKey = `${type}::${title || ''}::${message}`;
+      // 檢查是否已有相同內容通知
+      for (const [nid, notif] of this.notifications.entries()) {
+        if (notif && notif.dataset && notif.dataset.contentKey === contentKey) {
+          // 已有相同內容通知，直接 return 不再顯示
+          return nid;
+        }
+      }
+
+      const notificationId = id || Date.now().toString() + Math.random();
       console.log('Creating notification with id:', notificationId, 'duration:', duration);
-      
+
       if (this.notifications.has(notificationId)) {
         this.remove(notificationId);
       }
 
       const notification = this.createNotification(message, type, title, notificationId);
+      notification.dataset.contentKey = contentKey;
       this.container.appendChild(notification);
       this.notifications.set(notificationId, notification);
 
@@ -116,9 +127,7 @@ const fileInfo = getFileInfo(downloadUrl);
       });
 
       if (!persistent && duration > 0) {
-        console.log('Setting auto-remove timeout for', duration, 'ms');
         setTimeout(() => {
-          console.log('Auto-remove timeout triggered for id:', notificationId);
           this.remove(notificationId);
         }, duration);
       }
