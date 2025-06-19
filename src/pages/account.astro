@@ -163,14 +163,19 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                 }
         });        // 只保留字串映射，不再支援數字
         function getUserTierDisplayName(tier) {
-                // 只保留字串映射，不再支援數字
+                // 允許小寫、空值、'-' 都有對應
+                if (!tier || tier === '-' || tier === 'null' || tier === 'undefined') return 'Free';
                 const tierMap = {
                         'Free': 'Free',
+                        'free': 'Free',
                         'Starter': 'Starter',
+                        'starter': 'Starter',
                         'Explorer': 'Explorer',
+                        'explorer': 'Explorer',
                         'Creator': 'Creator',
+                        'creator': 'Creator',
                 };
-                return tierMap[tier] || tier || '-';
+                return tierMap[tier] || tier;
         }        // 更新用户头像
         function updateUserAvatar(user) {
                 const avatarImg = document.getElementById('user-avatar') as HTMLImageElement;
@@ -315,7 +320,7 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                         console.log('[Account] Requesting latest data from API...');
                         const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
                             ? 'http://localhost:3001' 
-                            : 'https://x.soundjaeger.com:3001';
+                            : 'https://x.soundjaeger.com';
                         const response = await fetch(`${apiBase}/api/user/profile`, {
                                 headers: { 'Authorization': `Bearer ${token}` }
                         });
