@@ -204,7 +204,7 @@ const fileInfo = getFileInfo(downloadUrl);
 
       // 免費檔案（require_tier 為 0）- 按鈕始終可點擊
       if (requireTier === 0) {
-        frontendCheckPassed = true; // 免費檔案按鈕始終啟用
+        frontendCheckPassed = true; // 無論登入與否都可點擊
         btn.title = userTier ? '' : '點擊下載（需要登入）';
       } else {
         // 付費檔案：需要檢查會員等級
@@ -243,7 +243,13 @@ const fileInfo = getFileInfo(downloadUrl);
       }
 
       // 點擊事件：免費檔案特殊處理，付費檔案需要權限檢查
-      btn.addEventListener('click', async () => {
+      // 綁定前先移除舊的 click 事件，確保只會有一個
+      if (btn._downloadClickHandler) {
+        btn.removeEventListener('click', btn._downloadClickHandler);
+      }
+      // 命名事件處理函數
+      const handleDownloadClick = async (e) => {
+        e.stopImmediatePropagation(); // 防止多次觸發
         // 免費檔案的特殊處理
         if (requireTier === 0) {
           if (!userTier) {
@@ -263,10 +269,8 @@ const fileInfo = getFileInfo(downloadUrl);
           window.open(downloadUrl, '_blank');
           return;
         }
-        
         // 付費檔案的權限檢查
         if (!frontendCheckPassed) return;
-        
         console.log('正在進行後端權限驗證...');
         const finalCheck = await verifyDownloadPermission(downloadUrl);
         if (finalCheck.allowed) {
@@ -281,7 +285,9 @@ const fileInfo = getFileInfo(downloadUrl);
             alert(finalCheck.message || '下載權限驗證失敗');
           }
         }
-      });
+      };
+      btn.addEventListener('click', handleDownloadClick);
+      btn._downloadClickHandler = handleDownloadClick;
     });
   });
 </script>
