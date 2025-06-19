@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         // 账户页面
-        if (path.includes('/account') && t.account_page) {
+        if (path.includes('/account/') && t.account_page) {
             const accountTitle = document.querySelector('.hero h1');
             if (accountTitle && t.account_page.title_hero) {
                 accountTitle.textContent = t.account_page.title_hero;

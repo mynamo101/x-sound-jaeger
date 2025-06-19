@@ -256,7 +256,7 @@ const formId = type === "Signin" ? "signinForm" : "signupForm";
                   const loginResult = await window.membershipAuth.login(username, password);
                   if (loginResult.success) {
                     setTimeout(() => {
-                      window.location.href = '/account';
+                      window.location.href = '/account/';
                     }, 1500);
                   } else {
                     window.notify.warning('Registration successful, but auto-login failed. Please log in manually', {
@@ -387,7 +387,7 @@ const formId = type === "Signin" ? "signinForm" : "signupForm";
                   }
                   
                   setTimeout(() => {
-                    window.location.href = '/account';
+                    window.location.href = '';
                   }, 1500);
                 } else {
                   // Show error
@@ -485,7 +485,7 @@ const formId = type === "Signin" ? "signinForm" : "signupForm";
             }
             
             setTimeout(() => {
-              window.location.href = '/account';
+              window.location.href = '/account/';
             }, 1500);
           } else {
             // Show error
