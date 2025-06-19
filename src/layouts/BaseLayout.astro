@@ -29,9 +29,12 @@ const {
 		<div class="site-content">
 			<Navbar globalSettings={globalSettings} t={t}/>
 			<slot />
-			<Footer globalSettings={globalSettings} t={t}/>
-		</div>
+			<Footer globalSettings={globalSettings} t={t}/>		</div>
 		<AgeVerificationModal globalSettings={globalSettings} t={t} />
 		<slot name="VideoPlayer" />
+		
+		<!-- Global JavaScript files -->
+		<script src="/js/notification-system.js" is:inline></script>
+		<script src="/js/membership-auth.js" is:inline></script>
 	</body>
 </html>

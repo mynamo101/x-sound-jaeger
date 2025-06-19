@@ -109,11 +109,12 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                                         />
                                                 </figure>
                                         </div>
-                                </div>
-                        </div>
-                </section>
-        </main>
+                                </div>                        </div>
+                </section>        </main>
 </BaseLayout>
+
+<script src="/js/notification-system.js" is:inline></script>
+<script src="/js/membership-auth.js" is:inline></script>
 
 <script>
         // 登录检查和自动跳转
@@ -189,18 +190,11 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                 // 添加头像加载错误处理
                 avatarImg.onerror = function() {
                         console.warn('[Account] Failed to load user avatar, using default');
-                        // 如果用户头像加载失败，恢复为默认头像 - 使用默认图片的实际路径
-                        (this as HTMLImageElement).src = '/src/assets/images/account/account.jpg';
+                        // 如果用户头像加载失败，恢复为默认头像 - 使用默认图片的实际路径                        (this as HTMLImageElement).src = '/src/assets/images/account/account.jpg';
                         (this as HTMLImageElement).alt = 'Default user avatar';
                 };
-        }async function handleLogout() {
+        }        async function handleLogout() {
                 console.log('[Account] Logging out...');
-                  // 動態加載通知系統
-                try {
-                    await import('../js/notification-system.js');
-                } catch (error) {
-                    console.warn('Failed to load notification system:', error);
-                }
                 
                 // Clear localStorage
                 localStorage.removeItem('auth_token');
@@ -318,11 +312,13 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                         } catch (e) {
                                 console.error('[Account] Failed to parse cached data:', e);
                         }
-                }
-                // Fetch latest data from server
+                }                // Fetch latest data from server
                 try {
                         console.log('[Account] Requesting latest data from API...');
-                        const response = await fetch('http://localhost:3001/api/user/profile', {
+                        const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                            ? 'http://localhost:3001' 
+                            : 'https://x.soundjaeger.com:3001';
+                        const response = await fetch(`${apiBase}/api/user/profile`, {
                                 headers: { 'Authorization': `Bearer ${token}` }
                         });
 

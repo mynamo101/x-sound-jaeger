@@ -52,17 +52,11 @@ const { globalSettings, t } = Astro.props;
 </custom-header>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let signOutHandler = null;
+    document.addEventListener('DOMContentLoaded', function() {        let signOutHandler = null;
           // 動態加載通知系統
         async function loadNotificationSystem() {
-            try {
-                await import('../js/notification-system.js');
-                return true;
-            } catch (error) {
-                console.warn('Failed to load notification system:', error);
-                return false;
-            }
+            // 通知系统已通过全局script标签加载
+            return typeof window.notify !== 'undefined';
         }
         
         // 動態更新導航欄認證狀態

@@ -242,12 +242,14 @@ const fileInfo = getFileInfo(downloadUrl);
     return localStorage.getItem('auth_token');
   }
     // 檢查用戶會員等級
-  async function checkUserTier() {
-    const token = getAuthToken();
+  async function checkUserTier() {    const token = getAuthToken();
     if (!token) return null;
     
     try {
-      const response = await fetch('http://localhost:3001/api/user/profile', {
+      const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+          ? 'http://localhost:3001' 
+          : 'https://x.soundjaeger.com:3001';
+      const response = await fetch(`${apiBase}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -277,11 +279,13 @@ const fileInfo = getFileInfo(downloadUrl);
       return { allowed: false, message: '請先登入' };
     }
     
-    try {
-      // 從檔案 URL 中提取檔案名作為 fileId
+    try {      // 從檔案 URL 中提取檔案名作為 fileId
       const fileName = fileUrl.split('/').pop();
       console.log('向後端驗證檔案權限:', fileName);
-      const response = await fetch(`http://localhost:3001/api/check-download-access/${fileName}`, {
+      const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+          ? 'http://localhost:3001' 
+          : 'https://x.soundjaeger.com:3001';
+      const response = await fetch(`${apiBase}/api/check-download-access/${fileName}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       

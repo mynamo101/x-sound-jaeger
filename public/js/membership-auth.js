@@ -1,7 +1,10 @@
 // 會員認證管理器
 class MembershipAuth {
     constructor() {
-        this.apiBase = 'http://localhost:3001';
+        // 根据环境自动选择API地址
+        this.apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3001' 
+            : 'https://x.soundjaeger.com:3001';
         this.token = localStorage.getItem('auth_token');
         this.userInfo = JSON.parse(localStorage.getItem('user_info') || 'null');
     }
@@ -30,7 +33,8 @@ class MembershipAuth {
                 body: JSON.stringify({ username, password })
             });
             const data = await response.json();
-            if (response.ok) {                this.token = data.token;
+            if (response.ok) {
+                this.token = data.token;
                 this.userInfo = data.user;
                 // 取得會員等級
                 const tier = await this.fetchTier();
@@ -58,9 +62,10 @@ class MembershipAuth {
                 const data = await response.json();
                 return data.subscription?.tier || null;
             }
-        } catch (e) {}
-        return null;
-    }    // 登出
+        } catch (e) {}        return null;
+    }
+
+    // 登出
     logout() {
         this.token = null;
         this.userInfo = null;
