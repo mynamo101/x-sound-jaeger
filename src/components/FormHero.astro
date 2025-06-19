@@ -89,8 +89,8 @@ const { t, globalSettings } = Astro.props;
 </section>
 
 {type === "Signup" && (  <script type="module">
-    import '/js/membership-auth.js';
-    import '/js/notification-system.js';
+    import '/src/js/membership-auth.js';
+    import '/src/js/notification-system.js';
       // Password strength validation
     function validatePassword(password) {
       const requirements = {
@@ -271,8 +271,8 @@ const { t, globalSettings } = Astro.props;
 
 {type === "Signin" && (
   <script type="module">
-    import '/js/membership-auth.js';
-    import '/js/notification-system.js';
+    import '/src/js/membership-auth.js';
+    import '/src/js/notification-system.js';
     const form = document.getElementById('signupForm');
     if (form) {
       form.addEventListener('submit', async (e) => {

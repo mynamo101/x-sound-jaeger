@@ -405,7 +405,7 @@ input {
     padding-right: 28px;  
     border-radius: 100px;
     font-size: 18px;
-    /* text-transform: uppercase;    */
+    text-transform: uppercase;   
     font-family: var(--font2);
     letter-spacing: -0.035em;
     width: 100%;

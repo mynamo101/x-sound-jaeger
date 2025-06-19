@@ -129,13 +129,3 @@ class MembershipAuth {
 
 // 全局實例
 window.membershipAuth = new MembershipAuth();
-
-function getUserTierDisplayName(tier) {
-    const tierDisplayNames = {
-        'Free': 'Free Member',
-        'Starter': 'Starter Member',
-        'Pro': 'Pro Member',
-        'Hero': 'Hero Member'
-    };
-    return tierDisplayNames[tier] || tier;
-}

@@ -6,7 +6,7 @@ import type { MembershipCardProps } from "@src-types/types.ts";
 
 const membershipSettings: MembershipCardProps[] = [
     {
-        name: "Starter",
+        name: "Support",
         description: "Early Access to Public Works",
         yearly_price: "$12",
         monthly_price: "$3",
@@ -17,12 +17,12 @@ const membershipSettings: MembershipCardProps[] = [
         ]
     },
     {
-        name: "Pro",
+        name: "Creator's Choice",
         description: "Full Access to Premium Content",
         yearly_price: "$100",
         monthly_price: "$8",
         benefits: [
-            "Everything from Starter",
+            "Everything from Tier 1",
             "Full access to Premium posts",
             "Access to bonus content",
             "Get monthly free audio toolkit",
@@ -30,12 +30,12 @@ const membershipSettings: MembershipCardProps[] = [
         ]
     },
     {
-        name: "Hero",
+        name: "My Hero",
         description: "Full Access to Everything",
         yearly_price: "$89",
         monthly_price: "$15",
         benefits: [
-            "Everything from Pro",
+            "Everything from Tier 2",
             "Customized content requests",
             "Shoutout on our site",
         ]
