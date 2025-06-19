@@ -88,255 +88,338 @@ const { t, globalSettings } = Astro.props;
     </div>
 </section>
 
-{type === "Signup" && (  <script type="module">
-    import '/js/membership-auth.js';
-    import '/js/notification-system.js';
-      // Password strength validation
-    function validatePassword(password) {
-      const requirements = {
-        length: password.length >= 8,
-        lowercase: /[a-z]/.test(password),
-        uppercase: /[A-Z]/.test(password)
-      };
-      
-      const score = Object.values(requirements).filter(Boolean).length;
-      let strength = 'weak';
-      
-      if (score === 3) strength = 'strong';
-      else if (score >= 2) strength = 'good';
-      else if (score >= 1) strength = 'fair';
-      
-      return { requirements, strength, score };
-    }
-      function updatePasswordStrength() {
-      const passwordInput = document.getElementById('signup-password');
-      const strengthBar = document.querySelector('.strength-bar');
-      const strengthText = document.querySelector('.strength-text');
-      const strengthIndicator = document.querySelector('.password-strength-indicator');
-      const requirementsContainer = document.getElementById('password-requirements');
-      const submitButton = document.getElementById('signup-submit');
-      
-      if (!passwordInput || !strengthBar || !strengthText || !requirementsContainer || !strengthIndicator) return;
-      
-      const password = passwordInput.value;
-      
-      if (password.length === 0) {
-        // Hide strength indicator when password is empty
-        strengthIndicator.classList.remove('show');
-        strengthBar.className = 'strength-bar';
-        strengthText.className = 'strength-text';
-        strengthText.textContent = 'Password Strength';
-        requirementsContainer.classList.remove('show');
-        submitButton.disabled = true;
-        return;
-      }
-      
-      // Show strength indicator when user starts typing
-      strengthIndicator.classList.add('show');
-      
-      const validation = validatePassword(password);
-      
-      // Update strength bar and text
-      strengthBar.className = `strength-bar ${validation.strength}`;
-      strengthText.className = `strength-text ${validation.strength}`;
-      
-      const strengthLabels = {
-        weak: 'Weak',
-        fair: 'Fair', 
-        good: 'Good',
-        strong: 'Strong'
-      };
-      
-      strengthText.textContent = `Password Strength: ${strengthLabels[validation.strength]}`;
-      
-      // Update requirements
-      requirementsContainer.classList.add('show');
-        const reqElements = {
-        length: document.getElementById('req-length'),
-        lowercase: document.getElementById('req-lowercase'),
-        uppercase: document.getElementById('req-uppercase')
-      };
-      
-      Object.keys(validation.requirements).forEach(req => {
-        const element = reqElements[req];
-        if (element) {
-          if (validation.requirements[req]) {
-            element.classList.add('met');
-          } else {
-            element.classList.remove('met');
-          }
-        }
-      });
-      
-      // Enable/disable submit button
-      const allRequirementsMet = Object.values(validation.requirements).every(Boolean);
-      submitButton.disabled = !allRequirementsMet;
-    }
-    
-    // Setup password strength checking
+{type === "Signup" && (
+  <script is:inline>
     document.addEventListener('DOMContentLoaded', function() {
-      const passwordInput = document.getElementById('signup-password');
-      if (passwordInput) {
-        passwordInput.addEventListener('input', updatePasswordStrength);
-        passwordInput.addEventListener('focus', updatePasswordStrength);
-      }
-    });
-    
-    const form = document.getElementById('signupForm');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = form.querySelector('[data-members-name]').value.trim();
-        const username = form.querySelector('[data-members-username]').value.trim();
-        const email = form.querySelector('[data-members-email]').value.trim();
-        const password = form.querySelector('[data-members-password]').value;
-          if (!name || !username || !email || !password) {
-          window.notify.warning('Please fill in all required fields', {
-            title: 'Missing Information'
-          });
-          return;
-        }
-        
-        // Client-side password validation
-        const validation = validatePassword(password);
-        if (!Object.values(validation.requirements).every(Boolean)) {
-          window.notify.error('Please ensure your password meets all security requirements', {
-            title: 'Password Requirements'
-          });
-          return;
-        }
-        
-        // Show loading notification
-        const loadingId = window.notify.loading('Creating your account...', {
-          title: 'Registering'
-        });
-          // Call API for registration
-        const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:3001' 
-            : 'https://x.soundjaeger.com:3001';
-        const res = await fetch(`${apiBase}/api/signup`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, username, email, password })
-        });const data = await res.json();
-        
-        // Remove loading notification
-        window.notify.remove(loadingId);
-          if (res.ok) {
-          // Registration successful, auto login
-          window.notify.replace(loadingId, 'Account created successfully! Signing you in...', 'success', {
-            title: 'Welcome!',
-            duration: 3000
-          });
-          
-          if (window.membershipAuth) {
-            const loginResult = await window.membershipAuth.login(username, password);
-            if (loginResult.success) {
-              setTimeout(() => {
-                window.location.href = '/account';
-              }, 1500);
-            } else {
-              window.notify.warning('Registration successful, but auto-login failed. Please log in manually', {
-                title: 'Registration Complete'
-              });
-            }
-          } else {
-            window.notify.success('Registration successful, please log in manually', {
-              title: 'Registration Complete'
-            });
-          }
+      // Wait for global scripts to load
+      function waitForGlobals() {
+        if (typeof window.notify !== 'undefined' && typeof window.membershipAuth !== 'undefined') {
+          setupSignupForm();
         } else {
-          // Remove loading notification first
-          window.notify.remove(loadingId);
-          
-          // Show error after delay
-          setTimeout(() => {
-            if (data.details && Array.isArray(data.details)) {
-              window.notify.error(data.details.join('\n'), {
-                title: 'Password Requirements Not Met'
-              });
-            } else if (data.error && data.error.includes('exists')) {
-              window.notify.warning('This username or email is already registered, please sign in directly', {
-                title: 'Account Already Exists'
-              });
-            } else {
-              window.notify.error(data.error || 'Registration failed', {
-                title: 'Registration Error'
-              });
-            }
-          }, 200);
+          setTimeout(waitForGlobals, 100);
         }
-      });
-    }
+      }
+      
+      function setupSignupForm() {
+        // Password strength validation
+        function validatePassword(password) {
+          const requirements = {
+            length: password.length >= 8,
+            lowercase: /[a-z]/.test(password),
+            uppercase: /[A-Z]/.test(password)
+          };
+          
+          const score = Object.values(requirements).filter(Boolean).length;
+          let strength = 'weak';
+          
+          if (score === 3) strength = 'strong';
+          else if (score >= 2) strength = 'good';
+          else if (score >= 1) strength = 'fair';
+          
+          return { requirements, strength, score };
+        }
+
+        function updatePasswordStrength() {
+          const passwordInput = document.getElementById('signup-password');
+          const strengthBar = document.querySelector('.strength-bar');
+          const strengthText = document.querySelector('.strength-text');
+          const strengthIndicator = document.querySelector('.password-strength-indicator');
+          const requirementsContainer = document.getElementById('password-requirements');
+          const submitButton = document.getElementById('signup-submit');
+          
+          if (!passwordInput || !strengthBar || !strengthText || !requirementsContainer || !strengthIndicator) return;
+          
+          const password = passwordInput.value;
+          
+          if (password.length === 0) {
+            // Hide strength indicator when password is empty
+            strengthIndicator.classList.remove('show');
+            strengthBar.className = 'strength-bar';
+            strengthText.className = 'strength-text';
+            strengthText.textContent = 'Password Strength';
+            requirementsContainer.classList.remove('show');
+            submitButton.disabled = true;
+            return;
+          }
+          
+          // Show strength indicator when user starts typing
+          strengthIndicator.classList.add('show');
+          
+          const validation = validatePassword(password);
+          
+          // Update strength bar and text
+          strengthBar.className = `strength-bar ${validation.strength}`;
+          strengthText.className = `strength-text ${validation.strength}`;
+          
+          const strengthLabels = {
+            weak: 'Weak',
+            fair: 'Fair', 
+            good: 'Good',
+            strong: 'Strong'
+          };
+          
+          strengthText.textContent = `Password Strength: ${strengthLabels[validation.strength]}`;
+          
+          // Update requirements
+          requirementsContainer.classList.add('show');
+          
+          const reqElements = {
+            length: document.getElementById('req-length'),
+            lowercase: document.getElementById('req-lowercase'),
+            uppercase: document.getElementById('req-uppercase')
+          };
+          
+          Object.keys(validation.requirements).forEach(req => {
+            const element = reqElements[req];
+            if (element) {
+              if (validation.requirements[req]) {
+                element.classList.add('met');
+              } else {
+                element.classList.remove('met');
+              }
+            }
+          });
+          
+          // Enable/disable submit button
+          const allRequirementsMet = Object.values(validation.requirements).every(Boolean);
+          submitButton.disabled = !allRequirementsMet;
+        }
+        
+        // Setup password strength checking
+        const passwordInput = document.getElementById('signup-password');
+        if (passwordInput) {
+          passwordInput.addEventListener('input', updatePasswordStrength);
+          passwordInput.addEventListener('focus', updatePasswordStrength);
+        }
+
+        const form = document.getElementById('signupForm');
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = form.querySelector('[data-members-name]').value.trim();
+            const username = form.querySelector('[data-members-username]').value.trim();
+            const email = form.querySelector('[data-members-email]').value.trim();
+            const password = form.querySelector('[data-members-password]').value;
+
+            if (!name || !username || !email || !password) {
+              window.notify.warning('Please fill in all required fields', {
+                title: 'Missing Information'
+              });
+              return;
+            }
+            
+            // Client-side password validation
+            const validation = validatePassword(password);
+            if (!Object.values(validation.requirements).every(Boolean)) {
+              window.notify.error('Please ensure your password meets all security requirements', {
+                title: 'Password Requirements'
+              });
+              return;
+            }
+            
+            // Show loading notification
+            const loadingId = window.notify.loading('Creating your account...', {
+              title: 'Registering'
+            });
+
+            // Call API for registration
+            const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                ? 'http://localhost:3001' 
+                : 'https://x.soundjaeger.com:3001';
+                
+            try {
+              const res = await fetch(`${apiBase}/api/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, username, email, password })
+              });
+              
+              const data = await res.json();
+              
+              // Remove loading notification
+              window.notify.remove(loadingId);
+
+              if (res.ok) {
+                // Registration successful, auto login
+                window.notify.success('Account created successfully! Signing you in...', {
+                  title: 'Welcome!',
+                  duration: 3000
+                });
+                
+                if (window.membershipAuth) {
+                  const loginResult = await window.membershipAuth.login(username, password);
+                  if (loginResult.success) {
+                    setTimeout(() => {
+                      window.location.href = '/account';
+                    }, 1500);
+                  } else {
+                    window.notify.warning('Registration successful, but auto-login failed. Please log in manually', {
+                      title: 'Registration Complete'
+                    });
+                  }
+                } else {
+                  window.notify.success('Registration successful, please log in manually', {
+                    title: 'Registration Complete'
+                  });
+                }
+              } else {
+                // Show error after delay
+                setTimeout(() => {
+                  if (data.details && Array.isArray(data.details)) {
+                    window.notify.error(data.details.join('\n'), {
+                      title: 'Password Requirements Not Met'
+                    });
+                  } else if (data.error && data.error.includes('exists')) {
+                    window.notify.warning('This username or email is already registered, please sign in directly', {
+                      title: 'Account Already Exists'
+                    });
+                  } else {
+                    window.notify.error(data.error || 'Registration failed', {
+                      title: 'Registration Error'
+                    });
+                  }
+                }, 200);
+              }
+            } catch (error) {
+              // Remove loading notification
+              window.notify.remove(loadingId);
+              
+              setTimeout(() => {
+                window.notify.error('Network error occurred', {
+                  title: 'Connection Error'
+                });
+              }, 200);
+            }
+          });
+        }
+      }
+      
+      waitForGlobals();
+    });
   </script>
 )}
 
 {type === "Signin" && (
-  <script type="module">
-    import '/js/membership-auth.js';
-    import '/js/notification-system.js';
-    const form = document.getElementById('signupForm');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = form.querySelector('[data-members-email]').value.trim();
-        const password = form.querySelector('[data-members-password]')?.value;        if (!email) {
-          window.notify.warning('Please enter your email address', {
-            title: 'Missing Email'
-          });
-          return;
-        }
-        
-        if (!password) {
-          window.notify.warning('Please enter your password', {
-            title: 'Missing Password'
-          });
-          return;
-        }
-          // Show loading notification
-        const loadingId = window.notify.loading('Signing you in...', {
-          title: 'Please wait'
-        });
-        
-        // Call API for signin
-        const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:3001' 
-            : 'https://x.soundjaeger.com:3001';
-        const res = await fetch(`${apiBase}/api/signin`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: email, password })
-        });
-          const data = await res.json();
-        
-        // Remove loading notification
-        window.notify.remove(loadingId);
-          if (res.ok) {
-          // Login successful, save data
-          localStorage.setItem('auth_token', data.token);
-          localStorage.setItem('user_info', JSON.stringify(data.user));
-          localStorage.setItem('login_time', Date.now().toString());
-          
-          // Replace loading notification with success notification
-          window.notify.replace(loadingId, 'Welcome back! Redirecting to your account...', 'success', {
-            title: 'Login Successful',
-            duration: 2000
-          });
-          
-          setTimeout(() => {
-            window.location.href = '/account';
-          }, 1500);
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for global scripts to load
+      function waitForGlobals() {
+        if (typeof window.notify !== 'undefined' && typeof window.membershipAuth !== 'undefined') {
+          setupSigninForm();
         } else {
-          // Remove loading notification and show error
-          window.notify.remove(loadingId);
-          
-          setTimeout(() => {
-            window.notify.error(data.error || 'Login failed', {
-              title: 'Login Error'
-            });
-          }, 200);
+          setTimeout(waitForGlobals, 100);
         }
-      });
-    }
+      }
+      
+      function setupSigninForm() {
+        const form = document.getElementById('signupForm');
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = form.querySelector('[data-members-email]').value.trim();
+            const password = form.querySelector('[data-members-password]')?.value;
+
+            if (!email) {
+              window.notify.warning('Please enter your email address', {
+                title: 'Missing Email'
+              });
+              return;
+            }
+            
+            if (!password) {
+              window.notify.warning('Please enter your password', {
+                title: 'Missing Password'
+              });
+              return;
+            }
+
+            // Show loading notification
+            const loadingId = window.notify.loading('Signing you in...', {
+              title: 'Please wait'
+            });
+            
+            // Use membershipAuth for signin
+            if (window.membershipAuth) {
+              const result = await window.membershipAuth.login(email, password);
+              
+              // Remove loading notification
+              window.notify.remove(loadingId);
+              
+              if (result.success) {
+                // Replace loading notification with success notification
+                window.notify.success('Welcome back! Redirecting to your account...', {
+                  title: 'Login Successful',
+                  duration: 2000
+                });
+                
+                setTimeout(() => {
+                  window.location.href = '/account';
+                }, 1500);
+              } else {
+                // Show error
+                setTimeout(() => {
+                  window.notify.error(result.error || 'Login failed', {
+                    title: 'Login Error'
+                  });
+                }, 200);
+              }
+            } else {
+              // Fallback to direct API call if membershipAuth not available
+              const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                  ? 'http://localhost:3001' 
+                  : 'https://x.soundjaeger.com:3001';
+                  
+              try {
+                const res = await fetch(`${apiBase}/api/signin`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ username: email, password })
+                });
+                
+                const data = await res.json();
+                
+                // Remove loading notification
+                window.notify.remove(loadingId);
+                
+                if (res.ok) {
+                  // Login successful, save data
+                  localStorage.setItem('auth_token', data.token);
+                  localStorage.setItem('user_info', JSON.stringify(data.user));
+                  localStorage.setItem('login_time', Date.now().toString());
+                  
+                  // Replace loading notification with success notification
+                  window.notify.success('Welcome back! Redirecting to your account...', {
+                    title: 'Login Successful',
+                    duration: 2000
+                  });
+                  
+                  setTimeout(() => {
+                    window.location.href = '/account';
+                  }, 1500);
+                } else {
+                  // Show error
+                  setTimeout(() => {
+                    window.notify.error(data.error || 'Login failed', {
+                      title: 'Login Error'
+                    });
+                  }, 200);
+                }
+              } catch (error) {
+                // Remove loading notification
+                window.notify.remove(loadingId);
+                
+                setTimeout(() => {
+                  window.notify.error('Network error occurred', {
+                    title: 'Connection Error'
+                  });
+                }, 200);
+              }
+            }
+          });
+        }
+      }
+      
+      waitForGlobals();
+    });
   </script>
 )}
