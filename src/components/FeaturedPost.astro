@@ -35,7 +35,7 @@ if(post.data.tags && post.data.tags.length > 0){
             </small>
             <div class="card-title-wrapper">
                 <div class="medium-text">
-                    <a href={`/blog/${post.id}`}>
+                    <a href={`/blog/${post.id}/`}>
                         {post.data.title}
                     </a>
                 </div>
@@ -48,7 +48,7 @@ if(post.data.tags && post.data.tags.length > 0){
         </div>
     </div>
 
-    <a href={`/blog/${post.id}`} class="featured-post-image" aria-label={post.data.title}>
+    <a href={`/blog/${post.id}/`} class="featured-post-image" aria-label={post.data.title}>
         {post.data.feature_image ? (                 
             <figure>
                 <Image 
