@@ -132,5 +132,7 @@ class MembershipAuth {
     }
 }
 
+// 會員等級名稱統一為 Free, Starter, Explorer, Creator
+
 // 全局實例
 window.membershipAuth = new MembershipAuth();

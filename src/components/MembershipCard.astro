@@ -41,7 +41,7 @@ const { globalSettings, t } = Astro.props;
                     </ul>
                 </div>
             }<div class="tier-button-wrapper">
-                {tier.name === "Support" ? (
+                {tier.name === "Starter" ? (
                     <div>
                         <div id="paypal-button-container-P-3MP41776X70737201NBIOZRQ"></div>
                         <script src="https://www.paypal.com/sdk/js?client-id=AWBrHlmFv1iZ8DedRhF1w0tIScoirhxLR7Wiadwlwfs5nWALTYApTR0iZUheTF2O2vL8httmrKzkR3Gb&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
@@ -64,7 +64,7 @@ const { globalSettings, t } = Astro.props;
                           }).render('#paypal-button-container-P-3MP41776X70737201NBIOZRQ');
                         </script>
                     </div>
-                ) : tier.name === "Creator's Choice" ? (
+                ) : tier.name === "Explorer" ? (
                     <div>
                         <div id="paypal-button-container-P-5VY34435YG791411WNBIPG6A"></div>
                         <script src="https://www.paypal.com/sdk/js?client-id=AWBrHlmFv1iZ8DedRhF1w0tIScoirhxLR7Wiadwlwfs5nWALTYApTR0iZUheTF2O2vL8httmrKzkR3Gb&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
@@ -84,10 +84,10 @@ const { globalSettings, t } = Astro.props;
                               },
                               onApprove: function(data, actions) {
                                 alert(data.subscriptionID); // You can add optional success message for the subscriber here
-                              }                          }).render('#paypal-button-container-P-5VY34435YG791411WNBIPG6A'); // Renders the PayPal button
+                              }                      }).render('#paypal-button-container-P-5VY34435YG791411WNBIPG6A'); // Renders the PayPal button
                         </script>
                     </div>
-                ) : tier.name === "My Hero" ? (
+                ) : tier.name === "Creator" ? (
                     <div>
                         <div id="paypal-button-container-P-658069381H438834BNBIPIDA"></div>
                         <script src="https://www.paypal.com/sdk/js?client-id=AWBrHlmFv1iZ8DedRhF1w0tIScoirhxLR7Wiadwlwfs5nWALTYApTR0iZUheTF2O2vL8httmrKzkR3Gb&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
@@ -111,11 +111,7 @@ const { globalSettings, t } = Astro.props;
                           }).render('#paypal-button-container-P-658069381H438834BNBIPIDA'); // Renders the PayPal button
                         </script>
                     </div>
-                ) : (
-                    <a class="button" href="https://paypal.me/Ming0619" target="_blank" rel="noopener noreferrer">
-                        {t.membership_page.subscribe_now}
-                    </a>
-                )}
+                ) : null}
             </div>
         </div>
     </div>

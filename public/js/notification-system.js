@@ -7,32 +7,42 @@ class NotificationSystem {
     }
 
     init() {
-        this.container = document.createElement('div');
-        this.container.className = 'notification-container';
-        document.body.appendChild(this.container);
+        // Create notification container if it doesn't exist
+        this.container = document.getElementById('notification-container');
+        if (!this.container) {
+            this.container = document.createElement('div');
+            this.container.id = 'notification-container';
+            this.container.className = 'notification-container';
+            document.body.appendChild(this.container);
+        }
         console.log('Notification system initialized');
-    }
-
-    show(message, type = 'info', options = {}) {
+    }show(message, type = 'info', options = {}) {
         const {
             title = null,
             duration = 5000,
-            persistent = false
+            persistent = false,
+            id = null
         } = options;
 
-        const notificationId = Date.now().toString() + Math.random();
-        console.log('Creating notification with id:', notificationId);
+        const notificationId = id || Date.now().toString();
+        
+        // Remove existing notification with same ID
+        if (this.notifications.has(notificationId)) {
+            this.remove(notificationId);
+        }
 
         const notification = this.createNotification(message, type, title, notificationId);
         this.container.appendChild(notification);
         this.notifications.set(notificationId, notification);
 
-        // 動畫顯示
+        // Trigger show animation after a short delay to ensure DOM is ready
         requestAnimationFrame(() => {
-            notification.classList.add('show');
+            requestAnimationFrame(() => {
+                notification.classList.add('show');
+            });
         });
 
-        // 自動關閉
+        // Auto remove after duration (unless persistent)
         if (!persistent && duration > 0) {
             setTimeout(() => {
                 this.remove(notificationId);
@@ -70,16 +80,8 @@ class NotificationSystem {
 
         const closeButton = document.createElement('button');
         closeButton.className = 'notification-close';
-        closeButton.innerHTML = '×';
         closeButton.setAttribute('aria-label', 'Close notification');
-        
-        // 關閉按鈕事件
-        closeButton.addEventListener('click', (e) => {
-            console.log('Close button clicked for notification:', id);
-            e.preventDefault();
-            e.stopPropagation();
-            this.remove(id);
-        });
+        closeButton.addEventListener('click', () => this.remove(id));
 
         content.appendChild(icon);
         content.appendChild(textContainer);
@@ -87,20 +89,20 @@ class NotificationSystem {
         notification.appendChild(closeButton);
 
         return notification;
-    }
-
-    remove(id) {
-        console.log('Removing notification with id:', id);
+    }    remove(id) {
         const notification = this.notifications.get(id);
         if (notification && notification.parentNode) {
+            // Add hide class for smooth fadeout
             notification.classList.add('hide');
             notification.classList.remove('show');
+            
+            // Wait for animation to complete (match CSS transition duration)
             setTimeout(() => {
                 if (notification.parentNode) {
                     notification.parentNode.removeChild(notification);
                 }
                 this.notifications.delete(id);
-            }, 300);
+            }, 300); // Match CSS transition duration
         }
     }
 
@@ -118,9 +120,7 @@ class NotificationSystem {
 
     info(message, options = {}) {
         return this.show(message, 'info', options);
-    }
-
-    loading(message, options = {}) {
+    }    loading(message, options = {}) {
         const loadingOptions = {
             ...options,
             persistent: true
@@ -135,9 +135,7 @@ class NotificationSystem {
         }
         
         return id;
-    }
-
-    clear() {
+    }    clear() {
         this.notifications.forEach((_, id) => this.remove(id));
     }
 

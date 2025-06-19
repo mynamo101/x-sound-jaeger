@@ -161,15 +161,16 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 handleLogout();
                         });
                 }
-        });        // Get user tier display name
+        });        // 只保留字串映射，不再支援數字
         function getUserTierDisplayName(tier) {
-                const tierDisplayNames = {
-                        'Free': 'Free Member',
-                        'Support': 'Support Member',
-                        "Creator's Choice": "Creator's Choice Member",
-                        'My Hero': 'My Hero Member'
+                // 只保留字串映射，不再支援數字
+                const tierMap = {
+                        'Free': 'Free',
+                        'Starter': 'Starter',
+                        'Explorer': 'Explorer',
+                        'Creator': 'Creator',
                 };
-                return tierDisplayNames[tier] || tier;
+                return tierMap[tier] || tier || '-';
         }        // 更新用户头像
         function updateUserAvatar(user) {
                 const avatarImg = document.getElementById('user-avatar') as HTMLImageElement;
@@ -302,8 +303,8 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 console.log('[Account] Show cached data:', user);
                                 fullnameEl.innerText = user.name || user.username || user.email || '-';
                                 emailEl.innerText = user.email || user.username || '-';
-                                tierEl.innerText = getUserTierDisplayName(user.tier || 'Free');
-                                
+                                // 這裡強制映射 tier 顯示
+                                tierEl.innerText = getUserTierDisplayName(user.tier);
                                 // 更新用户头像
                                 updateUserAvatar(user);
                         } catch (e) {
@@ -332,6 +333,7 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                                 // Update display
                                 fullnameEl.innerText = userInfo.name || userInfo.username || userInfo.email || '-';
                                 emailEl.innerText = userInfo.email || userInfo.username || '-';
+                                // 這裡強制映射 tier 顯示
                                 tierEl.innerText = getUserTierDisplayName(userInfo.tier);
 
                                 // Update localStorage
