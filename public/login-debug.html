@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录调试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .debug-output {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error { color: #dc3545; }
+        .success { color: #28a745; }
+        .info { color: #007bff; }
+        .warning { color: #ffc107; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 登录调试页面</h1>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">邮箱/用户名:</label>
+                <input type="text" id="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码:</label>
+                <input type="password" id="password" value="testpass123" required>
+            </div>
+            
+            <button type="submit">登录测试</button>
+            <button type="button" onclick="testConnectionOnly()">仅测试连接</button>
+            <button type="button" onclick="clearDebugOutput()">清空日志</button>
+        </form>
+        
+        <div class="debug-output" id="debug-output">等待操作...</div>
+    </div>
+
+    <script>
+        // 获取 API 基础地址
+        const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3001' 
+            : 'https://x.soundjaeger.com:3001';
+            
+        // 调试输出函数
+        function debugLog(message, type = 'info') {
+            const debugOutput = document.getElementById('debug-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const logLine = `[${timestamp}] ${message}\n`;
+            debugOutput.innerHTML += `<span class="${type}">${logLine}</span>`;
+            debugOutput.scrollTop = debugOutput.scrollHeight;
+        }
+        
+        // 清空调试输出
+        function clearDebugOutput() {
+            document.getElementById('debug-output').innerHTML = '日志已清空...\n';
+        }
+        
+        // 仅测试连接
+        async function testConnectionOnly() {
+            debugLog('🔗 开始测试连接...', 'info');
+            
+            try {
+                // 测试健康检查端点
+                debugLog(`正在连接: ${apiBase}/api/health`, 'info');
+                const healthResponse = await fetch(`${apiBase}/api/health`);
+                
+                if (healthResponse.ok) {
+                    const healthData = await healthResponse.json();
+                    debugLog('✅ 服务器健康检查通过', 'success');
+                    debugLog(`服务器信息: ${JSON.stringify(healthData, null, 2)}`, 'success');
+                } else {
+                    debugLog(`❌ 服务器健康检查失败: HTTP ${healthResponse.status}`, 'error');
+                }
+                
+                // 测试数据库连接
+                debugLog('正在测试数据库连接...', 'info');
+                const dbResponse = await fetch(`${apiBase}/api/db-status`);
+                
+                if (dbResponse.ok) {
+                    const dbData = await dbResponse.json();
+                    debugLog('✅ 数据库连接正常', 'success');
+                    debugLog(`数据库信息: ${JSON.stringify(dbData, null, 2)}`, 'success');
+                } else {
+                    const dbError = await dbResponse.json();
+                    debugLog(`❌ 数据库连接失败: ${JSON.stringify(dbError, null, 2)}`, 'error');
+                }
+                
+            } catch (error) {
+                debugLog(`❌ 连接测试异常: ${error.message}`, 'error');
+                debugLog(`错误详情: ${error.stack}`, 'error');
+            }
+        }
+        
+        // 登录测试
+        async function testLogin(email, password) {
+            debugLog('🔐 开始登录测试...', 'info');
+            debugLog(`邮箱: ${email}`, 'info');
+            debugLog(`API 地址: ${apiBase}/api/signin`, 'info');
+            
+            try {
+                const requestBody = { username: email, password };
+                debugLog(`请求数据: ${JSON.stringify(requestBody, null, 2)}`, 'info');
+                
+                const response = await fetch(`${apiBase}/api/signin`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                debugLog(`响应状态: HTTP ${response.status} ${response.statusText}`, 'info');
+                debugLog(`响应头: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}`, 'info');
+                
+                const responseText = await response.text();
+                debugLog(`原始响应: ${responseText}`, 'info');
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    debugLog(`❌ JSON 解析失败: ${parseError.message}`, 'error');
+                    debugLog(`响应内容: ${responseText}`, 'error');
+                    return;
+                }
+                
+                if (response.ok) {
+                    debugLog('✅ 登录成功!', 'success');
+                    debugLog(`返回数据: ${JSON.stringify(data, null, 2)}`, 'success');
+                    
+                    // 测试 token 保存
+                    if (data.token) {
+                        localStorage.setItem('auth_token', data.token);
+                        localStorage.setItem('user_info', JSON.stringify(data.user));
+                        debugLog('✅ Token 已保存到 localStorage', 'success');
+                        
+                        // 验证保存的数据
+                        const savedToken = localStorage.getItem('auth_token');
+                        const savedUser = localStorage.getItem('user_info');
+                        debugLog(`保存的 Token: ${savedToken?.substring(0, 50)}...`, 'info');
+                        debugLog(`保存的用户信息: ${savedUser}`, 'info');
+                    }
+                } else {
+                    debugLog(`❌ 登录失败: ${data.error || '未知错误'}`, 'error');
+                    debugLog(`完整错误信息: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+                
+            } catch (error) {
+                debugLog(`❌ 登录请求异常: ${error.message}`, 'error');
+                debugLog(`错误详情: ${error.stack}`, 'error');
+            }
+        }
+        
+        // 表单提交处理
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                debugLog('❌ 请输入邮箱和密码', 'error');
+                return;
+            }
+            
+            // 先测试连接
+            await testConnectionOnly();
+            
+            // 然后测试登录
+            await testLogin(email, password);
+        });
+        
+        // 页面加载时自动测试连接
+        window.addEventListener('DOMContentLoaded', function() {
+            debugLog('🚀 页面加载完成，开始初始化检查...', 'info');
+            debugLog(`当前域名: ${window.location.hostname}`, 'info');
+            debugLog(`API 基础地址: ${apiBase}`, 'info');
+        });
+    </script>
+</body>
+</html>

@@ -302,10 +302,19 @@ const { t, globalSettings } = Astro.props;
 {type === "Signin" && (
   <script is:inline>
     document.addEventListener('DOMContentLoaded', function() {
-      // Wait for global scripts to load
+      let waitAttempts = 0;
+      const maxWaitAttempts = 50; // 最多等待 5 秒
+      
+      // Wait for global scripts to load with timeout
       function waitForGlobals() {
+        waitAttempts++;
+        
         if (typeof window.notify !== 'undefined' && typeof window.membershipAuth !== 'undefined') {
+          console.log('Global scripts loaded successfully');
           setupSigninForm();
+        } else if (waitAttempts >= maxWaitAttempts) {
+          console.warn('Global scripts failed to load, using fallback methods');
+          setupSigninFormFallback();
         } else {
           setTimeout(waitForGlobals, 100);
         }
@@ -316,82 +325,63 @@ const { t, globalSettings } = Astro.props;
         if (form) {
           form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('Form submission intercepted');
+            
             const email = form.querySelector('[data-members-email]').value.trim();
             const password = form.querySelector('[data-members-password]')?.value;
 
+            console.log('Login attempt:', { email: email, hasPassword: !!password });
+
             if (!email) {
-              window.notify.warning('Please enter your email address', {
-                title: 'Missing Email'
-              });
+              if (window.notify) {
+                window.notify.warning('Please enter your email address', {
+                  title: 'Missing Email'
+                });
+              } else {
+                alert('Please enter your email address');
+              }
               return;
             }
             
             if (!password) {
-              window.notify.warning('Please enter your password', {
-                title: 'Missing Password'
-              });
+              if (window.notify) {
+                window.notify.warning('Please enter your password', {
+                  title: 'Missing Password'
+                });
+              } else {
+                alert('Please enter your password');
+              }
               return;
             }
 
             // Show loading notification
-            const loadingId = window.notify.loading('Signing you in...', {
-              title: 'Please wait'
-            });
+            let loadingId;
+            if (window.notify) {
+              loadingId = window.notify.loading('Signing you in...', {
+                title: 'Please wait'
+              });
+            }
             
             // Use membershipAuth for signin
             if (window.membershipAuth) {
-              const result = await window.membershipAuth.login(email, password);
-              
-              // Remove loading notification
-              window.notify.remove(loadingId);
-              
-              if (result.success) {
-                // Replace loading notification with success notification
-                window.notify.success('Welcome back! Redirecting to your account...', {
-                  title: 'Login Successful',
-                  duration: 2000
-                });
-                
-                setTimeout(() => {
-                  window.location.href = '/account';
-                }, 1500);
-              } else {
-                // Show error
-                setTimeout(() => {
-                  window.notify.error(result.error || 'Login failed', {
-                    title: 'Login Error'
-                  });
-                }, 200);
-              }
-            } else {
-              // Fallback to direct API call if membershipAuth not available
-              const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                  ? 'http://localhost:3001' 
-                  : 'https://x.soundjaeger.com:3001';
-                  
               try {
-                const res = await fetch(`${apiBase}/api/signin`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ username: email, password })
-                });
-                
-                const data = await res.json();
+                console.log('Using membershipAuth for login');
+                const result = await window.membershipAuth.login(email, password);
+                console.log('Login result:', result);
                 
                 // Remove loading notification
-                window.notify.remove(loadingId);
+                if (window.notify && loadingId) {
+                  window.notify.remove(loadingId);
+                }
                 
-                if (res.ok) {
-                  // Login successful, save data
-                  localStorage.setItem('auth_token', data.token);
-                  localStorage.setItem('user_info', JSON.stringify(data.user));
-                  localStorage.setItem('login_time', Date.now().toString());
-                  
+                if (result.success) {
                   // Replace loading notification with success notification
-                  window.notify.success('Welcome back! Redirecting to your account...', {
-                    title: 'Login Successful',
-                    duration: 2000
-                  });
+                  if (window.notify) {
+                    window.notify.success('Welcome back! Redirecting to your account...', {
+                      title: 'Login Successful',
+                      duration: 2000
+                    });
+                  }
                   
                   setTimeout(() => {
                     window.location.href = '/account';
@@ -399,23 +389,131 @@ const { t, globalSettings } = Astro.props;
                 } else {
                   // Show error
                   setTimeout(() => {
-                    window.notify.error(data.error || 'Login failed', {
-                      title: 'Login Error'
-                    });
+                    if (window.notify) {
+                      window.notify.error(result.error || 'Login failed', {
+                        title: 'Login Error'
+                      });
+                    } else {
+                      alert('Login failed: ' + (result.error || 'Unknown error'));
+                    }
                   }, 200);
                 }
               } catch (error) {
-                // Remove loading notification
-                window.notify.remove(loadingId);
-                
-                setTimeout(() => {
-                  window.notify.error('Network error occurred', {
-                    title: 'Connection Error'
+                console.error('MembershipAuth error:', error);
+                if (window.notify && loadingId) {
+                  window.notify.remove(loadingId);
+                }
+                if (window.notify) {
+                  window.notify.error('An unexpected error occurred', {
+                    title: 'System Error'
                   });
-                }, 200);
+                } else {
+                  alert('An unexpected error occurred: ' + error.message);
+                }
               }
+            } else {
+              console.log('Falling back to direct API call');
+              await performDirectLogin(email, password, loadingId);
             }
           });
+        } else {
+          console.error('Form element not found');
+        }
+      }
+      
+      function setupSigninFormFallback() {
+        console.log('Setting up signin form with fallback methods');
+        const form = document.getElementById('signupForm');
+        if (form) {
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Form submission intercepted (fallback)');
+            
+            const email = form.querySelector('[data-members-email]').value.trim();
+            const password = form.querySelector('[data-members-password]')?.value;
+
+            if (!email || !password) {
+              alert('Please enter both email and password');
+              return;
+            }
+
+            await performDirectLogin(email, password);
+          });
+        }
+      }
+      
+      async function performDirectLogin(email, password, loadingId = null) {
+        const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3001' 
+            : 'https://x.soundjaeger.com:3001';
+            
+        try {
+          console.log('Performing direct API login to:', apiBase + '/api/signin');
+          const res = await fetch(`${apiBase}/api/signin`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: email, password })
+          });
+          
+          console.log('API response status:', res.status);
+          const data = await res.json();
+          console.log('API response data:', data);
+          
+          // Remove loading notification
+          if (window.notify && loadingId) {
+            window.notify.remove(loadingId);
+          }
+          
+          if (res.ok) {
+            // Login successful, save data
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('user_info', JSON.stringify(data.user));
+            localStorage.setItem('login_time', Date.now().toString());
+            
+            console.log('Login successful, data saved to localStorage');
+            
+            // Replace loading notification with success notification
+            if (window.notify) {
+              window.notify.success('Welcome back! Redirecting to your account...', {
+                title: 'Login Successful',
+                duration: 2000
+              });
+            } else {
+              alert('Login successful! Redirecting...');
+            }
+            
+            setTimeout(() => {
+              window.location.href = '/account';
+            }, 1500);
+          } else {
+            // Show error
+            console.error('Login failed:', data);
+            setTimeout(() => {
+              if (window.notify) {
+                window.notify.error(data.error || 'Login failed', {
+                  title: 'Login Error'
+                });
+              } else {
+                alert('Login failed: ' + (data.error || 'Unknown error'));
+              }
+            }, 200);
+          }
+        } catch (error) {
+          console.error('Direct login error:', error);
+          // Remove loading notification
+          if (window.notify && loadingId) {
+            window.notify.remove(loadingId);
+          }
+          
+          setTimeout(() => {
+            if (window.notify) {
+              window.notify.error('Network error occurred', {
+                title: 'Connection Error'
+              });
+            } else {
+              alert('Network error: ' + error.message);
+            }
+          }, 200);
         }
       }
       

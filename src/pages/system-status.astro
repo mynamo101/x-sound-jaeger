@@ -1,0 +1,509 @@
+---
+import FormHero from '@components/FormHero.astro';
+import globalSettings from '@config/config.json.ts';
+import BaseLayout from "@layouts/BaseLayout.astro";
+import en from '@/locales/en.json';
+
+const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
+  .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
+
+---
+
+<BaseLayout globalSettings={globalSettings} t={t} title="系統狀態檢測" description="檢查系統連接狀態和服務可用性">
+    <main>
+        <FormHero type={"SystemStatus"} t={t} globalSettings={globalSettings} title="🔍 系統狀態檢測" description="監控系統連接狀態和服務可用性">
+            <div class="system-status-container">
+                
+                <div class="status-container">
+                    <h2>連接狀態</h2>
+                    
+                    <div class="status-item">
+                        <span>🌐 後端 API 服務器</span>
+                        <div class="status-indicator status-loading" id="api-status">⏳</div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>🔐 用戶認證系統</span>
+                        <div class="status-indicator status-loading" id="auth-status">⏳</div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>🗄️ 數據庫連接</span>
+                        <div class="status-indicator status-loading" id="db-status">⏳</div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>📄 靜態文件服務</span>
+                        <div class="status-indicator status-loading" id="static-status">⏳</div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>🔔 通知系統</span>
+                        <div class="status-indicator status-loading" id="notify-status">⏳</div>
+                    </div>
+                </div>
+                
+                <div class="test-section">
+                    <h2>登錄測試</h2>
+                    <div class="test-form">
+                        <input type="email" id="test-email" placeholder="測試郵箱" value="test@example.com">
+                        <input type="password" id="test-password" placeholder="測試密碼" value="testpass123">
+                        <button onclick="testLogin()">測試登錄</button>
+                        <button onclick="testSignup()">測試註冊</button>
+                        <button onclick="refreshStatus()">刷新狀態</button>
+                    </div>
+                    
+                    <div class="log-container" id="log-container">
+                        <div class="log-entry">等待測試...</div>
+                    </div>
+                </div>
+                
+                <div class="system-info">
+                    <h2>系統信息</h2>
+                    <div id="system-info-content">
+                        <div class="info-item">
+                            <span>當前時間:</span>
+                            <span id="current-time"></span>
+                        </div>
+                        <div class="info-item">
+                            <span>瀏覽器:</span>
+                            <span id="browser-info"></span>
+                        </div>
+                        <div class="info-item">
+                            <span>連接狀態:</span>
+                            <span id="connection-info">檢測中...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </FormHero>
+    </main>
+</BaseLayout>
+
+<style>
+    .system-status-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .status-container, .test-section, .system-info {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    
+    .status-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        background: #f8f9fa;
+    }
+    
+    .status-indicator {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    
+    .status-success { background-color: #28a745; }
+    .status-error { background-color: #dc3545; }
+    .status-warning { background-color: #ffc107; color: #000; }
+    .status-loading { 
+        background-color: #007bff; 
+        animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    .test-form {
+        margin: 20px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .test-form input {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        width: 200px;
+    }
+    
+    .test-form button {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .test-form button:hover {
+        background: #0056b3;
+    }
+    
+    .log-container {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        max-height: 300px;
+        overflow-y: auto;
+        font-family: monospace;
+        font-size: 14px;
+    }
+    
+    .log-entry {
+        margin: 5px 0;
+        padding: 5px;
+        border-left: 3px solid #007bff;
+        padding-left: 10px;
+    }
+    
+    .log-error { border-left-color: #dc3545; }
+    .log-success { border-left-color: #28a745; }
+    .log-warning { border-left-color: #ffc107; }
+    
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    @media (max-width: 768px) {
+        .test-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .test-form input,
+        .test-form button {
+            width: 100%;
+        }
+    }
+</style>
+
+<script is:inline>
+// 獲取 API 基礎地址
+const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3001' 
+    : 'https://x.soundjaeger.com:3001';
+
+// 日誌函數
+function addLog(message, type = 'info') {
+    const logContainer = document.getElementById('log-container');
+    const logEntry = document.createElement('div');
+    logEntry.className = `log-entry log-${type}`;
+    logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+    logContainer.appendChild(logEntry);
+    logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+// 更新狀態指示器
+function updateStatus(elementId, status, message = '') {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.className = `status-indicator status-${status}`;
+        element.textContent = status === 'success' ? '✓' : 
+                             status === 'error' ? '✗' : 
+                             status === 'warning' ? '⚠' : '⏳';
+        if (message) {
+            element.title = message;
+        }
+    }
+}
+
+// 檢查 API 服務器
+async function checkApiServer() {
+    try {
+        addLog('檢查 API 服務器連接...');
+        const response = await fetch(`${apiBase}/api/health`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            updateStatus('api-status', 'success', 'API 服務器正常');
+            addLog('API 服務器連接成功', 'success');
+            return true;
+        } else {
+            updateStatus('api-status', 'error', `HTTP ${response.status}`);
+            addLog(`API 服務器返回錯誤: ${response.status}`, 'error');
+            return false;
+        }
+    } catch (error) {
+        updateStatus('api-status', 'error', error.message);
+        addLog(`API 服務器連接失敗: ${error.message}`, 'error');
+        return false;
+    }
+}
+
+// 檢查數據庫連接
+async function checkDatabase() {
+    try {
+        addLog('檢查數據庫連接...');
+        const response = await fetch(`${apiBase}/api/db-status`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            updateStatus('db-status', 'success', '數據庫連接正常');
+            addLog('數據庫連接成功', 'success');
+            return true;
+        } else {
+            updateStatus('db-status', 'error', '數據庫連接失敗');
+            addLog('數據庫連接失敗', 'error');
+            return false;
+        }
+    } catch (error) {
+        updateStatus('db-status', 'error', error.message);
+        addLog(`數據庫檢查失敗: ${error.message}`, 'error');
+        return false;
+    }
+}
+
+// 檢查認證系統
+async function checkAuth() {
+    try {
+        addLog('檢查用戶認證系統...');
+        const response = await fetch('/js/membership-auth.js');
+        if (response.ok) {
+            updateStatus('auth-status', 'success', '認證系統文件正常');
+            addLog('認證系統文件加載成功', 'success');
+            return true;
+        } else {
+            updateStatus('auth-status', 'error', '認證文件加載失敗');
+            addLog('認證系統文件加載失敗', 'error');
+            return false;
+        }
+    } catch (error) {
+        updateStatus('auth-status', 'error', error.message);
+        addLog(`認證系統檢查失敗: ${error.message}`, 'error');
+        return false;
+    }
+}
+
+// 檢查靜態文件服務
+async function checkStaticFiles() {
+    try {
+        addLog('檢查靜態文件服務...');
+        const response = await fetch('/js/notification-system.js');
+        if (response.ok) {
+            updateStatus('static-status', 'success', '靜態文件服務正常');
+            addLog('靜態文件服務正常', 'success');
+            return true;
+        } else {
+            updateStatus('static-status', 'error', '靜態文件服務異常');
+            addLog('靜態文件服務異常', 'error');
+            return false;
+        }
+    } catch (error) {
+        updateStatus('static-status', 'error', error.message);
+        addLog(`靜態文件檢查失敗: ${error.message}`, 'error');
+        return false;
+    }
+}
+
+// 檢查通知系統
+function checkNotificationSystem() {
+    try {
+        addLog('檢查通知系統...');
+        if (typeof window.notify !== 'undefined') {
+            updateStatus('notify-status', 'success', '通知系統正常');
+            addLog('通知系統已加載並可用', 'success');
+        } else {
+            // 嘗試加載通知系統腳本
+            const script = document.createElement('script');
+            script.src = '/js/notification-system.js';
+            script.onload = () => {
+                setTimeout(() => {
+                    if (typeof window.notify !== 'undefined') {
+                        updateStatus('notify-status', 'success', '通知系統正常');
+                        addLog('通知系統加載成功', 'success');
+                    } else {
+                        updateStatus('notify-status', 'warning', '通知系統部分功能異常');
+                        addLog('通知系統加載但功能異常', 'warning');
+                    }
+                }, 100);
+            };
+            script.onerror = () => {
+                updateStatus('notify-status', 'error', '通知系統加載失敗');
+                addLog('通知系統加載失敗', 'error');
+            };
+            document.head.appendChild(script);
+        }
+    } catch (error) {
+        updateStatus('notify-status', 'error', error.message);
+        addLog(`通知系統檢查失敗: ${error.message}`, 'error');
+    }
+}
+
+// 測試登錄
+async function testLogin() {
+    const email = document.getElementById('test-email').value;
+    const password = document.getElementById('test-password').value;
+    
+    if (!email || !password) {
+        addLog('請輸入郵箱和密碼', 'error');
+        return;
+    }
+    
+    try {
+        addLog(`開始測試登錄: ${email}`);
+        const response = await fetch(`${apiBase}/api/signin`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            addLog(`登錄測試成功! Token: ${data.token?.substring(0, 20)}...`, 'success');
+            addLog(`用戶信息: ${JSON.stringify(data.user)}`, 'success');
+        } else {
+            addLog(`登錄測試失敗: ${data.error}`, 'error');
+        }
+    } catch (error) {
+        addLog(`登錄測試異常: ${error.message}`, 'error');
+    }
+}
+
+// 測試註冊
+async function testSignup() {
+    const email = document.getElementById('test-email').value;
+    const password = document.getElementById('test-password').value;
+    
+    if (!email || !password) {
+        addLog('請輸入郵箱和密碼', 'error');
+        return;
+    }
+    
+    try {
+        addLog(`開始測試註冊: ${email}`);
+        const response = await fetch(`${apiBase}/api/signup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                name: 'Test User',
+                username: email,
+                email: email,
+                password: password
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            addLog(`註冊測試成功!`, 'success');
+        } else {
+            addLog(`註冊測試失敗: ${data.error}`, 'error');
+            if (data.details) {
+                addLog(`詳細信息: ${JSON.stringify(data.details)}`, 'error');
+            }
+        }
+    } catch (error) {
+        addLog(`註冊測試異常: ${error.message}`, 'error');
+    }
+}
+
+// 刷新狀態
+async function refreshStatus() {
+    addLog('刷新系統狀態...', 'info');
+    
+    // 重置所有狀態為加載中
+    ['api-status', 'auth-status', 'db-status', 'static-status', 'notify-status'].forEach(id => {
+        updateStatus(id, 'loading');
+    });
+    
+    // 重新檢查所有組件
+    await runSystemCheck();
+    
+    addLog('狀態刷新完成', 'success');
+}
+
+// 更新系統信息
+function updateSystemInfo() {
+    const currentTime = document.getElementById('current-time');
+    const browserInfo = document.getElementById('browser-info');
+    const connectionInfo = document.getElementById('connection-info');
+    
+    if (currentTime) {
+        currentTime.textContent = new Date().toLocaleString();
+    }
+    
+    if (browserInfo) {
+        browserInfo.textContent = navigator.userAgent.split(' ').pop();
+    }
+    
+    if (connectionInfo) {
+        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (connection) {
+            connectionInfo.textContent = `${connection.effectiveType || 'unknown'} (${connection.downlink || 'unknown'}Mbps)`;
+        } else {
+            connectionInfo.textContent = navigator.onLine ? '在線' : '離線';
+        }
+    }
+}
+
+// 運行系統檢查
+async function runSystemCheck() {
+    addLog('開始系統狀態檢查...', 'info');
+    
+    // 依次檢查各個組件
+    await checkApiServer();
+    await checkDatabase();
+    await checkAuth();
+    await checkStaticFiles();
+    checkNotificationSystem();
+    
+    addLog('系統狀態檢查完成', 'success');
+}
+
+// 頁面加載時開始檢查
+document.addEventListener('DOMContentLoaded', async function() {
+    updateSystemInfo();
+    await runSystemCheck();
+    
+    // 每30秒更新一次時間
+    setInterval(updateSystemInfo, 30000);
+});
+
+// 網絡狀態變化監聽
+window.addEventListener('online', () => {
+    addLog('網絡連接已恢復', 'success');
+    updateSystemInfo();
+});
+
+window.addEventListener('offline', () => {
+    addLog('網絡連接已斷開', 'error');
+    updateSystemInfo();
+});
+</script>

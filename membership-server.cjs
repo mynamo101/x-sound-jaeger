@@ -508,6 +508,94 @@ app.post('/api/admin/delete-protected-file', (req, res) => {
   });
 });
 
+// 健康检查端点
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    server: 'membership-server',
+    version: '1.0.0'
+  });
+});
+
+// 数据库状态检查端点
+app.get('/api/db-status', (req, res) => {
+  db.ping((err) => {
+    if (err) {
+      console.error('Database ping error:', err);
+      return res.status(500).json({ 
+        status: 'error', 
+        message: 'Database connection failed',
+        error: err.message 
+      });
+    }
+    
+    // 测试查询
+    db.query('SELECT 1 as test', (queryErr, results) => {
+      if (queryErr) {
+        console.error('Database query error:', queryErr);
+        return res.status(500).json({ 
+          status: 'error', 
+          message: 'Database query failed',
+          error: queryErr.message 
+        });
+      }
+      
+      res.json({ 
+        status: 'ok', 
+        message: 'Database connection healthy',
+        timestamp: new Date().toISOString(),
+        testQuery: results[0]
+      });
+    });
+  });
+});
+
+// 详细系统状态检查
+app.get('/api/system-status', (req, res) => {
+  const systemStatus = {
+    server: {
+      status: 'ok',
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+      timestamp: new Date().toISOString()
+    },
+    database: {
+      status: 'checking...'
+    }
+  };
+
+  // 检查数据库连接
+  db.ping((err) => {
+    if (err) {
+      systemStatus.database = {
+        status: 'error',
+        error: err.message
+      };
+      return res.status(500).json(systemStatus);
+    }
+
+    // 检查用户表
+    db.query('SELECT COUNT(*) as user_count FROM users', (queryErr, results) => {
+      if (queryErr) {
+        systemStatus.database = {
+          status: 'error',
+          error: queryErr.message
+        };
+        return res.status(500).json(systemStatus);
+      }
+
+      systemStatus.database = {
+        status: 'ok',
+        userCount: results[0].user_count,
+        lastCheck: new Date().toISOString()
+      };
+
+      res.json(systemStatus);
+    });
+  });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

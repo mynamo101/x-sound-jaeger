@@ -50,13 +50,21 @@ const footerSettings: Footer[] = [
                 link: "/audiopacks/",
             },
         ],
-    },
-    {
+    },    {
         text: "Policy",
         dropdown: [
             {
                 text: "FAQ",
                 link: "/faq/",
+            },
+        ],
+    },
+    {
+        text: "System",
+        dropdown: [
+            {
+                text: "System Status",
+                link: "/system-status/",
             },
         ],
     },
