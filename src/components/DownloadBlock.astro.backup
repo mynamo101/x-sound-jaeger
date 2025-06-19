@@ -387,15 +387,16 @@ const fileInfo = getFileInfo(downloadUrl);
     if (!token) {
       return { allowed: false, message: '請先登入' };
     }
-    
     try {
       // 從檔案 URL 中提取檔案名作為 fileId
       const fileName = fileUrl.split('/').pop();
       console.log('向後端驗證檔案權限:', fileName);
-      const response = await fetch(`http://localhost:3001/api/check-download-access/${fileName}`, {
+      const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3001'
+        : 'https://x.soundjaeger.com';
+      const response = await fetch(`${apiBase}/api/check-download-access/${fileName}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
       console.log('後端回應狀態:', response.status);
       if (response.ok) {
         return { allowed: true };      } else {
@@ -543,6 +544,12 @@ const fileInfo = getFileInfo(downloadUrl);
   } else {
     initDownloadBlock();
   }
+
+  const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://localhost:3001' 
+        : 'https://x.soundjaeger.com';
+
+  // 將所有apiBase用法都改為上述判斷
 </script>
 
 <style>

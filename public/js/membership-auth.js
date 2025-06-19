@@ -4,7 +4,7 @@ class MembershipAuth {
         // 根据环境自动选择API地址
         this.apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://localhost:3001' 
-            : 'https://x.soundjaeger.com:3001';
+            : 'https://x.soundjaeger.com';
         this.token = localStorage.getItem('auth_token');
         this.userInfo = JSON.parse(localStorage.getItem('user_info') || 'null');
     }

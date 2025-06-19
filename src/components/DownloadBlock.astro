@@ -248,7 +248,7 @@ const fileInfo = getFileInfo(downloadUrl);
     try {
       const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
           ? 'http://localhost:3001' 
-          : 'https://x.soundjaeger.com:3001';
+          : 'https://x.soundjaeger.com';
       const response = await fetch(`${apiBase}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -284,7 +284,7 @@ const fileInfo = getFileInfo(downloadUrl);
       console.log('向後端驗證檔案權限:', fileName);
       const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
           ? 'http://localhost:3001' 
-          : 'https://x.soundjaeger.com:3001';
+          : 'https://x.soundjaeger.com';
       const response = await fetch(`${apiBase}/api/check-download-access/${fileName}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });

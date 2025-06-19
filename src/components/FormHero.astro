@@ -8,6 +8,9 @@ import "@styles/notification.css"
 
 const { type, has_link = false, title, description } = Astro.props as FormHeroProps;
 const { t, globalSettings } = Astro.props;
+
+// 新增表單 id 變數，避免語法錯誤
+const formId = type === "Signin" ? "signinForm" : "signupForm";
 ---
 
 <section class="hero form-page wide-container">
@@ -43,9 +46,10 @@ const { t, globalSettings } = Astro.props;
                     </div>
                 )   :   (
                     <div class:list={["form-container", { "vertical-animation": globalSettings.use_page_load_animations }]} data-delay="400">
-                        <form class="page-form-element" id="signupForm">                            {type === "Signin" ? (
+                        <form class="page-form-element" id={formId}>                            {type === "Signin" ? (
                                 <div class="vertical-form">
-                                    <input data-members-email type="email" required="true" placeholder={t.global.form.email} class="subscribe-input"/>                                    <input data-members-password type="password" required="true" placeholder={t.global.form.password || 'Password'} class="subscribe-input"/>
+                                    <input data-members-email type="email" required="true" placeholder={t.global.form.email} class="subscribe-input"/>
+                                    <input data-members-password type="password" required="true" placeholder={t.global.form.password || 'Password'} class="subscribe-input"/>
                                     <button class="button" type="submit">{t.signin_page.button_label || 'Sign In'}</button>
                                 </div>                            )   :   (
                                 <div class="vertical-form">
@@ -190,6 +194,8 @@ const { t, globalSettings } = Astro.props;
         if (passwordInput) {
           passwordInput.addEventListener('input', updatePasswordStrength);
           passwordInput.addEventListener('focus', updatePasswordStrength);
+          // 初始化時也觸發一次，避免一開始不顯示
+          updatePasswordStrength();
         }
 
         const form = document.getElementById('signupForm');
@@ -225,7 +231,7 @@ const { t, globalSettings } = Astro.props;
             // Call API for registration
             const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
                 ? 'http://localhost:3001' 
-                : 'https://x.soundjaeger.com:3001';
+                : 'https://x.soundjaeger.com';
                 
             try {
               const res = await fetch(`${apiBase}/api/signup`, {
@@ -304,11 +310,9 @@ const { t, globalSettings } = Astro.props;
     document.addEventListener('DOMContentLoaded', function() {
       let waitAttempts = 0;
       const maxWaitAttempts = 50; // 最多等待 5 秒
-      
       // Wait for global scripts to load with timeout
       function waitForGlobals() {
         waitAttempts++;
-        
         if (typeof window.notify !== 'undefined' && typeof window.membershipAuth !== 'undefined') {
           console.log('Global scripts loaded successfully');
           setupSigninForm();
@@ -319,9 +323,8 @@ const { t, globalSettings } = Astro.props;
           setTimeout(waitForGlobals, 100);
         }
       }
-      
       function setupSigninForm() {
-        const form = document.getElementById('signupForm');
+        const form = document.getElementById('signinForm');
         if (form) {
           form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -422,8 +425,7 @@ const { t, globalSettings } = Astro.props;
       }
       
       function setupSigninFormFallback() {
-        console.log('Setting up signin form with fallback methods');
-        const form = document.getElementById('signupForm');
+        const form = document.getElementById('signinForm');
         if (form) {
           form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -445,7 +447,7 @@ const { t, globalSettings } = Astro.props;
       async function performDirectLogin(email, password, loadingId = null) {
         const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://localhost:3001' 
-            : 'https://x.soundjaeger.com:3001';
+            : 'https://x.soundjaeger.com';
             
         try {
           console.log('Performing direct API login to:', apiBase + '/api/signin');
