@@ -26,5 +26,6 @@ export default defineConfig({
         sitemap()
     ],    markdown: {
         remarkPlugins: [remarkReadingTime],
-    }
+    },
+    trailingSlash: 'always', // 强制所有路由都带斜杠
 });
