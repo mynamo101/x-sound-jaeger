@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API 連線狀態</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; }
+    .container { max-width: 400px; margin: 60px auto 0 auto; padding: 2em 1em; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px #0001; text-align: center; }
+    .status-indicator { display: inline-flex; align-items: center; gap: 1em; font-size: 1.2em; }
+    #status-light-api, #status-light-db { display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #007bff; box-shadow: 0 0 8px #007bff55; }
+    .desc { margin-top: 2em; color: #888; font-size: 0.95em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 style="margin-bottom:2em;">API 與資料庫連線狀態</h2>
+    <div class="status-indicator">
+      <span id="status-light-api"></span>
+      <span id="status-text-api">API 檢查中...</span>
+    </div>
+    <div class="status-indicator">
+      <span id="status-light-db"></span>
+      <span id="status-text-db">資料庫檢查中...</span>
+    </div>
+    <div class="desc">本頁顯示 API 主機與資料庫連線狀態</div>
+  </div>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3001'
+        : 'https://x.soundjaeger.com';
+      // API 狀態
+      const statusLightApi = document.getElementById('status-light-api');
+      const statusTextApi = document.getElementById('status-text-api');
+      // DB 狀態
+      const statusLightDb = document.getElementById('status-light-db');
+      const statusTextDb = document.getElementById('status-text-db');
+      // 預設藍燈
+      statusLightApi.style.background = '#007bff';
+      statusLightApi.style.boxShadow = '0 0 8px #007bff55';
+      statusLightDb.style.background = '#007bff';
+      statusLightDb.style.boxShadow = '0 0 8px #007bff55';
+      // 檢查 API
+      fetch(`${apiBase}/api/health`, {method:'GET'})
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(() => {
+          statusLightApi.style.background = '#28a745';
+          statusLightApi.style.boxShadow = '0 0 12px #28a74599';
+          statusTextApi.textContent = 'API 連線正常';
+        })
+        .catch(() => {
+          statusLightApi.style.background = '#dc3545';
+          statusLightApi.style.boxShadow = '0 0 12px #dc354599';
+          statusTextApi.textContent = 'API 連線異常';
+        });
+      // 檢查資料庫
+      fetch(`${apiBase}/api/db-status`, {method:'GET'})
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(() => {
+          statusLightDb.style.background = '#28a745';
+          statusLightDb.style.boxShadow = '0 0 12px #28a74599';
+          statusTextDb.textContent = '資料庫連線正常';
+        })
+        .catch(() => {
+          statusLightDb.style.background = '#dc3545';
+          statusLightDb.style.boxShadow = '0 0 12px #dc354599';
+          statusTextDb.textContent = '資料庫連線異常';
+        });
+    });
+  </script>
+</body>
+</html>

@@ -24,6 +24,15 @@ const db = mysql.createConnection({
 
 const JWT_SECRET = 'your-secret-key-change-this'; // 請更改為安全的密鑰
 
+// --- 資料庫連線啟動 log ---
+db.connect((err) => {
+  if (err) {
+    console.error('[DB] 資料庫連線失敗:', err.message, err.stack);
+  } else {
+    console.log('[DB] 資料庫連線成功');
+  }
+});
+
 // 創建必要的數據庫表
 const createTables = () => {
   // 用戶表（合併 tier 欄位）
@@ -520,27 +529,28 @@ app.get('/api/health', (req, res) => {
 
 // 数据库状态检查端点
 app.get('/api/db-status', (req, res) => {
+  console.log('[DB-STATUS] 檢查開始');
   db.ping((err) => {
     if (err) {
-      console.error('Database ping error:', err);
+      console.error('[DB-STATUS] ping 失敗:', err.message, err.stack);
       return res.status(500).json({ 
         status: 'error', 
         message: 'Database connection failed',
         error: err.message 
       });
     }
-    
-    // 测试查询
+    console.log('[DB-STATUS] ping 成功，準備查詢');
+    // 測試查詢
     db.query('SELECT 1 as test', (queryErr, results) => {
       if (queryErr) {
-        console.error('Database query error:', queryErr);
+        console.error('[DB-STATUS] 查詢失敗:', queryErr.message, queryErr.stack);
         return res.status(500).json({ 
           status: 'error', 
           message: 'Database query failed',
           error: queryErr.message 
         });
       }
-      
+      console.log('[DB-STATUS] 查詢成功:', results);
       res.json({ 
         status: 'ok', 
         message: 'Database connection healthy',

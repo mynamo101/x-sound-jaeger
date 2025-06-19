@@ -1,4 +1,3 @@
-
 import type { Footer } from "@src-types/types.ts";
 
 /**
@@ -63,8 +62,8 @@ const footerSettings: Footer[] = [
         text: "System",
         dropdown: [
             {
-                text: "System Status",
-                link: "/system-status/",
+                text: "Connection Status",
+                link: "/connection-status.html",
             },
         ],
     },
