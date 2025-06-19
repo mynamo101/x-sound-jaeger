@@ -54,16 +54,7 @@ const { globalSettings, t } = Astro.props;
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let signOutHandler = null;
-          // 動態加載通知系統
-        async function loadNotificationSystem() {
-            try {
-                await import('/js/notification-system.js');
-                return true;
-            } catch (error) {
-                console.warn('Failed to load notification system:', error);
-                return false;
-            }
-        }
+        // window.notify 已可直接使用
         
         // 動態更新導航欄認證狀態
         function updateNavbarAuth() {
@@ -109,10 +100,9 @@ const { globalSettings, t } = Astro.props;
             
             // 顯示登出成功訊息
             const isZh = document.documentElement.lang === 'zh';
-            const hasNotificationSystem = await loadNotificationSystem();
             
-            if (hasNotificationSystem && (window as any).notify) {
-                (window as any).notify.success(
+            if (window.notify) {
+                window.notify.success(
                     isZh ? '成功退出登录' : 'Logged out successfully',
                     { title: isZh ? '再見' : 'Goodbye' }
                 );
