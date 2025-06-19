@@ -24,8 +24,7 @@ export default defineConfig({
 		}),
         mdx(),
         sitemap()
-    ],
-    markdown: {
+    ],    markdown: {
         remarkPlugins: [remarkReadingTime],
     }
 });

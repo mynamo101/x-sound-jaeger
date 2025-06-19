@@ -1,10 +1,10 @@
 {
   "name": "elysian",
   "type": "module",
-  "version": "1.0.0",
-  "scripts": {
+  "version": "1.0.0",  "scripts": {
     "dev": "astro dev",
-    "build": "astro build && upload.bat",
+    "sync-js": "powershell -ExecutionPolicy Bypass -File sync-js.ps1",
+    "build": "npm run sync-js && astro build && upload.bat",
     "preview": "astro preview",
     "astro": "astro"
   },
