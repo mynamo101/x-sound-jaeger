@@ -114,6 +114,16 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
 </BaseLayout>
 
 <script>
+        // API function
+        async function getUserProfile(token) {
+                const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                        ? 'http://localhost:3001'
+                        : 'https://x.soundjaeger.com';
+                return fetch(`${apiBase}/api/user/profile`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                });
+        }
+
         // 登录检查和自动跳转
         function checkAuthAndRedirect() {
                 const token = localStorage.getItem('auth_token');
@@ -318,12 +328,7 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
                 }                // Fetch latest data from server
                 try {
                         console.log('[Account] Requesting latest data from API...');
-                        const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                            ? 'http://localhost:3001' 
-                            : 'https://x.soundjaeger.com';
-                        const response = await fetch(`${apiBase}/api/user/profile`, {
-                                headers: { 'Authorization': `Bearer ${token}` }
-                        });
+                        const response = await getUserProfile(token);
 
                         console.log('[Account] API response status:', response.status);
 

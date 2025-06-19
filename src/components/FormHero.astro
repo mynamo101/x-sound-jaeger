@@ -226,20 +226,18 @@ const formId = type === "Signin" ? "signinForm" : "signupForm";
             // Show loading notification
             const loadingId = window.notify.loading('Creating your account...', {
               title: 'Registering'
-            });
-
-            // Call API for registration
-            const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                ? 'http://localhost:3001' 
-                : 'https://x.soundjaeger.com';
-                
+            });            // Call API for registration
             try {
+              // Get API base URL
+              const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? 'http://localhost:3001'
+                : 'https://x.soundjaeger.com';
+              
               const res = await fetch(`${apiBase}/api/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, username, email, password })
               });
-              
               const data = await res.json();
               
               // Remove loading notification
@@ -443,23 +441,19 @@ const formId = type === "Signin" ? "signinForm" : "signupForm";
           });
         }
       }
-      
-      async function performDirectLogin(email, password, loadingId = null) {
-        const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:3001' 
-            : 'https://x.soundjaeger.com';
-            
+        async function performDirectLogin(email, password, loadingId = null) {
         try {
-          console.log('Performing direct API login to:', apiBase + '/api/signin');
+          // Get API base URL
+          const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3001'
+            : 'https://x.soundjaeger.com';
+          
           const res = await fetch(`${apiBase}/api/signin`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: email, password })
           });
-          
-          console.log('API response status:', res.status);
           const data = await res.json();
-          console.log('API response data:', data);
           
           // Remove loading notification
           if (window.notify && loadingId) {
