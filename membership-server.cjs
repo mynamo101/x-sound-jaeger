@@ -35,7 +35,7 @@ const createTables = () => {
       password VARCHAR(255) NOT NULL,
       name VARCHAR(255),
       paypal_payer_id VARCHAR(255),
-      tier ENUM('Free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'Free',
+      tier ENUM('Free', 'Starter', 'Pro', 'Hero') DEFAULT 'Free',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     )
@@ -49,14 +49,14 @@ const createTables = () => {
       file_size VARCHAR(50),
       file_format VARCHAR(10),
       download_url VARCHAR(500) NOT NULL,
-      required_tier ENUM('Free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'Support',
+      required_tier ENUM('Free', 'Starter', 'Pro', 'Hero') DEFAULT 'Starter',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
   // 更新現有 protected_files 表的 ENUM
   db.query(`
     ALTER TABLE protected_files 
-    MODIFY COLUMN required_tier ENUM('Free', 'Support', 'Creator''s Choice', 'My Hero') DEFAULT 'Support'
+    MODIFY COLUMN required_tier ENUM('Free', 'Starter', 'Pro', 'Hero') DEFAULT 'Starter'
   `, (err) => {
     if (err && !err.message.includes('duplicate')) {
       console.log('更新 required_tier ENUM:', err.message);
@@ -143,9 +143,9 @@ function verifyMembership(requiredTier = 'Support') {
           const user = results[0];
           const tierLevels = {
             'Free': 0,
-            'Support': 1,
-            'Creator\'s Choice': 2,
-            'My Hero': 3
+            'Starter': 1,
+            'Pro': 2,
+            'Hero': 3
           };
           if (tierLevels[user.tier] < tierLevels[requiredTier]) {
             return res.status(403).json({ 
@@ -247,9 +247,9 @@ app.get('/api/check-download-access/:fileId', verifyMembership('Free'), (req, re
       const file = results[0];
       const tierLevels = {
         'Free': 0,
-        'Support': 1,
-        'Creator\'s Choice': 2,
-        'My Hero': 3
+        'Starter': 1,
+        'Pro': 2,
+        'Hero': 3
       };
       
       if (tierLevels[req.user.tier] >= tierLevels[file.required_tier]) {
@@ -307,9 +307,9 @@ app.post('/api/paypal-webhook', express.raw({type: 'application/json'}), (req, r
 });
 function handleSubscriptionActivated(subscription) {
   const planIdToTier = {
-    'P-3MP41776X70737201NBIOZRQ': 'Support',
-    'P-5VY34435YG791411WNBIPG6A': "Creator's Choice",
-    'P-658069381H438834BNBIPIDA': 'My Hero'
+    'P-3MP41776X70737201NBIOZRQ': 'Starter',
+    'P-5VY34435YG791411WNBIPG6A': 'Pro',
+    'P-658069381H438834BNBIPIDA': 'Hero'
   };
   const tier = planIdToTier[subscription.plan_id];
   if (tier) {
@@ -423,11 +423,10 @@ app.post('/api/admin/upload-protected-file', upload.fields([
   
   // 決定目標資料夾
   const folderMap = {
-    'free': 'Free',
     'Free': 'Free',
-    'Support': 'Tier_1',
-    "Creator's Choice": 'Tier_2',
-    'My Hero': 'Tier_3'
+    'Starter': 'Tier_1',
+    'Pro': 'Tier_2',
+    'Hero': 'Tier_3'
   };
   const folder = folderMap[required_tier] || 'Tier_1';
   console.log('Upload API - target folder:', folder);
@@ -494,9 +493,9 @@ app.post('/api/admin/delete-protected-file', (req, res) => {
       // 刪除實體檔案
       const folderMap = {
         'Free': 'Free',
-        'Support': 'Tier_1',
-        "Creator's Choice": 'Tier_2',
-        'My Hero': 'Tier_3'
+        'Starter': 'Tier_1',
+        'Pro': 'Tier_2',
+        'Hero': 'Tier_3'
       };
       const folder = folderMap[file.required_tier] || 'Tier_1';
       const filePath = path.join(__dirname, 'public', 'audio', folder, file_name);

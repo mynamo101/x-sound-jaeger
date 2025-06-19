@@ -167,9 +167,9 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
         function getUserTierDisplayName(tier) {
                 const tierDisplayNames = {
                         'Free': 'Free Member',
-                        'Support': 'Support Member',
-                        "Creator's Choice": "Creator's Choice Member",
-                        'My Hero': 'My Hero Member'
+                        'Starter': 'Starter Member',
+                        'Pro': 'Pro Member',
+                        'Hero': 'Hero Member'
                 };
                 return tierDisplayNames[tier] || tier;
         }        // 更新用户头像

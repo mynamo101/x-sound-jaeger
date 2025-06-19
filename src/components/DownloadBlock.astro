@@ -10,7 +10,7 @@ interface Props {
 
 const {
   downloadUrl,
-  title = "下載檔案",
+  title = "Download File",
   description,
   fileSize,
   requiresMembership = false,
@@ -18,12 +18,12 @@ const {
 } = Astro.props;
 
 const tierNameMap = [
-  '免費',
+  'Free',
   'Support',
   "Creator's Choice",
-  'My Hero'
+  'Hero'
 ];
-const getTierLabel = (tier: number) => tierNameMap[tier] || '未知等級';
+const getTierLabel = (tier: number) => tierNameMap[tier] || 'Unknown Tier';
 const getTierString = (tier: number) => tierNameMap[tier] || 'Support';
 
 const getFileInfo = (url: string) => {
@@ -49,14 +49,15 @@ const getFileInfo = (url: string) => {
     fileName,
     fileFormat: info.format,
     formatColor: info.color,
-    fileSize: fileSize || '檔案大小未知'
+    fileSize: fileSize || 'Unknown file size'
   };
 };
 const fileInfo = getFileInfo(downloadUrl);
 ---
 
 <div class="download-block-flex" data-download-url={downloadUrl} data-requires-membership={requiresMembership} data-require-tier={require_tier}>
-  <div class="membership-label">{getTierLabel(require_tier)}</div>  <div class="download-flex-row">
+  <span class="membership-label-badge {`tier-badge-${require_tier}`}" title={getTierLabel(require_tier)}>{getTierLabel(require_tier)}</span>
+  <div class="download-flex-row">
     <div class="file-info-flex">
       <div class="file-title">{title}</div>
       {description && <div class="file-description">{description}</div>}
@@ -67,13 +68,13 @@ const fileInfo = getFileInfo(downloadUrl);
       </div>
     </div>
     <div class="file-action-flex">
-      <button class="download-btn-flex" data-download-action disabled>下載</button>
+      <button class="download-btn-flex" data-download-action disabled>Download</button>
     </div>
   </div>
 </div>
 
 <script type="module">
-  // 直接在這裡定義通知系統，確保它一定可用
+  // Define notification system here to ensure it's always available
   class NotificationSystem {
     constructor() {
       this.container = null;
@@ -98,12 +99,12 @@ const fileInfo = getFileInfo(downloadUrl);
         id = null
       } = options;
 
-      // 以 message+type+title 組合唯一 key，避免同內容重複顯示
+      // Use message+type+title as unique key to avoid duplicate notifications
       const contentKey = `${type}::${title || ''}::${message}`;
-      // 檢查是否已有相同內容通知
+      // Check if notification with same content already exists
       for (const [nid, notif] of this.notifications.entries()) {
         if (notif && notif.dataset && notif.dataset.contentKey === contentKey) {
-          // 已有相同內容通知，直接 return 不再顯示
+          // Already exists, do not show again
           return nid;
         }
       }
@@ -163,7 +164,7 @@ const fileInfo = getFileInfo(downloadUrl);
       closeButton.className = 'notification-close';
       closeButton.setAttribute('aria-label', 'Close notification');
       
-      // 保存對當前實例的引用
+      // Save reference to current instance
       const self = this;
       closeButton.addEventListener('click', function(e) {
         console.log('Close button clicked for notification id:', id);
@@ -181,7 +182,7 @@ const fileInfo = getFileInfo(downloadUrl);
     }    remove(id) {
       console.log('Attempting to remove notification with id:', id);
       const notification = this.notifications.get(id);
-      this.notifications.delete(id); // 先刪除 map 裡的記錄，避免同步問題
+      this.notifications.delete(id); // Remove from map first to avoid sync issues
       console.log('Found notification:', notification);
       if (notification && notification.parentNode) {
         console.log('Adding hide class and starting removal');
@@ -216,7 +217,7 @@ const fileInfo = getFileInfo(downloadUrl);
     }
   }
 
-  // 確保通知系統在全局可用
+  // Ensure notification system is globally available
   if (!window.notify) {
     window.notify = new NotificationSystem();
   }
@@ -233,7 +234,7 @@ const fileInfo = getFileInfo(downloadUrl);
     return '';
   }
   function formatFileSize(bytes) {
-    if (!bytes) return '檔案大小未知';
+    if (!bytes) return 'Unknown file size';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -241,7 +242,7 @@ const fileInfo = getFileInfo(downloadUrl);
   }  function getAuthToken() {
     return localStorage.getItem('auth_token');
   }
-    // 檢查用戶會員等級
+    // Check user membership tier
   async function checkUserTier() {
     const token = getAuthToken();
     if (!token) return null;
@@ -259,46 +260,46 @@ const fileInfo = getFileInfo(downloadUrl);
     }
     return null;
   }
-    // 比較會員等級
+    // Compare membership tiers
   function compareTiers(userTier, requiredTier) {
     const tierLevels = {
       'Free': 0,
       'Support': 1,
       'Creator\'s Choice': 2,
-      'My Hero': 3
+      'Hero': 3
     };
     return tierLevels[userTier] >= tierLevels[requiredTier];
   }
   
-  // 向後端驗證下載權限（最終安全檢查）
+  // Backend verification for download permission (final security check)
   async function verifyDownloadPermission(fileUrl) {
     const token = getAuthToken();
     if (!token) {
-      return { allowed: false, message: '請先登入' };
+      return { allowed: false, message: 'Please log in first' };
     }
     
     try {
-      // 從檔案 URL 中提取檔案名作為 fileId
+      // Extract file name from URL as fileId
       const fileName = fileUrl.split('/').pop();
-      console.log('向後端驗證檔案權限:', fileName);
+      console.log('Verifying file permission with backend:', fileName);
       const response = await fetch(`http://localhost:3001/api/check-download-access/${fileName}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      console.log('後端回應狀態:', response.status);
+      console.log('Backend response status:', response.status);
       if (response.ok) {
         return { allowed: true };      } else {
         const data = await response.json();
-        console.log('後端驗證失敗，回傳資料:', data);
+        console.log('Backend verification failed, returned data:', data);
         
-        // 根據不同錯誤類型給出不同提示
-        let message = '後端驗證失敗';
+        // Show different messages for different error types
+        let message = 'Backend verification failed';
         if (data.error === 'File not found') {
-          message = '檔案不存在於系統中，請聯繫管理員';
+          message = 'File does not exist in the system, please contact the administrator';
         } else if (data.required_tier && data.current_tier) {
-          message = `需要 ${data.required_tier} 等級，您目前是 ${data.current_tier}`;
+          message = `Required tier: ${data.required_tier}, your current tier: ${data.current_tier}`;
         } else {
-          message = data.error || '權限驗證失敗';
+          message = data.error || 'Permission verification failed';
         }
         
         return { 
@@ -308,7 +309,7 @@ const fileInfo = getFileInfo(downloadUrl);
       }
     } catch (error) {
       console.error('Download permission check failed:', error);
-      return { allowed: false, message: '權限驗證失敗，請稍後再試' };
+      return { allowed: false, message: 'Permission verification failed, please try again later' };
     }
   }  document.addEventListener('DOMContentLoaded', async () => {
     const blocks = document.querySelectorAll('.download-block-flex');
@@ -319,47 +320,47 @@ const fileInfo = getFileInfo(downloadUrl);
       const requireTier = parseInt(block.getAttribute('data-require-tier'));
       const downloadUrl = block.getAttribute('data-download-url');
       const fileSizeElement = block.querySelector('[data-file-size]');
-        // 檔案大小自動補全
-      if (fileSizeElement && fileSizeElement.textContent === '檔案大小未知') {
+        // Auto-complete file size
+      if (fileSizeElement && fileSizeElement.textContent === 'Unknown file size') {
         const realSize = await fetchFileSize(downloadUrl);
         if (realSize) fileSizeElement.textContent = realSize;
-      }      // 根據會員等級設定背景色彩
+      }      // Set background color based on membership tier
       const tierClasses = ['tier-free', 'tier-support', 'tier-creators', 'tier-hero'];
       block.classList.add(tierClasses[requireTier] || 'tier-free');
 
-      // 所有檔案都需要檢查登入狀態
+      // All files require login check
       const userTier = await checkUserTier();
-      let frontendCheckPassed = false;      // 免費檔案（require_tier 為 0）- 按鈕始終可點擊
+      let frontendCheckPassed = false;      // Free files (require_tier === 0) - button always enabled
       if (requireTier === 0) {
-        frontendCheckPassed = true; // 免費檔案按鈕始終啟用
-        btn.title = userTier ? '' : '點擊下載（需要登入）';
+        frontendCheckPassed = true; // Free file, button always enabled
+        btn.title = userTier ? '' : 'Click to download (login required)';
       } else {
-        // 付費檔案：需要檢查會員等級
+        // Paid files: check membership tier
         if (requiresMembership) {
           if (!userTier) {
             frontendCheckPassed = false;
-            btn.title = '請先登入會員';
+            btn.title = 'Please log in as a member first';
           } else {
-            const tierNames = ['Free', 'Support', 'Creator\'s Choice', 'My Hero'];
+            const tierNames = ['Free', 'Support', 'Creator\'s Choice', 'Hero'];
             const requiredTierName = tierNames[requireTier] || 'Support';
             
             if (compareTiers(userTier, requiredTierName)) {
               frontendCheckPassed = true;
             } else {
               frontendCheckPassed = false;
-              btn.title = `需要等級：${requiredTierName}，您目前：${userTier}`;
+              btn.title = `Required tier: ${requiredTierName}, your current tier: ${userTier}`;
             }
           }
         } else {
-          // 如果不要求會員，但仍需要登入
+          // If membership not required, still need login
           frontendCheckPassed = !!userTier;
           if (!userTier) {
-            btn.title = '請先登入會員';
+            btn.title = 'Please log in as a member first';
           }
         }
       }
 
-      // 根據前端檢查結果設定按鈕狀態
+      // Set button state based on frontend check
       if (frontendCheckPassed) {
         btn.disabled = false;
         btn.classList.add('can-download');
@@ -367,43 +368,43 @@ const fileInfo = getFileInfo(downloadUrl);
       } else {
         btn.disabled = true;
         btn.classList.remove('can-download');
-      }      // 點擊事件：免費檔案特殊處理，付費檔案需要權限檢查
+      }      // Click event: special handling for free files, paid files require permission check
       btn.addEventListener('click', async () => {
-        // 免費檔案的特殊處理
+        // Special handling for free files
         if (requireTier === 0) {
           if (!userTier) {
-            // 未登入時顯示通知
+            // Show notification if not logged in
             if (window.notify) {
-              window.notify.warning('請先登入會員後再下載檔案', {
-                title: '需要登入',
+              window.notify.warning('Please log in as a member before downloading the file', {
+                title: 'Login Required',
                 duration: 4000
               });
             } else {
-              alert('請先登入會員後再下載檔案');
+              alert('Please log in as a member before downloading the file');
             }
             return;
           }
-          // 已登入的免費用戶直接下載
-          console.log('免費檔案，已登入用戶直接下載');
+          // Logged-in free user, download directly
+          console.log('Free file, logged-in user downloads directly');
           window.open(downloadUrl, '_blank');
           return;
         }
         
-        // 付費檔案的權限檢查
+        // Paid file permission check
         if (!frontendCheckPassed) return;
         
-        console.log('正在進行後端權限驗證...');
+        console.log('Performing backend permission verification...');
         const finalCheck = await verifyDownloadPermission(downloadUrl);
         if (finalCheck.allowed) {
           window.open(downloadUrl, '_blank');
         } else {
           if (window.notify) {
-            window.notify.error(finalCheck.message || '下載權限驗證失敗', {
-              title: '下載失敗',
+            window.notify.error(finalCheck.message || 'Download permission verification failed', {
+              title: 'Download Failed',
               duration: 5000
             });
           } else {
-            alert(finalCheck.message || '下載權限驗證失敗');
+            alert(finalCheck.message || 'Download permission verification failed');
           }
         }
       });
@@ -442,7 +443,7 @@ const fileInfo = getFileInfo(downloadUrl);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
 }
 
-/* My Hero 等級 - 金色漸變 */
+/* Hero 等級 - 金色漸變 */
 .download-block-flex.tier-hero {
   background: linear-gradient(135deg, #92400e 0%, #f59e0b 30%, #fbbf24 50%, #f59e0b 70%, #d97706 100%);
   border: 1px solid #f59e0b;
@@ -511,7 +512,7 @@ const fileInfo = getFileInfo(downloadUrl);
   text-shadow: 0 1px 2px rgba(0,0,0,0.8), 0 0 8px rgba(139, 92, 246, 0.3);
 }
 
-/* My Hero 等級標籤 - 金色效果但保持可讀性 */
+/* Hero 等級標籤 - 金色效果但保持可讀性 */
 .tier-hero .membership-label {
   color: #fef3c7;
   text-shadow: 
@@ -664,7 +665,7 @@ const fileInfo = getFileInfo(downloadUrl);
   box-shadow: 0 6px 12px rgba(139, 92, 246, 0.3);
 }
 
-/* My Hero 等級按鈕 - 豪華金色 */
+/* Hero 等級按鈕 - 豪華金色 */
 .tier-hero .download-btn-flex.can-download {
   background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
   border: 1px solid #f59e0b;
@@ -707,7 +708,7 @@ const fileInfo = getFileInfo(downloadUrl);
   }
 }
 
-/* 通知系統樣式 */
+/* Notification system styles */
 .notification-container {
   position: fixed;
   top: 20px;
@@ -824,5 +825,33 @@ const fileInfo = getFileInfo(downloadUrl);
   color: #4b5563;
   margin: 0;
   line-height: 1.4;
+}
+
+/* New styles */
+.membership-label-badge {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 2;
+  display: inline-block;
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: 3px;
+  color: rgba(255 255 255 / 0.43);
+  pointer-events: auto;
+}
+.tier-badge-0 { background: #444; color: #d1d5db; }
+.tier-badge-1 { background: linear-gradient(90deg,#2563eb,#3b82f6); color: #dbeafe; }
+.tier-badge-2 { background: linear-gradient(90deg,#7c3aed,#8b5cf6); color: #ede9fe; }
+.tier-badge-3 { background: linear-gradient(90deg,#f59e0b,#fbbf24); color: #fef3c7; border: 2px solid #fbbf24; box-shadow: 0 0 12px #fbbf24aa; }
+
+.file-info-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.file-title {
+  margin-top: 0;
 }
 </style>

@@ -57,7 +57,7 @@ const { globalSettings, t } = Astro.props;
           // 動態加載通知系統
         async function loadNotificationSystem() {
             try {
-                await import('../js/notification-system.js');
+                await import('/js/notification-system.js');
                 return true;
             } catch (error) {
                 console.warn('Failed to load notification system:', error);
