@@ -80,6 +80,7 @@ class NotificationSystem {
 
         const closeButton = document.createElement('button');
         closeButton.className = 'notification-close';
+        closeButton.textContent = '✕'; // 补上 X 字符
         closeButton.setAttribute('aria-label', 'Close notification');
         closeButton.addEventListener('click', () => this.remove(id));
 
