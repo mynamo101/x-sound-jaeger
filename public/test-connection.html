@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>连接状态检测</title>
+    <title>Connection Status Check</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -99,57 +99,47 @@
     </style>
 </head>
 <body>
-    <h1>🔍 系统连接状态检测</h1>
-    
+    <h1>🔍 System Connection Status Check</h1>
     <div class="status-container">
-        <h2>连接状态</h2>
-        
+        <h2>Connection Status</h2>
         <div class="status-item">
-            <span>🌐 后端 API 服务器</span>
+            <span>🌐 Backend API Server</span>
             <div class="status-indicator status-loading" id="api-status">⏳</div>
         </div>
-        
         <div class="status-item">
-            <span>🔐 用户认证系统</span>
+            <span>🔐 User Authentication System</span>
             <div class="status-indicator status-loading" id="auth-status">⏳</div>
         </div>
-        
         <div class="status-item">
-            <span>🗄️ 数据库连接</span>
+            <span>🗄️ Database Connection</span>
             <div class="status-indicator status-loading" id="db-status">⏳</div>
         </div>
-        
         <div class="status-item">
-            <span>📄 静态文件服务</span>
+            <span>📄 Static File Service</span>
             <div class="status-indicator status-loading" id="static-status">⏳</div>
         </div>
-        
         <div class="status-item">
-            <span>🔔 通知系统</span>
+            <span>🔔 Notification System</span>
             <div class="status-indicator status-loading" id="notify-status">⏳</div>
         </div>
     </div>
-    
     <div class="test-section">
-        <h2>登录测试</h2>
+        <h2>Login Test</h2>
         <div class="test-form">
-            <input type="email" id="test-email" placeholder="测试邮箱" value="test@example.com">
-            <input type="password" id="test-password" placeholder="测试密码" value="testpass123">
-            <button onclick="testLogin()">测试登录</button>
-            <button onclick="testSignup()">测试注册</button>
+            <input type="email" id="test-email" placeholder="Test Email" value="test@example.com">
+            <input type="password" id="test-password" placeholder="Test Password" value="testpass123">
+            <button onclick="testLogin()">Test Login</button>
+            <button onclick="testSignup()">Test Signup</button>
         </div>
-        
         <div class="log-container" id="log-container">
-            <div class="log-entry">等待测试...</div>
+            <div class="log-entry">Waiting for test...</div>
         </div>
     </div>
-
     <script>
         // 获取 API 基础地址
         const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://localhost:3001' 
             : 'https://x.soundjaeger.com';
-            
         // 日志函数
         function addLog(message, type = 'info') {
             const logContainer = document.getElementById('log-container');
@@ -159,7 +149,6 @@
             logContainer.appendChild(logEntry);
             logContainer.scrollTop = logContainer.scrollHeight;
         }
-        
         // 更新状态指示器
         function updateStatus(elementId, status, message = '') {
             const element = document.getElementById(elementId);
@@ -171,172 +160,155 @@
                 element.title = message;
             }
         }
-        
         // 检查 API 服务器
         async function checkApiServer() {
             try {
-                addLog('检查 API 服务器连接...');
+                addLog('Checking API server connection...');
                 const response = await fetch(`${apiBase}/api/health`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
-                
                 if (response.ok) {
                     const data = await response.json();
-                    updateStatus('api-status', 'success', 'API 服务器正常');
-                    addLog('API 服务器连接成功', 'success');
+                    updateStatus('api-status', 'success', 'API server is healthy');
+                    addLog('API server connection successful', 'success');
                     return true;
                 } else {
                     updateStatus('api-status', 'error', `HTTP ${response.status}`);
-                    addLog(`API 服务器返回错误: ${response.status}`, 'error');
+                    addLog(`API server returned error: ${response.status}`, 'error');
                     return false;
                 }
             } catch (error) {
                 updateStatus('api-status', 'error', error.message);
-                addLog(`API 服务器连接失败: ${error.message}`, 'error');
+                addLog(`API server connection failed: ${error.message}`, 'error');
                 return false;
             }
         }
-        
         // 检查数据库连接
         async function checkDatabase() {
             try {
-                addLog('检查数据库连接...');
+                addLog('Checking database connection...');
                 const response = await fetch(`${apiBase}/api/db-status`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
-                
                 if (response.ok) {
                     const data = await response.json();
-                    updateStatus('db-status', 'success', '数据库连接正常');
-                    addLog('数据库连接成功', 'success');
+                    updateStatus('db-status', 'success', 'Database connection is healthy');
+                    addLog('Database connection successful', 'success');
                     return true;
                 } else {
-                    updateStatus('db-status', 'error', '数据库连接失败');
-                    addLog('数据库连接失败', 'error');
+                    updateStatus('db-status', 'error', 'Database connection failed');
+                    addLog('Database connection failed', 'error');
                     return false;
                 }
             } catch (error) {
                 updateStatus('db-status', 'error', error.message);
-                addLog(`数据库检查失败: ${error.message}`, 'error');
+                addLog(`Database check failed: ${error.message}`, 'error');
                 return false;
             }
         }
-        
         // 检查认证系统
         async function checkAuth() {
             try {
-                addLog('检查用户认证系统...');
-                // 检查 membership-auth.js 是否可访问
+                addLog('Checking authentication system...');
                 const response = await fetch('/js/membership-auth.js');
                 if (response.ok) {
-                    updateStatus('auth-status', 'success', '认证系统文件正常');
-                    addLog('认证系统文件加载成功', 'success');
+                    updateStatus('auth-status', 'success', 'Authentication system file is accessible');
+                    addLog('Authentication system file loaded successfully', 'success');
                     return true;
                 } else {
-                    updateStatus('auth-status', 'error', '认证文件加载失败');
-                    addLog('认证系统文件加载失败', 'error');
+                    updateStatus('auth-status', 'error', 'Authentication file load failed');
+                    addLog('Authentication system file load failed', 'error');
                     return false;
                 }
             } catch (error) {
                 updateStatus('auth-status', 'error', error.message);
-                addLog(`认证系统检查失败: ${error.message}`, 'error');
+                addLog(`Authentication system check failed: ${error.message}`, 'error');
                 return false;
             }
         }
-        
         // 检查静态文件服务
         async function checkStaticFiles() {
             try {
-                addLog('检查静态文件服务...');
+                addLog('Checking static file service...');
                 const response = await fetch('/js/notification-system.js');
                 if (response.ok) {
-                    updateStatus('static-status', 'success', '静态文件服务正常');
-                    addLog('静态文件服务正常', 'success');
+                    updateStatus('static-status', 'success', 'Static file service is healthy');
+                    addLog('Static file service is healthy', 'success');
                     return true;
                 } else {
-                    updateStatus('static-status', 'error', '静态文件服务异常');
-                    addLog('静态文件服务异常', 'error');
+                    updateStatus('static-status', 'error', 'Static file service error');
+                    addLog('Static file service error', 'error');
                     return false;
                 }
             } catch (error) {
                 updateStatus('static-status', 'error', error.message);
-                addLog(`静态文件检查失败: ${error.message}`, 'error');
+                addLog(`Static file check failed: ${error.message}`, 'error');
                 return false;
             }
         }
-        
         // 检查通知系统
         function checkNotificationSystem() {
             try {
-                addLog('检查通知系统...');
-                // 尝试加载通知系统脚本
+                addLog('Checking notification system...');
                 const script = document.createElement('script');
                 script.src = '/js/notification-system.js';
                 script.onload = () => {
                     if (typeof window.notify !== 'undefined') {
-                        updateStatus('notify-status', 'success', '通知系统正常');
-                        addLog('通知系统加载成功', 'success');
+                        updateStatus('notify-status', 'success', 'Notification system is working');
+                        addLog('Notification system loaded successfully', 'success');
                     } else {
-                        updateStatus('notify-status', 'warning', '通知系统部分功能异常');
-                        addLog('通知系统加载但功能异常', 'error');
+                        updateStatus('notify-status', 'warning', 'Notification system loaded but not fully functional');
+                        addLog('Notification system loaded but not fully functional', 'error');
                     }
                 };
                 script.onerror = () => {
-                    updateStatus('notify-status', 'error', '通知系统加载失败');
-                    addLog('通知系统加载失败', 'error');
+                    updateStatus('notify-status', 'error', 'Notification system load failed');
+                    addLog('Notification system load failed', 'error');
                 };
                 document.head.appendChild(script);
             } catch (error) {
                 updateStatus('notify-status', 'error', error.message);
-                addLog(`通知系统检查失败: ${error.message}`, 'error');
+                addLog(`Notification system check failed: ${error.message}`, 'error');
             }
         }
-        
         // 测试登录
         async function testLogin() {
             const email = document.getElementById('test-email').value;
             const password = document.getElementById('test-password').value;
-            
             if (!email || !password) {
-                addLog('请输入邮箱和密码', 'error');
+                addLog('Please enter email and password', 'error');
                 return;
             }
-            
             try {
-                addLog(`开始测试登录: ${email}`);
+                addLog(`Testing login: ${email}`);
                 const response = await fetch(`${apiBase}/api/signin`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: email, password })
                 });
-                
                 const data = await response.json();
-                
                 if (response.ok) {
-                    addLog(`登录测试成功! Token: ${data.token?.substring(0, 20)}...`, 'success');
-                    addLog(`用户信息: ${JSON.stringify(data.user)}`, 'success');
+                    addLog(`Login test successful! Token: ${data.token?.substring(0, 20)}...`, 'success');
+                    addLog(`User info: ${JSON.stringify(data.user)}`, 'success');
                 } else {
-                    addLog(`登录测试失败: ${data.error}`, 'error');
+                    addLog(`Login test failed: ${data.error}`, 'error');
                 }
             } catch (error) {
-                addLog(`登录测试异常: ${error.message}`, 'error');
+                addLog(`Login test exception: ${error.message}`, 'error');
             }
         }
-        
         // 测试注册
         async function testSignup() {
             const email = document.getElementById('test-email').value;
             const password = document.getElementById('test-password').value;
-            
             if (!email || !password) {
-                addLog('请输入邮箱和密码', 'error');
+                addLog('Please enter email and password', 'error');
                 return;
             }
-            
             try {
-                addLog(`开始测试注册: ${email}`);
+                addLog(`Testing signup: ${email}`);
                 const response = await fetch(`${apiBase}/api/signup`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -347,34 +319,28 @@
                         password: password
                     })
                 });
-                
                 const data = await response.json();
-                
                 if (response.ok) {
-                    addLog(`注册测试成功!`, 'success');
+                    addLog(`Signup test successful!`, 'success');
                 } else {
-                    addLog(`注册测试失败: ${data.error}`, 'error');
+                    addLog(`Signup test failed: ${data.error}`, 'error');
                     if (data.details) {
-                        addLog(`详细信息: ${JSON.stringify(data.details)}`, 'error');
+                        addLog(`Details: ${JSON.stringify(data.details)}`, 'error');
                     }
                 }
             } catch (error) {
-                addLog(`注册测试异常: ${error.message}`, 'error');
+                addLog(`Signup test exception: ${error.message}`, 'error');
             }
         }
-        
         // 页面加载时开始检查
         window.addEventListener('DOMContentLoaded', async function() {
-            addLog('开始系统状态检查...', 'info');
-            
-            // 依次检查各个组件
+            addLog('Starting system status check...', 'info');
             await checkApiServer();
             await checkDatabase();
             await checkAuth();
             await checkStaticFiles();
             checkNotificationSystem();
-            
-            addLog('系统状态检查完成', 'success');
+            addLog('System status check complete', 'success');
         });
     </script>
 </body>
