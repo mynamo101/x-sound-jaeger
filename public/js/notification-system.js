@@ -76,10 +76,9 @@ class NotificationSystem {
         const messageElement = document.createElement('div');
         messageElement.className = 'notification-message';
         messageElement.textContent = message;
-        textContainer.appendChild(messageElement);
-
-        const closeButton = document.createElement('button');
+        textContainer.appendChild(messageElement);        const closeButton = document.createElement('button');
         closeButton.className = 'notification-close';
+        closeButton.textContent = '×';
         closeButton.setAttribute('aria-label', 'Close notification');
         closeButton.addEventListener('click', () => this.remove(id));
 

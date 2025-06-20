@@ -5,7 +5,7 @@ interface Props {
   description?: string;
   fileSize?: string;
   requiresMembership?: boolean;
-  require_tier?: 0 | 1 | 2 | 3;
+  require_tier?: 'Free' | 'Starter' | 'Explorer' | 'Creator';
 }
 
 const {
@@ -14,25 +14,11 @@ const {
   description,
   fileSize,
   requiresMembership = false,
-  require_tier = 0
+  require_tier = 'Free'
 } = Astro.props;
 
-const tierNameMap = [
-  'Free',
-  'Starter',
-  'Explorer',
-  'Creator'
-];
-const getTierLabel = (tier) => {
-  const map = {
-    'Free': 'Free',
-    'Starter': 'Starter',
-    'Explorer': 'Explorer',
-    'Creator': 'Creator'
-  };
-  return map[tier] || '未知等級';
-};
-const getTierString = (tier) => getTierLabel(tier);
+// 標準化為字串格式
+const normalizedRequireTier = require_tier;
 
 const getFileInfo = (url: string) => {
   const fileName = url.split('/').pop() || 'unknown';
@@ -60,11 +46,13 @@ const getFileInfo = (url: string) => {
     fileSize: fileSize || '檔案大小未知'
   };
 };
+
 const fileInfo = getFileInfo(downloadUrl);
 ---
 
-<div class="download-block-flex" data-download-url={downloadUrl} data-requires-membership={requiresMembership} data-require-tier={require_tier}>
-  <div class="membership-label">{getTierLabel(require_tier)}</div>  <div class="download-flex-row">
+<div class="download-block-flex" data-download-url={downloadUrl} data-requires-membership={requiresMembership} data-require-tier={normalizedRequireTier}>
+  <div class="membership-label">{normalizedRequireTier}</div>
+  <div class="download-flex-row">
     <div class="file-info-flex">
       <div class="file-title">{title}</div>
       {description && <div class="file-description">{description}</div>}
@@ -81,10 +69,24 @@ const fileInfo = getFileInfo(downloadUrl);
 </div>
 
 <script type="module">
-  import { getUserProfile, checkDownloadAccess } from '../api/membership-api.js';
+  // 等待全局的 membershipAuth 載入
+  function waitForMembershipAuth() {
+    return new Promise((resolve) => {
+      if (window.membershipAuth) {
+        resolve(window.membershipAuth);
+      } else {
+        const checkAuth = () => {
+          if (window.membershipAuth) {
+            resolve(window.membershipAuth);
+          } else {
+            setTimeout(checkAuth, 100);
+          }
+        };
+        checkAuth();
+      }
+    });
+  }
 
-  // 使用全局通知系統，不再內嵌重複代碼
-  
   async function fetchFileSize(url) {
     try {
       const response = await fetch(url, { method: 'HEAD' });
@@ -109,23 +111,11 @@ const fileInfo = getFileInfo(downloadUrl);
     return localStorage.getItem('auth_token');
   }
   
-  // 檢查用戶會員等級
   async function checkUserTier() {
-    const token = getAuthToken();
-    if (!token) return null;
-    try {
-      const response = await getUserProfile(token);
-      if (response.ok) {
-        const data = await response.json();
-        return data.user.tier;
-      }
-    } catch (error) {
-      console.error('Failed to get user info:', error);
-    }
-    return null;
+    const auth = await waitForMembershipAuth();
+    return auth.isAuthenticated() ? auth.getUserInfo()?.tier : null;
   }
   
-  // 比較會員等級
   function compareTiers(userTier, requiredTier) {
     const tierLevels = {
       'Free': 0,
@@ -136,29 +126,28 @@ const fileInfo = getFileInfo(downloadUrl);
     return tierLevels[userTier] >= tierLevels[requiredTier];
   }
   
-  // 向後端驗證下載權限（最終安全檢查）
   async function verifyDownloadPermission(fileUrl) {
-    const token = getAuthToken();
-    if (!token) {
+    const auth = await waitForMembershipAuth();
+    if (!auth.isAuthenticated()) {
       return { allowed: false, message: '請先登入' };
     }
+    
     try {
       const fileName = fileUrl.split('/').pop();
       console.log('向後端驗證檔案權限:', fileName);
-      const response = await checkDownloadAccess(token, fileName);
-      console.log('後端回應狀態:', response.status);
-      if (response.ok) {
+      const result = await auth.checkDownloadAccess(fileName);
+      console.log('後端回應:', result);
+      
+      if (result.access) {
         return { allowed: true };
       } else {
-        const data = await response.json();
-        console.log('後端驗證失敗，回傳資料:', data);
         let message = '後端驗證失敗';
-        if (data.error === 'File not found') {
+        if (result.error === 'file_not_found') {
           message = '檔案不存在於系統中，請聯繫管理員';
-        } else if (data.required_tier && data.current_tier) {
-          message = `需要 ${data.required_tier} 等級，您目前是 ${data.current_tier}`;
+        } else if (result.currentTier && result.requiredTier) {
+          message = `需要 ${result.requiredTier} 等級，您目前是 ${result.currentTier}`;
         } else {
-          message = data.error || '權限驗證失敗';
+          message = result.error || '權限驗證失敗';
         }
         return { allowed: false, message };
       }
@@ -167,16 +156,23 @@ const fileInfo = getFileInfo(downloadUrl);
       return { allowed: false, message: '權限驗證失敗，請稍後再試' };
     }
   }
-
   document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DownloadBlock script loaded');
     const blocks = document.querySelectorAll('.download-block-flex');
+    console.log('Found blocks:', blocks.length);
     
-    blocks.forEach(async (block) => {
+    blocks.forEach(async (block, index) => {
+      console.log(`Processing block ${index + 1}`);
       const btn = block.querySelector('.download-btn-flex');
       const requiresMembership = block.getAttribute('data-requires-membership') === 'true';
       const requireTier = block.getAttribute('data-require-tier');
       const downloadUrl = block.getAttribute('data-download-url');
       const fileSizeElement = block.querySelector('[data-file-size]');
+      
+      console.log(`Block ${index + 1} - requireTier:`, requireTier, 'requiresMembership:', requiresMembership);
+      
+      // 使用字串等級
+      const normalizedRequireTier = requireTier;
       
       // 檔案大小自動補全
       if (fileSizeElement && fileSizeElement.textContent === '檔案大小未知') {
@@ -191,63 +187,62 @@ const fileInfo = getFileInfo(downloadUrl);
         'Explorer': 'tier-explorer',
         'Creator': 'tier-creator'
       };
-      block.classList.add(tierClasses[requireTier] || 'tier-free');
-
-      // 所有檔案都需要檢查登入狀態
+      
+      const tierClass = tierClasses[normalizedRequireTier];
+      if (tierClass) {
+        block.classList.add(tierClass);
+      }      // 檢查用戶權限
       const userTier = await checkUserTier();
-      let frontendCheckPassed = false;
+      console.log(`Block ${index + 1} - userTier:`, userTier);
 
-      // 免費檔案（requireTier 為 'Free'）- 按鈕始終可點擊
-      if (requireTier === 'Free') {
-        frontendCheckPassed = true; // 無論登入與否都可點擊
+      // 免費檔案處理 - 按鈕始終可點擊
+      if (normalizedRequireTier === 'Free') {
+        console.log(`Block ${index + 1} - 這是免費檔案，啟用按鈕`);
+        btn.disabled = false;
+        btn.classList.add('can-download');
         btn.title = userTier ? '' : '點擊下載（需要登入）';
       } else {
-        // 付費檔案：需要檢查會員等級
+        // 付費檔案處理
         if (requiresMembership) {
           if (!userTier) {
-            frontendCheckPassed = false;
+            btn.disabled = true;
+            btn.classList.remove('can-download');
             btn.title = '請先登入會員';
           } else {
-            const tierNames = ['Free', 'Starter', 'Explorer', 'Creator'];
-            const requiredTierName = requireTier; // 直接用字串
-            if (compareTiers(userTier, requiredTierName)) {
-              frontendCheckPassed = true;
+            if (compareTiers(userTier, normalizedRequireTier)) {
+              btn.disabled = false;
+              btn.classList.add('can-download');
+              btn.title = '';
             } else {
-              frontendCheckPassed = false;
-              btn.title = `需要等級：${requiredTierName}，您目前：${userTier}`;
+              btn.disabled = true;
+              btn.classList.remove('can-download');
+              btn.title = `需要等級：${normalizedRequireTier}，您目前：${userTier}`;
             }
           }
         } else {
-          // 如果不要求會員，但仍需要登入
-          frontendCheckPassed = !!userTier;
-          if (!userTier) {
+          if (userTier) {
+            btn.disabled = false;
+            btn.classList.add('can-download');
+            btn.title = '';
+          } else {
+            btn.disabled = true;
+            btn.classList.remove('can-download');
             btn.title = '請先登入會員';
           }
         }
       }
 
-      // 根據前端檢查結果設定按鈕狀態
-      if (frontendCheckPassed) {
-        btn.disabled = false;
-        btn.classList.add('can-download');
-        btn.title = '';
-      } else {
-        btn.disabled = true;
-        btn.classList.remove('can-download');
-      }
-
-      // 點擊事件：免費檔案特殊處理，付費檔案需要權限檢查
-      // 綁定前先移除舊的 click 事件，確保只會有一個
+      // 點擊事件處理
       if (btn._downloadClickHandler) {
         btn.removeEventListener('click', btn._downloadClickHandler);
       }
-      // 命名事件處理函數
+      
       const handleDownloadClick = async (e) => {
-        e.stopImmediatePropagation(); // 防止多次觸發
-        // 免費檔案的特殊處理
-        if (requireTier === 0) {
+        e.stopImmediatePropagation();
+        
+        // 免費檔案特殊處理
+        if (normalizedRequireTier === 'Free') {
           if (!userTier) {
-            // 未登入時顯示通知
             if (window.notify) {
               window.notify.warning('請先登入會員後再下載檔案', {
                 title: '需要登入',
@@ -258,13 +253,13 @@ const fileInfo = getFileInfo(downloadUrl);
             }
             return;
           }
-          // 已登入的免費用戶直接下載
           console.log('免費檔案，已登入用戶直接下載');
           window.open(downloadUrl, '_blank');
-          return;
-        }
-        // 付費檔案的權限檢查
-        if (!frontendCheckPassed) return;
+          return;        }
+        
+        // 付費檔案權限檢查 - 只有按鈕啟用時才繼續
+        if (btn.disabled) return;
+        
         console.log('正在進行後端權限驗證...');
         const finalCheck = await verifyDownloadPermission(downloadUrl);
         if (finalCheck.allowed) {
@@ -280,6 +275,7 @@ const fileInfo = getFileInfo(downloadUrl);
           }
         }
       };
+      
       btn.addEventListener('click', handleDownloadClick);
       btn._downloadClickHandler = handleDownloadClick;
     });
@@ -411,16 +407,19 @@ const fileInfo = getFileInfo(downloadUrl);
       0 0 30px rgba(245, 158, 11, 0.5);
   }
 }
+
 .download-flex-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
 }
+
 .file-info-flex {
   flex: 1;
   min-width: 0;
 }
+
 .file-title {
   color: #fff;
   font-size: 1.1rem;
@@ -428,6 +427,7 @@ const fileInfo = getFileInfo(downloadUrl);
   margin-bottom: 0.7rem;
   word-break: break-all;
 }
+
 .file-description {
   color: #d1d5db;
   font-size: 0.95rem;
@@ -441,18 +441,22 @@ const fileInfo = getFileInfo(downloadUrl);
 .tier-starter .file-description {
   color: #bfdbfe;
 }
+
 .tier-explorer .file-description {
   color: #ddd6fe;
 }
+
 .tier-creator .file-description {
   color: #fef3c7;
   opacity: 0.95;
 }
+
 .file-badges {
   display: flex;
   gap: 0.7rem;
   flex-wrap: wrap;
 }
+
 .badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
@@ -463,12 +467,15 @@ const fileInfo = getFileInfo(downloadUrl);
   background: #444;
   letter-spacing: 0.5px;
 }
+
 .format-badge {
   text-transform: uppercase;
 }
+
 .size-badge {
   background: #666;
 }
+
 .name-badge {
   background: #333;
   color: #eee;
@@ -477,11 +484,13 @@ const fileInfo = getFileInfo(downloadUrl);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .file-action-flex {
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
+
 .download-btn-flex {
   min-width: 120px;
   padding: 0.85rem 1.7rem;
@@ -503,12 +512,12 @@ const fileInfo = getFileInfo(downloadUrl);
 
 /* 免費等級按鈕 */
 .tier-free .download-btn-flex.can-download {
-  background: rgba(70 70 70 / 0.8);
+  background: rgba(70, 70, 70, 0.8);
   cursor: pointer;
 }
 
 .tier-free .download-btn-flex.can-download:hover {
-  background: rgba(224 224 224 / 0.9);
+  background: rgba(224, 224, 224, 0.9);
 }
 
 /* Starter 等級按鈕 */
@@ -571,6 +580,7 @@ const fileInfo = getFileInfo(downloadUrl);
   0%, 100% { transform: translateX(-100%); }
   50% { transform: translateX(100%); }
 }
+
 @media (max-width: 700px) {
   .download-flex-row {
     flex-direction: column;
