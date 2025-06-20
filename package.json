@@ -10,7 +10,8 @@
     "build": "npm run sync-js && astro build && upload.bat",
     "build-only": "npm run sync-js && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "prebuild": "powershell -Command \"Set-Content .env \"SITE_VERSION=$(Get-Date -Format yyyyMMddHHmmss)\""
   },
   "dependencies": {
     "@astrojs/mdx": "^4.2.1",
