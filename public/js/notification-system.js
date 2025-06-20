@@ -71,12 +71,12 @@ class NotificationSystem {
             titleElement.className = 'notification-title';
             titleElement.textContent = title;
             textContainer.appendChild(titleElement);
-        }
-
-        const messageElement = document.createElement('div');
+        }        const messageElement = document.createElement('div');
         messageElement.className = 'notification-message';
         messageElement.textContent = message;
-        textContainer.appendChild(messageElement);        const closeButton = document.createElement('button');
+        textContainer.appendChild(messageElement);
+
+        const closeButton = document.createElement('button');
         closeButton.className = 'notification-close';
         closeButton.textContent = '×';
         closeButton.setAttribute('aria-label', 'Close notification');
@@ -85,10 +85,10 @@ class NotificationSystem {
         content.appendChild(icon);
         content.appendChild(textContainer);
         notification.appendChild(content);
-        notification.appendChild(closeButton);
+        notification.appendChild(closeButton);        return notification;
+    }
 
-        return notification;
-    }    remove(id) {
+    remove(id) {
         const notification = this.notifications.get(id);
         if (notification && notification.parentNode) {
             // Add hide class for smooth fadeout
@@ -115,11 +115,11 @@ class NotificationSystem {
 
     warning(message, options = {}) {
         return this.show(message, 'warning', options);
+    }    info(message, options = {}) {
+        return this.show(message, 'info', options);
     }
 
-    info(message, options = {}) {
-        return this.show(message, 'info', options);
-    }    loading(message, options = {}) {
+    loading(message, options = {}) {
         const loadingOptions = {
             ...options,
             persistent: true
@@ -132,9 +132,10 @@ class NotificationSystem {
             const icon = notification.querySelector('.notification-icon');
             icon.innerHTML = '<div class="notification-loading"></div>';
         }
-        
-        return id;
-    }    clear() {
+          return id;
+    }
+
+    clear() {
         this.notifications.forEach((_, id) => this.remove(id));
     }
 
