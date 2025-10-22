@@ -1,28 +1,32 @@
 ---
-import FormHero from '@components/FormHero.astro';
 import globalSettings from '@config/config.json.ts';
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { linkify } from '@/utils/utils';
-import en from '@/locales/en.json';
 
 const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
   .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
 
-const missionText = linkify(en.about_page.mission_text);
+const missionText = linkify(t.about_page.mission_text);
 
 ---
 
 <BaseLayout globalSettings={globalSettings} t={t} title={t.about_page.title_hero} description={t.about_page.description_hero}>
     <main>
-        <FormHero type={"About"} t={t} globalSettings={globalSettings} title={t.about_page.title_hero} description={t.about_page.description_hero}>
-                            <div class="about-content">
-            <div class="logo">
-                <img src="/images/Logo/logo.svg" alt={globalSettings.site_name} style="max-width: 150px; width: 100%; height: auto; padding-bottom: 20px;" />
+        <section class="wide-container section-padding" style="border-top: 1px solid var(--text-color-40);">
+            <div class="about-content" style="text-align: center;">
+                <h1 style="font-size: max(10vw, 44px); line-height: 75%; margin-bottom: 2rem;">{t.about_page.title_hero}</h1>
+                
+                <p style="margin-bottom: 2rem; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    {t.about_page.description_hero}
+                </p>
+                
+                <div class="logo" style="margin-bottom: 3rem;">
+                    <img src="/images/Logo/logo.svg" alt={globalSettings.site_name} style="max-width: 150px; width: 100%; height: auto;" />
+                </div>
+                
+                <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">{t.about_page.mission_title}</h3>
+                <div set:html={missionText} style="max-width: 600px; margin-left: auto; margin-right: auto;"></div>
             </div>
-            </div>
-                <h3>{t.about_page.mission_title}</h3>
-                <div set:html={missionText}></div>
-            </div>
-        </FormHero>
+        </section>
     </main>
 </BaseLayout>

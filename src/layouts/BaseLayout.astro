@@ -2,7 +2,6 @@
 import BaseHead from "@layouts/BaseHead.astro";
 import Navbar from "@components/Navbar.astro";
 import Footer from "@components/Footer.astro";
-import AgeVerificationModal from "@components/AgeVerificationModal.astro";
 import VideoPlayer from '../components/VideoPlayer.astro';
 import type { SeoProps } from "@src-types/types";
 
@@ -30,11 +29,9 @@ const {
 			<Navbar globalSettings={globalSettings} t={t}/>
 			<slot />
 			<Footer globalSettings={globalSettings} t={t}/>		</div>
-		<AgeVerificationModal globalSettings={globalSettings} t={t} />
 		<slot name="VideoPlayer" />
 		
 		<!-- Global JavaScript files -->
 		<script src={`/js/notification-system.js?v=${import.meta.env.SITE_VERSION}`} is:inline></script>
-		<script src={`/js/membership-auth.js?v=${import.meta.env.SITE_VERSION}`} is:inline></script>
 	</body>
 </html>

@@ -29,7 +29,7 @@ $action = {
     Write-Host "[$timeStamp] 檔案 $fileName 已 $changeType"
     
     # 只同步特定檔案
-    if ($fileName -eq "membership-auth.js" -or $fileName -eq "notification-system.js") {
+    if ($fileName -eq "notification-system.js") {
         $targetFile = Join-Path $targetDir $fileName
         Start-Sleep -Milliseconds 100  # 等待檔案寫入完成
         
@@ -49,10 +49,6 @@ Register-ObjectEvent -InputObject $watcher -EventName "Created" -Action $action
 
 # 初始同步
 Write-Host "執行初始同步..."
-if (Test-Path "src\js\membership-auth.js") {
-    Copy-Item "src\js\membership-auth.js" "public\js\membership-auth.js" -Force
-    Write-Host "  → membership-auth.js 已同步" -ForegroundColor Green
-}
 if (Test-Path "src\js\notification-system.js") {
     Copy-Item "src\js\notification-system.js" "public\js\notification-system.js" -Force
     Write-Host "  → notification-system.js 已同步" -ForegroundColor Green

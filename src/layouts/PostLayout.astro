@@ -5,7 +5,6 @@ import type { PostProps } from "@src-types/types";
 import { Image } from "astro:assets";
 import Social from "@components/Social.astro";
 import PostAuthor from "@components/PostAuthor.astro";
-import PasswordProtection from "@components/PasswordProtection.astro";
 import RelatedPostArrowIcon from "@assets/icons/RelatedPostArrowIcon.astro";
 import { slugify } from "@utils/utils";
 import { formatDate } from "@js/global.js";
@@ -13,7 +12,6 @@ import { formatDate } from "@js/global.js";
 import "@styles/post.css";
 import "@styles/post-content.css";
 import "@styles/related-posts.css";
-import "@styles/password-protection.css";
 
 const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.json`)
   .catch(() => import(/* @vite-ignore */ '@locales/en.json'));
@@ -234,12 +232,7 @@ if(post.data.tags && post.data.tags.length > 0){
             </div>               
         </div>
         </footer>      </article>
-    </main>    {isPasswordProtected && 
-      <div id="password-protection-modal" class="password-protection-modal" data-correct-password={password}>
-        <PasswordProtection t={t} />
-      </div>
-    }
-</BaseLayout>
+    </main></BaseLayout>
 
 {globalSettings.use_image_zoom &&
   <script is:inline src="https://cdn.jsdelivr.net/npm/lightense-images@1.0.17/dist/lightense.min.js"></script>

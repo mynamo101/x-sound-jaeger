@@ -1,5 +1,5 @@
 ---
-import FormHero from '@components/FormHero.astro';
+import Hero from '@components/Hero.astro';
 import globalSettings from '@config/config.json.ts';
 import BaseLayout from "@layouts/BaseLayout.astro";
 
@@ -10,6 +10,6 @@ const t = await import(/* @vite-ignore */ `@locales/${globalSettings.language}.j
 
 <BaseLayout globalSettings={globalSettings} t={t} title={t.contact_page.title_hero} description={t.contact_page.description_hero}>
     <main>
-        <FormHero type={"Contact"} t={t} globalSettings={globalSettings} title={t.contact_page.title_hero} description={t.contact_page.description_hero}/>
+        <Hero t={t} globalSettings={globalSettings} title={t.contact_page.title_hero} description={t.contact_page.description_hero} is_homepage={false}/>
     </main>
 </BaseLayout>

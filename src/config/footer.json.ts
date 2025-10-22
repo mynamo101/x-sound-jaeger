@@ -18,18 +18,6 @@ const footerSettings: Footer[] = [
             {
                 text: "X-SoundJaeger",
                 link: "/about/",
-            },
-            {
-                text: "Membership",
-                link: "/membership/",
-            },
-            {
-                text: "Account",
-                link: "/account/",
-            },
-            {
-                text: "Sign Up",
-                link: "/signup/",
             }
 
             // {

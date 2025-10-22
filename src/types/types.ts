@@ -170,14 +170,6 @@ export interface MediaEmbedProps {
     title?: string
 }
 
-export interface MembershipCardProps {
-    name: string,
-    description?: string,
-    yearly_price: string,
-    monthly_price: string,
-    benefits?: string[]
-}
-
 export interface FormHeroProps {
     type: FormHeroType,
     has_link?: boolean,
@@ -185,7 +177,7 @@ export interface FormHeroProps {
     description?: string
 }
 
-export type FormHeroType = "Contact" | "Signin" | "Signup" | "Subscribe" | "About";
+export type FormHeroType = "Contact" | "About";
 
 export interface SeoProps {
     type?: "image" | "no_image";
